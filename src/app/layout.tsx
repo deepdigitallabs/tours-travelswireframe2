@@ -1,31 +1,27 @@
 import type { Metadata } from "next";
-import { Outfit, Plus_Jakarta_Sans } from "next/font/google";
+import { Manrope } from "next/font/google";
 import "./globals.css";
 
-const outfit = Outfit({
+const manrope = Manrope({
   subsets: ["latin"],
-  variable: "--font-outfit",
-  display: "swap",
-});
-
-const plusJakarta = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  variable: "--font-plus-jakarta",
+  variable: "--font-manrope",
+  weight: ["300", "400", "500", "600", "700", "800"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "RoyalVoyage Travels | Luxury Bus & Travel Rental Booking Platform",
+  title: "Bus Rental in Pune | Tempo Traveller & Luxury Coach Hire – Vishal Travels",
   description:
-    "Unified Bus & Travel Rental Booking Platform. Hire luxury sleeper buses (Volvo 9600), Force Urbania, executive Tempo Travellers, and wedding fleet across India with live GPS tracking and verified drivers.",
+    "Hire AC tempo travellers (9–27 seater), mini buses, Force Urbanias & luxury coaches in Pune. Police-verified drivers, GPS-tracked fleet, 24/7 availability. Call Vishal Travels: +91 9764564699",
   keywords: [
-    "bus rental",
-    "tempo traveller hire",
-    "volvo 9600 rental",
-    "wedding bus booking",
-    "corporate staff transport",
-    "outstation travels",
-    "royalvoyage",
+    "bus rental pune",
+    "tempo traveller hire pune",
+    "vishal travels pune",
+    "force urbania rental pune",
+    "luxury bus hire pune",
+    "ashtavinayak darshan bus",
+    "5 jyotirlinga yatra from pune",
+    "pune to mumbai bus rental",
   ],
 };
 
@@ -35,7 +31,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${outfit.variable} ${plusJakarta.variable}`}>
+    <html lang="en" className={manrope.variable}>
       <body>{children}</body>
     </html>
   );
