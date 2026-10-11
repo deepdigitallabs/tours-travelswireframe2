@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 
-// --- Types & Data modeled directly after Vishal Travels Pune ---
+// --- Data Types ---
 
 interface Vehicle {
   id: string;
@@ -49,10 +49,10 @@ interface Review {
 const FLEET_DATA: Vehicle[] = [
   {
     id: "f1",
-    name: "Force Urbania Luxury VIP Lounge (13 & 17 Seater)",
+    name: "Force Urbania Luxury VIP Lounge",
     category: "urbania",
     categoryLabel: "Force Urbania VIP",
-    seatingText: "13 / 17 Seater Maharaja AC",
+    seatingText: "13 & 17 Seater Maharaja AC",
     seatsNum: 17,
     submodel: "Mercedes-Derived Engine • Monocoque Body • Air Suspension",
     rating: 4.98,
@@ -62,8 +62,8 @@ const FLEET_DATA: Vehicle[] = [
     minKmPerDay: 300,
     driverAllowancePerDay: 500,
     image: "https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=800&auto=format&fit=crop&q=80",
-    amenities: ["Maharaja Reclining Captain Seats", "Independent AC Vents", "Panoramic UV Glass Windows", "Mobile USB Chargers Each Seat", "Music & PA Mic"],
-    description: "The pride of Vishal Travels. European luxury with superior legroom and whisper-quiet suspension for executive corporate trips and wedding VIP guests."
+    amenities: ["Maharaja Leather Captain Seats", "Independent AC Blowers", "Panoramic UV Glass Windows", "Mobile USB Chargers Each Seat", "Music & PA Mic"],
+    description: "The flagship of Vishal Travels. European luxury with superior legroom and whisper-quiet suspension for executive corporate trips and wedding VIP guests."
   },
   {
     id: "f2",
@@ -81,7 +81,7 @@ const FLEET_DATA: Vehicle[] = [
     driverAllowancePerDay: 500,
     image: "https://images.unsplash.com/photo-1525962898597-a4ae6402826e?w=800&auto=format&fit=crop&q=80",
     amenities: ["Push-back Plush Velvet Seats", "JBL Sound System & Mic", "High-efficiency Dual AC", "First Aid & Fire Extinguisher", "Experienced Highway Driver"],
-    description: "Pune's top pick for Ashtavinayak Darshan, Mahabaleshwar weekend escapes, and Shirdi pilgrimages. Highly comfortable for small family groups."
+    description: "Pune's top pick for Ashtavinayak Darshan, Mahabaleshwar weekend escapes, and Shirdi pilgrimages. Highly comfortable for family groups."
   },
   {
     id: "f3",
@@ -121,7 +121,7 @@ const FLEET_DATA: Vehicle[] = [
   },
   {
     id: "f5",
-    name: "Luxury Coach / Volvo Multi-Axle (45-49 Seater)",
+    name: "Luxury Coach / Volvo Multi-Axle (49 Seater)",
     category: "luxury-bus",
     categoryLabel: "Luxury Coach & Sleeper",
     seatingText: "45-49 Seater Push-back / Sleeper",
@@ -139,7 +139,7 @@ const FLEET_DATA: Vehicle[] = [
   },
   {
     id: "f6",
-    name: "Toyota Innova Crysta & Maruti Ertiga (6-7 Seater)",
+    name: "Toyota Innova Crysta & Maruti Ertiga",
     category: "suv",
     categoryLabel: "Premium SUV / Taxi",
     seatingText: "6 - 7 Seater Captain Seats",
@@ -259,25 +259,23 @@ const REVIEWS_DATA: Review[] = [
   }
 ];
 
-export default function VishalTravelsApp() {
-  // Navigation & State
+export default function VishalTravelsWebsite() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<"one-way" | "round-trip">("round-trip");
-  
-  // Quick Booking Form State (Mirroring Vishal Travels' exact fields)
-  const [custName, setCustName] = useState("Sanjay Shinde");
-  const [custPhone, setCustPhone] = useState("9764564699");
+
+  // Quick Form State
+  const [custName, setCustName] = useState("");
+  const [custPhone, setCustPhone] = useState("");
   const [startDate, setStartDate] = useState("");
   const [returnDate, setReturnDate] = useState("");
   const [seatingCapacity, setSeatingCapacity] = useState("17 Seater");
   const [busType, setBusType] = useState("Force Urbania A/C");
-  const [pickupLocation, setPickupLocation] = useState("Shivaji Nagar, Pune");
+  const [pickupLocation, setPickupLocation] = useState("Pune, Maharashtra");
   const [destination, setDestination] = useState("Mahabaleshwar");
 
   // Fleet Filter
   const [fleetFilter, setFleetFilter] = useState("all");
 
-  // Fare Estimator Calculator State
+  // Fare Estimator
   const [calcRate, setCalcRate] = useState(38);
   const [calcDA, setCalcDA] = useState(500);
   const [calcKm, setCalcKm] = useState(350);
@@ -297,7 +295,6 @@ export default function VishalTravelsApp() {
     from: string;
     to: string;
     date: string;
-    payment: string;
   } | null>(null);
 
   const [isTrackerModalOpen, setIsTrackerModalOpen] = useState(false);
@@ -330,7 +327,7 @@ export default function VishalTravelsApp() {
     setReturnDate(afterTomorrow.toISOString().split("T")[0]);
   }, []);
 
-  // Live GPS simulation
+  // GPS simulation
   useEffect(() => {
     if (!isTrackerModalOpen) return;
     const interval = setInterval(() => {
@@ -340,17 +337,17 @@ export default function VishalTravelsApp() {
     return () => clearInterval(interval);
   }, [isTrackerModalOpen]);
 
-  // Handle Quick Booking "Let's Go!"
+  // Handle Quick Booking Form "Lets Go!"
   const handleQuickBookSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!custName || !custPhone) {
-      triggerToast("Please provide your name and phone number", "warning");
+      triggerToast("Please enter your name and contact number", "warning");
       return;
     }
     const matching = FLEET_DATA.find((f) => f.name.toLowerCase().includes(busType.toLowerCase().split(" ")[0])) || FLEET_DATA[0];
     setSelectedVehicle(matching);
     setIsBookingModalOpen(true);
-    triggerToast(`Booking enquiry initialized for ${busType} (${seatingCapacity})!`, "success");
+    triggerToast(`Booking enquiry submitted for ${busType} (${seatingCapacity})!`, "success");
   };
 
   // Confirm Reservation & Ticket Generation
@@ -359,36 +356,35 @@ export default function VishalTravelsApp() {
     const pnr = `VT-PUNE-${Math.floor(1000 + Math.random() * 9000)}`;
     setGeneratedTicket({
       pnr,
-      name: custName,
-      phone: custPhone,
+      name: custName || "Sanjay Shinde",
+      phone: custPhone || "9764564699",
       vehicle: selectedVehicle?.name || busType,
       from: pickupLocation,
       to: destination,
-      date: startDate,
-      payment: "Token Advance Confirmed (UPI / Cash on Boarding)"
+      date: startDate
     });
     setIsBookingModalOpen(false);
     setIsTicketModalOpen(true);
     triggerToast(`Booking confirmed with PNR ${pnr}! E-Ticket generated.`, "success");
   };
 
-  // WhatsApp interaction
+  // WhatsApp Interaction
   const handleSendWa = (text: string) => {
     if (!text.trim()) return;
     setWaMessages((prev) => [...prev, { text, sender: "user", time: "Just now" }]);
     setWaInput("");
     setTimeout(() => {
-      let reply = "Dhanyawad! Our Pune booking manager is checking available buses for your dates. We will call you on +91 " + custPhone + " shortly.";
+      let reply = "Dhanyawad! Our Pune booking manager is checking available buses for your dates. We will call you on +91 9764564699 shortly.";
       if (text.toLowerCase().includes("ashtavinayak")) {
-        reply = "🛕 Ashtavinayak Darshan 2-Day package available in AC Tempo Traveller (17-seater) & Force Urbania. Free highway toll guidance included!";
+        reply = "🛕 Ashtavinayak Darshan 2-Day package available in AC Tempo Traveller (17-seater) & Force Urbania. Toll guidance included!";
       } else if (text.toLowerCase().includes("urbania")) {
         reply = "🚐 Force Urbania VIP available with Maharaja leather seats and charging ports. Call directly on +91 9764564699 for instant lock.";
       }
       setWaMessages((prev) => [...prev, { text: reply, sender: "bot", time: "Just now" }]);
-    }, 900);
+    }, 800);
   };
 
-  // Fare calculation
+  // Calculator Math
   const totalBase = calcKm * calcRate;
   const totalDA = calcDays * calcDA;
   const totalGst = Math.round((totalBase + totalDA) * 0.05);
@@ -400,50 +396,39 @@ export default function VishalTravelsApp() {
 
   return (
     <>
-      {/* TOPBAR (Exact numbers from Vishal Travels Pune) */}
-      <div className="top-bar">
-        <div className="container top-bar-content">
-          <div className="top-bar-left">
-            <span className="badge-gold">★ Pune's #1 Rated Bus & Tempo Traveller Rental</span>
-            <span className="top-info">
-              📞 <a href="tel:+919764564699" style={{ color: "#fff" }}><strong>+91 9764564699</strong></a>
-            </span>
-            <span className="top-info">
-              📞 <a href="tel:+919372459371" style={{ color: "#fff" }}><strong>+91 9372459371</strong></a>
-            </span>
-            <span className="top-info">
-              📞 <a href="tel:+918600118437" style={{ color: "#fff" }}><strong>+91 8600118437</strong></a>
-            </span>
+      {/* 1. TOP BAR (Exact Gold/Yellow Background from Screenshot) */}
+      <div className="vishal-topbar">
+        <div className="container vishal-topbar-content">
+          <div className="topbar-phone-links">
+            <a href="tel:+919764564699" className="topbar-phone-item">
+              <span>📞</span> +919764564699
+            </a>
+            <a href="tel:+919372459371" className="topbar-phone-item">
+              <span>📞</span> +919372459371
+            </a>
+            <a href="tel:+918600118437" className="topbar-phone-item">
+              <span>📞</span> +918600118437
+            </a>
           </div>
 
-          <div className="top-bar-right">
-            <div className="lang-selector">
-              <span>🌐</span>
-              <select onChange={(e) => triggerToast(`Language switched to ${e.target.options[e.target.selectedIndex].text}`, "info")}>
-                <option value="en">English (EN)</option>
-                <option value="mr">मराठी (MR)</option>
-                <option value="hi">हिन्दी (HI)</option>
-              </select>
-            </div>
-            <a
-              href="https://wa.me/919764564699"
-              target="_blank"
-              rel="noreferrer"
-              className="top-btn-admin"
-              style={{ background: "#25d366", borderColor: "#1ebd56", color: "#fff" }}
-            >
-              💬 WhatsApp: 9764564699
+          <div className="topbar-social-links">
+            <a href="https://www.facebook.com/share/14X2F187jBq/" target="_blank" rel="noreferrer" className="topbar-social-icon" aria-label="Facebook">
+              f
+            </a>
+            <a href="https://www.instagram.com/vishaltravelspune?utm_source=qr" target="_blank" rel="noreferrer" className="topbar-social-icon" aria-label="Instagram">
+              📷
             </a>
           </div>
         </div>
       </div>
 
-      {/* HEADER / NAVIGATION */}
-      <header className="main-header" id="mainHeader">
-        <div className="container nav-container">
-          <a href="#home" className="logo-brand">
-            <div className="logo-icon">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+      {/* 2. MAIN HEADER (Pure White with Vishal Travels Logo & Sky Blue Button) */}
+      <header className="vishal-header" id="mainHeader">
+        <div className="container vishal-header-inner">
+          {/* Logo Matching Screenshot */}
+          <a href="#home" className="vishal-logo-wrap">
+            <div className="vishal-logo-badge">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                 <rect x="3" y="6" width="18" height="12" rx="3"/>
                 <circle cx="7" cy="18" r="2"/>
                 <circle cx="17" cy="18" r="2"/>
@@ -453,313 +438,363 @@ export default function VishalTravelsApp() {
                 <line x1="17" y1="6" x2="17" y2="11"/>
               </svg>
             </div>
-            <div className="logo-text">
-              <span className="logo-main">Vishal Travels</span>
-              <span className="logo-sub">Pune's Most Trusted Rental</span>
+            <div className="vishal-logo-text">
+              <div className="vishal-brand-name">
+                Vishal <span>Travels</span>
+              </div>
+              <span className="vishal-brand-tagline">JOURNEYS THAT CONNECT</span>
             </div>
           </a>
 
-          <nav className={`nav-links ${mobileMenuOpen ? "active" : ""}`} id="navLinks">
-            <a href="#home" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Home</a>
-            <a href="#booking-form" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Book a Bus</a>
-            <a href="#routes-trips" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Routes & Trips</a>
-            <a href="#tour-packages" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Tour Packages</a>
-            <a href="#our-fleet" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Our Fleet</a>
-            <a href="#fare-calculator" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Bus Fare</a>
-            <a href="#why-choose-us" className="nav-link" onClick={() => setMobileMenuOpen(false)}>About Us</a>
-            <a href="#reviews" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Reviews</a>
+          {/* Navigation Links from Screenshot */}
+          <nav className="vishal-nav-menu">
+            <a href="#home" className="vishal-nav-item active">Home</a>
+            <a href="#about-us" className="vishal-nav-item">About Us</a>
+            <a href="#routes-trips" className="vishal-nav-item">
+              Routes & Trips <span className="dropdown-caret">▼</span>
+            </a>
+            <a href="#tour-packages" className="vishal-nav-item">
+              Packages <span className="dropdown-caret">▼</span>
+            </a>
+            <a href="#fare-calculator" className="vishal-nav-item">Bus Fair</a>
+            <a href="#our-fleet" className="vishal-nav-item">Gallery</a>
+            <a href="#why-choose-us" className="vishal-nav-item">Blog</a>
+            <a href="#contact-us" className="vishal-nav-item">Contact Us</a>
           </nav>
 
-          <div className="nav-actions">
-            <a href="tel:+919764564699" className="btn btn-outline-call">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-              </svg>
-              +91 9764564699
-            </a>
-            <a href="#booking-form" className="btn btn-primary glow-effect">
-              Book Your Bus
-            </a>
-            <button
-              className="mobile-menu-toggle"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle Menu"
-            >
-              <span></span><span></span><span></span>
-            </button>
-          </div>
+          {/* Sky Blue "Book Your Bus" Button from Screenshot */}
+          <a href="#booking-form-section" className="btn-book-bus">
+            <span>🚎</span> Book Your Bus
+          </a>
+
+          <button
+            className="mobile-toggle"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle navigation menu"
+          >
+            ☰
+          </button>
         </div>
       </header>
 
-      {/* HERO SECTION (Adapted directly from Vishal Travels Pune) */}
-      <section className="hero-section" id="home">
-        <div className="hero-overlay"></div>
-        <div className="container hero-content">
-          <div className="hero-badge-tag">
-            <span className="pulse-dot"></span>
-            <span>Welcome to Vishal Travels Pune</span>
+      {/* 3. HERO SECTION (Identical to User Screenshot) */}
+      <section className="vishal-hero" id="home">
+        {/* Yellow/Orange "WELCOME TO VISHAL TRAVEL" Badge */}
+        <div className="hero-welcome-badge">
+          WELCOME TO VISHAL TRAVEL
+        </div>
+
+        {/* Exact Headline from Screenshot */}
+        <h1 className="hero-main-title">
+          Bus Rental in Pune — Tempo Traveller, Mini Bus & Luxury Coach on Hire
+        </h1>
+
+        {/* Exact Subtitle from Screenshot */}
+        <p className="hero-description-text">
+          Need a reliable bus on rent in Pune? Vishal Travels offers safe, affordable group travel with professional drivers, transparent pricing, and 24/7 support for corporate trips, weddings, tours, and outstation journeys.
+        </p>
+
+        {/* Exact White Stats Card Bar from Screenshot */}
+        <div className="hero-stats-card">
+          <div className="stats-card-item">
+            <span className="stats-star">★</span> 4.8/5 on Google
           </div>
-          <h1 className="hero-title">
-            Affordable Bus Rental in Pune – Tempo Traveller, Mini Bus & Luxury Coach
-          </h1>
-          <p className="hero-subtitle">
-            Hire AC tempo travellers (9–27 seater), Force Urbanias, mini buses & luxury coaches in Pune. Police-verified drivers, GPS-tracked fleet, 24/7 availability across Maharashtra.
-          </p>
+          <div className="stats-card-item">
+            5,000+ Happy Customers
+          </div>
+          <div className="stats-card-item">
+            10,000+ Trips Completed
+          </div>
+          <div className="stats-card-item">
+            7+ Years in Pune
+          </div>
+          <div className="stats-card-item">
+            50+ Vehicles in Fleet
+          </div>
+        </div>
+      </section>
 
-          <div className="hero-features-strip">
-            <div className="hero-feature-item">
-              <span>🛡️ Police-Verified Drivers</span>
+      {/* Floating Action Circle Buttons on Bottom-Left (from screenshot) */}
+      <div className="hero-floating-actions">
+        {/* Dark Teal Call Button */}
+        <a href="tel:+919764564699" className="fab-circle-btn fab-call-circle" aria-label="Call Vishal Travels">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+        </a>
+
+        {/* Green WhatsApp Circle Button with Sonar Pulse Wave */}
+        <button
+          className="fab-circle-btn fab-wa-circle"
+          onClick={() => setIsWaOpen(!isWaOpen)}
+          aria-label="WhatsApp Chat"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm0 18.15c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.192 8.192 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23zm4.52-6.17c-.25-.12-1.47-.72-1.7-.81-.23-.08-.39-.12-.56.12-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.12-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.49-.4-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.22.25-.86.84-.86 2.05 0 1.21.88 2.38 1 2.54.12.17 1.74 2.65 4.21 3.72.59.25 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.11-.23-.17-.48-.29z"/>
+          </svg>
+        </button>
+      </div>
+
+      {/* QUICK ACTION BUTTONS BAR (As peeking at the bottom of the screenshot) */}
+      <div style={{ background: "#ffffff", padding: "18px 0", borderBottom: "1px solid #e2e8f0" }}>
+        <div className="container" style={{ display: "flex", justifyContent: "center", gap: "16px", flexWrap: "wrap" }}>
+          <a
+            href="https://wa.me/919764564699"
+            target="_blank"
+            rel="noreferrer"
+            style={{
+              background: "#25d366",
+              color: "#fff",
+              padding: "10px 24px",
+              borderRadius: "6px",
+              fontWeight: 800,
+              fontSize: "0.95rem",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px"
+            }}
+          >
+            <span>💬</span> WhatsApp: +91 9764564699
+          </a>
+          <a
+            href="tel:+919764564699"
+            style={{
+              background: "#009df8",
+              color: "#fff",
+              padding: "10px 24px",
+              borderRadius: "6px",
+              fontWeight: 800,
+              fontSize: "0.95rem",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px"
+            }}
+          >
+            <span>📞</span> Call Us: +91 9764564699
+          </a>
+        </div>
+      </div>
+
+      {/* 4. "BOOK A BUS" SECTION (Exact 2-Column Form from Vishal Travels Pune) */}
+      <section className="booking-section" id="booking-form-section">
+        <div className="container booking-two-col">
+          {/* Left Info Column */}
+          <div className="booking-info-box">
+            <span className="sub-tag-line">Book a Bus</span>
+            <h2 className="booking-info-title">
+              Easily Book Your Comfortable Bus Ride Online Today
+            </h2>
+            <p className="booking-info-desc">
+              Book tempo travellers, mini buses & luxury coaches for outstation trips, corporate travel, and family tours at the best price.
+            </p>
+
+            <div className="contact-quick-pill">
+              <div className="contact-pill-icon">📞</div>
+              <div className="contact-pill-text">
+                <strong>Call Us Any Time</strong>
+                <a href="tel:+919764564699">+91 9764564699</a>
+              </div>
             </div>
-            <div className="hero-feature-item">
-              <span>🛰️ Real-Time GPS Tracking</span>
-            </div>
-            <div className="hero-feature-item">
-              <span>💰 Zero Hidden Charges</span>
-            </div>
-            <div className="hero-feature-item">
-              <span>★ 4.9/5 Rating in Pune</span>
+
+            <div className="contact-quick-pill">
+              <div className="contact-pill-icon" style={{ background: "#dcfce7", color: "#16a34a" }}>💬</div>
+              <div className="contact-pill-text">
+                <strong>WhatsApp Support</strong>
+                <a href="https://wa.me/919764564699" style={{ color: "#16a34a" }}>+91 9764564699</a>
+              </div>
             </div>
           </div>
 
-          {/* VISHAL TRAVELS QUICK BOOKING FORM (Exact fields from vishaltravelspune.com) */}
-          <div className="booking-widget-card" id="booking-form">
-            <div className="widget-header">
-              <div className="trip-tabs" role="tablist">
-                <button
-                  className={`trip-tab ${activeTab === "round-trip" ? "active" : ""}`}
-                  onClick={() => setActiveTab("round-trip")}
-                >
-                  <span className="radio-indicator"></span> Round Trip / Outstation
-                </button>
-                <button
-                  className={`trip-tab ${activeTab === "one-way" ? "active" : ""}`}
-                  onClick={() => setActiveTab("one-way")}
-                >
-                  <span className="radio-indicator"></span> One Way Drop
-                </button>
-              </div>
-              <div className="widget-quick-help">
-                <span>⚡ Instant Call & Booking Support</span>
-              </div>
-            </div>
-
-            <form className="booking-form" onSubmit={handleQuickBookSubmit}>
-              <div className="form-grid-row">
-                {/* Full Name */}
-                <div className="form-group">
-                  <label htmlFor="custName"><span className="input-icon">👤</span> Your Name</label>
-                  <div className="input-wrapper">
-                    <input
-                      type="text"
-                      id="custName"
-                      placeholder="e.g. Sanjay Shinde"
-                      value={custName}
-                      onChange={(e) => setCustName(e.target.value)}
-                      required
-                    />
-                  </div>
+          {/* Right Form Column (Exact Fields & "Lets Go!" Button) */}
+          <div className="booking-form-box">
+            <form onSubmit={handleQuickBookSubmit}>
+              <div className="bf-grid-2">
+                <div className="bf-field">
+                  <label htmlFor="formCustName">Name</label>
+                  <input
+                    type="text"
+                    id="formCustName"
+                    placeholder="Name"
+                    value={custName}
+                    onChange={(e) => setCustName(e.target.value)}
+                    required
+                  />
                 </div>
-
-                {/* Phone */}
-                <div className="form-group">
-                  <label htmlFor="custPhone"><span className="input-icon">📱</span> Mobile Number</label>
-                  <div className="input-wrapper">
-                    <input
-                      type="tel"
-                      id="custPhone"
-                      placeholder="e.g. 9764564699"
-                      value={custPhone}
-                      onChange={(e) => setCustPhone(e.target.value)}
-                      required
-                    />
-                  </div>
-                </div>
-
-                {/* Travel Start Date */}
-                <div className="form-group">
-                  <label htmlFor="startDate"><span className="input-icon">📅</span> Travel Start Date</label>
-                  <div className="input-wrapper">
-                    <input
-                      type="date"
-                      id="startDate"
-                      value={startDate}
-                      onChange={(e) => setStartDate(e.target.value)}
-                      required
-                    />
-                  </div>
-                </div>
-
-                {/* Return Date */}
-                <div className="form-group">
-                  <label htmlFor="returnDate">
-                    <span className="input-icon">🔄</span> Return Date {activeTab === "one-way" ? "(Optional)" : ""}
-                  </label>
-                  <div className="input-wrapper">
-                    <input
-                      type="date"
-                      id="returnDate"
-                      value={returnDate}
-                      onChange={(e) => setReturnDate(e.target.value)}
-                      disabled={activeTab === "one-way"}
-                      style={{ opacity: activeTab === "one-way" ? 0.6 : 1 }}
-                    />
-                  </div>
+                <div className="bf-field">
+                  <label htmlFor="formCustPhone">Phone / Mobile</label>
+                  <input
+                    type="tel"
+                    id="formCustPhone"
+                    placeholder="Mobile Number"
+                    value={custPhone}
+                    onChange={(e) => setCustPhone(e.target.value)}
+                    required
+                  />
                 </div>
               </div>
 
-              <div className="form-grid-row secondary-row">
-                {/* Seating Capacity dropdown (matches vishaltravelspune.com) */}
-                <div className="form-group">
-                  <label htmlFor="seatingCapacity"><span className="input-icon">👥</span> Seating Capacity</label>
-                  <div className="input-wrapper">
-                    <select
-                      id="seatingCapacity"
-                      value={seatingCapacity}
-                      onChange={(e) => setSeatingCapacity(e.target.value)}
-                    >
-                      <option value="4 Seater">4 Seater (Dzire / Aura)</option>
-                      <option value="6-7 Seater">6 - 7 Seater (Innova / Ertiga)</option>
-                      <option value="13 Seater">13 Seater (Tempo / Urbania)</option>
-                      <option value="17 Seater">17 Seater (Tempo Traveller / Urbania)</option>
-                      <option value="22 Seater">22 Seater (Mini Bus)</option>
-                      <option value="26 Seater">26 Seater (Tempo Traveller)</option>
-                      <option value="32 Seater">32 Seater (Executive Coach)</option>
-                      <option value="35 Seater">35 Seater (Coach)</option>
-                      <option value="45 Seater">45 Seater (Luxury Bus)</option>
-                      <option value="49 Seater">49 Seater (Volvo Multi-Axle)</option>
-                    </select>
-                  </div>
+              <div className="bf-grid-2">
+                <div className="bf-field">
+                  <label htmlFor="formStartDate">Travel Start Date</label>
+                  <input
+                    type="date"
+                    id="formStartDate"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    required
+                  />
                 </div>
-
-                {/* Bus Type dropdown (matches vishaltravelspune.com) */}
-                <div className="form-group">
-                  <label htmlFor="busType"><span className="input-icon">🚌</span> Bus Type</label>
-                  <div className="input-wrapper">
-                    <select
-                      id="busType"
-                      value={busType}
-                      onChange={(e) => setBusType(e.target.value)}
-                    >
-                      <option value="Force Urbania A/C">Force Urbania A/C (VIP Lounge)</option>
-                      <option value="Tempo Traveller A/C">Tempo Traveller A/C</option>
-                      <option value="Tempo Traveller Non-A/C">Tempo Traveller Non-A/C</option>
-                      <option value="Luxury Bus">Luxury Bus (Volvo / Multi-Axle)</option>
-                      <option value="Mini Bus">Mini Bus (28-35 Seater)</option>
-                      <option value="Innova">Toyota Innova Crysta</option>
-                      <option value="Ertiga">Maruti Ertiga</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Pickup Location */}
-                <div className="form-group">
-                  <label htmlFor="pickupLocation"><span className="input-icon">📍</span> Pickup Location (Pune)</label>
-                  <div className="input-wrapper">
-                    <input
-                      type="text"
-                      id="pickupLocation"
-                      placeholder="e.g. Shivaji Nagar, Kothrud, Hinjewadi"
-                      value={pickupLocation}
-                      onChange={(e) => setPickupLocation(e.target.value)}
-                      required
-                    />
-                  </div>
-                </div>
-
-                {/* Submit button: "Lets Go!" */}
-                <div className="form-group form-action">
-                  <button type="submit" className="btn btn-search-vehicles" id="letsGoSubmitBtn">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <polygon points="5 3 19 12 5 21 5 3"/>
-                    </svg>
-                    Let's Go! Check Availability
-                  </button>
+                <div className="bf-field">
+                  <label htmlFor="formReturnDate">Return Date</label>
+                  <input
+                    type="date"
+                    id="formReturnDate"
+                    value={returnDate}
+                    onChange={(e) => setReturnDate(e.target.value)}
+                    required
+                  />
                 </div>
               </div>
+
+              <div className="bf-grid-2">
+                <div className="bf-field">
+                  <label htmlFor="formSeating">Seating Capacity</label>
+                  <select
+                    id="formSeating"
+                    value={seatingCapacity}
+                    onChange={(e) => setSeatingCapacity(e.target.value)}
+                  >
+                    <option value="4 Seater">4 Seater</option>
+                    <option value="6 Seater">6 Seater</option>
+                    <option value="7 Seater">7 Seater</option>
+                    <option value="13 Seater">13 Seater</option>
+                    <option value="17 Seater">17 Seater</option>
+                    <option value="22 Seater">22 Seater</option>
+                    <option value="26 Seater">26 Seater</option>
+                    <option value="30 Seater">30 Seater</option>
+                    <option value="32 Seater">32 Seater</option>
+                    <option value="35 Seater">35 Seater</option>
+                    <option value="40 Seater">40 Seater</option>
+                    <option value="45 Seater">45 Seater</option>
+                    <option value="49 Seater">49 Seater</option>
+                  </select>
+                </div>
+                <div className="bf-field">
+                  <label htmlFor="formBusType">Bus Type</label>
+                  <select
+                    id="formBusType"
+                    value={busType}
+                    onChange={(e) => setBusType(e.target.value)}
+                  >
+                    <option value="Force Urbania A/C">Force Urbania A/C</option>
+                    <option value="Tempo Traveller A/C">Tempo Traveller A/C</option>
+                    <option value="Tempo Traveller Non-A/C">Tempo Traveller Non-A/C</option>
+                    <option value="Luxury Bus">Luxury Bus (Volvo / Multi-Axle)</option>
+                    <option value="Mini Bus">Mini Bus</option>
+                    <option value="Innova">Toyota Innova</option>
+                    <option value="Ertiga">Maruti Ertiga</option>
+                    <option value="Dzire">Swift Dzire / Aura</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="bf-field" style={{ marginBottom: "14px" }}>
+                <label htmlFor="formPickup">Pickup Location</label>
+                <input
+                  type="text"
+                  id="formPickup"
+                  placeholder="Pickup Location (e.g. Pune, Shivaji Nagar)"
+                  value={pickupLocation}
+                  onChange={(e) => setPickupLocation(e.target.value)}
+                  required
+                />
+              </div>
+
+              {/* Exact "Lets Go!" Button from Screenshot/Code */}
+              <button type="submit" className="btn-lets-go">
+                Lets Go!
+              </button>
             </form>
           </div>
         </div>
       </section>
 
-      {/* SIMPLE 3 STEPS TO BOOK YOUR BUS RIDE (Section from Vishal Travels Pune) */}
-      <section className="section" style={{ background: "#ffffff", padding: "60px 0" }}>
+      {/* 5. SIMPLE STEPS TO BOOK YOUR BUS RIDE (From Vishal Travels Pune) */}
+      <section className="steps-section" id="steps-section">
         <div className="container">
-          <div className="section-header">
-            <span className="section-eyebrow">EFFORTLESS BOOKING</span>
-            <h2 className="section-title">Simple Steps To Book Your Bus Ride</h2>
-            <p className="section-desc">Book your bus quickly and easily in just a few steps with Vishal Travels.</p>
+          <div className="section-head-center">
+            <span className="head-subtitle">HOW IT WORKS</span>
+            <h2 className="head-title">Simple Steps To Book Your Bus Ride</h2>
+            <p className="head-desc">Book your bus quickly and easily in just a few steps.</p>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "24px" }}>
-            <div className="trust-item" style={{ textAlign: "center", borderTop: "4px solid var(--primary)" }}>
-              <div style={{ fontSize: "2.5rem", marginBottom: "12px" }}>🚌</div>
-              <h4 style={{ fontSize: "1.2rem", marginBottom: "8px" }}>1. Choose Your Bus</h4>
-              <p style={{ color: "#64748b" }}>Select the type of bus rental you need (Tempo Traveller, Force Urbania, or Luxury Coach).</p>
+          <div className="steps-grid">
+            <div className="step-card">
+              <div className="step-number-icon">1</div>
+              <h4>Choose Your Bus</h4>
+              <p>Select the type of bus rental you need (Tempo Traveller, Force Urbania, or Luxury Coach).</p>
             </div>
-            <div className="trust-item" style={{ textAlign: "center", borderTop: "4px solid var(--accent-gold)" }}>
-              <div style={{ fontSize: "2.5rem", marginBottom: "12px" }}>📅</div>
-              <h4 style={{ fontSize: "1.2rem", marginBottom: "8px" }}>2. Pick Date & Schedule</h4>
-              <p style={{ color: "#64748b" }}>Set your preferred journey date, pickup point in Pune, and total travel days.</p>
+            <div className="step-card" style={{ borderTopColor: "var(--topbar-bg)" }}>
+              <div className="step-number-icon" style={{ background: "#fef3c7", color: "var(--topbar-bg)" }}>2</div>
+              <h4>Pick Date & Schedule</h4>
+              <p>Set your preferred travel date, return schedule, and pickup landmark in Pune.</p>
             </div>
-            <div className="trust-item" style={{ textAlign: "center", borderTop: "4px solid #10b981" }}>
-              <div style={{ fontSize: "2.5rem", marginBottom: "12px" }}>✅</div>
-              <h4 style={{ fontSize: "1.2rem", marginBottom: "8px" }}>3. Instant Confirmation</h4>
-              <p style={{ color: "#64748b" }}>Get instant digital E-Ticket, assigned driver phone number, and live tracking link.</p>
+            <div className="step-card" style={{ borderTopColor: "#10b981" }}>
+              <div className="step-number-icon" style={{ background: "#d1fae5", color: "#10b981" }}>3</div>
+              <h4>Easy Booking</h4>
+              <p>Confirm your booking with instant E-Ticket issue, live GPS tracking, and verified driver details.</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* POPULAR TOUR PACKAGES (Directly from Vishal Travels Packages & Menu) */}
-      <section className="section popular-routes-section" id="tour-packages">
+      {/* 6. TOUR PACKAGES FROM PUNE (Ashtavinayak, 5 Jyotirlinga, Mahabaleshwar) */}
+      <section className="packages-section" id="tour-packages">
         <div className="container">
-          <div className="section-header">
-            <span className="section-eyebrow">CURATED PILGRIMAGE & WEEKEND TOURS</span>
-            <h2 className="section-title">Popular Tour Packages from Pune</h2>
-            <p className="section-desc">Fixed transparent packages with experienced highway chauffeurs, toll guidance, and well-timed halts.</p>
+          <div className="section-head-center">
+            <span className="head-subtitle">PILGRIMAGE & WEEKEND PLANS</span>
+            <h2 className="head-title">Tour Packages from Pune</h2>
+            <p className="head-desc">Curated temple yatras and hill station packages with experienced route drivers.</p>
           </div>
 
-          <div className="routes-grid" id="packagesGrid">
+          <div className="packages-grid">
             {PACKAGES_DATA.map((pkg) => (
-              <div key={pkg.id} className="route-card">
-                <div className="route-image-wrap">
-                  <img src={pkg.image} alt={pkg.title} className="route-img" />
-                  <span className="route-badge">{pkg.tag}</span>
+              <div key={pkg.id} className="package-card">
+                <div className="pkg-img-wrap">
+                  <img src={pkg.image} alt={pkg.title} className="pkg-img" />
+                  <span className="pkg-badge">{pkg.tag}</span>
                 </div>
-                <div className="route-body">
-                  <h3 style={{ fontSize: "1.25rem", color: "var(--primary-dark)", marginBottom: "4px" }}>{pkg.title}</h3>
-                  <p style={{ fontSize: "0.85rem", color: "#64748b", marginBottom: "12px" }}>{pkg.subtitle}</p>
-
-                  <div className="route-meta-strip">
+                <div className="pkg-body">
+                  <h3 className="pkg-title">{pkg.title}</h3>
+                  <p className="pkg-subtitle">{pkg.subtitle}</p>
+                  <div className="pkg-meta-row">
                     <span>⏱️ {pkg.duration}</span>
-                    <span>🛣️ {pkg.distanceKm} KM approx</span>
+                    <span>🛣️ {pkg.distanceKm} KM</span>
                   </div>
-
-                  <div style={{ marginBottom: "16px", fontSize: "0.82rem", color: "#334155" }}>
-                    <strong>Key Attractions:</strong>
+                  <div className="pkg-highlights">
+                    <strong>Highlights:</strong>
                     <ul style={{ paddingLeft: "16px", marginTop: "4px" }}>
                       {pkg.highlights.slice(0, 3).map((h, i) => (
-                        <li key={i} style={{ listStyleType: "disc", marginBottom: "2px" }}>{h}</li>
+                        <li key={i} style={{ listStyleType: "disc" }}>{h}</li>
                       ))}
                     </ul>
                   </div>
-
-                  <div className="route-pricing-row">
-                    <div className="route-price-box">
-                      <span className="price-sub">Starting From</span>
-                      <strong className="price-main">₹{pkg.startingPrice.toLocaleString()}</strong>
+                  <div className="pkg-footer">
+                    <div className="pkg-price-stack">
+                      <span className="pkg-price-label">Starting From</span>
+                      <strong className="pkg-price-amount">₹{pkg.startingPrice.toLocaleString()}</strong>
                     </div>
                     <button
-                      className="btn btn-primary"
+                      className="btn-book-bus"
+                      style={{ padding: "8px 18px", fontSize: "0.88rem" }}
                       onClick={() => {
                         setDestination(pkg.title);
                         const match = FLEET_DATA.find((f) => f.name.includes("Urbania") || f.name.includes("Tempo")) || FLEET_DATA[0];
                         setSelectedVehicle(match);
                         setIsBookingModalOpen(true);
-                        triggerToast(`Selected package: ${pkg.title}`, "info");
                       }}
                     >
-                      Book Package
+                      Book Tour
                     </button>
                   </div>
                 </div>
@@ -769,33 +804,32 @@ export default function VishalTravelsApp() {
         </div>
       </section>
 
-      {/* POPULAR ROUTES (Directly from Vishal Travels "Routes & Trips" Menu) */}
-      <section className="section" id="routes-trips" style={{ background: "#f8fafc" }}>
+      {/* 7. ROUTES & TRIPS (Pune to Mumbai, Chiplun, Shirdi, Mahabaleshwar) */}
+      <section className="steps-section" id="routes-trips" style={{ background: "#f8fafc" }}>
         <div className="container">
-          <div className="section-header">
-            <span className="section-eyebrow">DIRECT INTERCITY TRANSFERS</span>
-            <h2 className="section-title">Popular Routes & Trips from Pune</h2>
-            <p className="section-desc">Reliable point-to-point and return transport service across Maharashtra expressways.</p>
+          <div className="section-head-center">
+            <span className="head-subtitle">DIRECT INTERCITY TRIPS</span>
+            <h2 className="head-title">Popular Routes & Trips from Pune</h2>
+            <p className="head-desc">Convenient point-to-point and round-trip transfers across Maharashtra.</p>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "16px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "18px" }}>
             {[
               { route: "Pune ➔ Mumbai / Airport", time: "3.5 hrs", dist: "150 KM", fare: "₹3,500" },
               { route: "Pune ➔ Mahabaleshwar", time: "3 hrs", dist: "120 KM", fare: "₹4,200" },
               { route: "Pune ➔ Shirdi Mandir", time: "4.5 hrs", dist: "210 KM", fare: "₹4,800" },
               { route: "Pune ➔ Chiplun / Konkan", time: "5 hrs", dist: "230 KM", fare: "₹5,400" },
               { route: "Pune ➔ Panchgani", time: "2.5 hrs", dist: "100 KM", fare: "₹3,900" },
-              { route: "Pune ➔ Goa Beachside", time: "8.5 hrs", dist: "450 KM", fare: "₹14,500" },
-            ].map((r, idx) => (
-              <div key={idx} className="trust-item" style={{ background: "#fff", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-                <div>
-                  <h4 style={{ fontSize: "1.05rem", color: "var(--primary)" }}>{r.route}</h4>
-                  <p style={{ fontSize: "0.82rem", color: "#64748b" }}>⏱️ {r.time} • 🛣️ {r.dist}</p>
-                </div>
-                <div style={{ marginTop: "14px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <strong style={{ color: "var(--primary-dark)", fontSize: "1.1rem" }}>{r.fare}</strong>
+              { route: "Pune ➔ Goa Coastal", time: "8.5 hrs", dist: "450 KM", fare: "₹14,500" },
+            ].map((r, i) => (
+              <div key={i} className="step-card" style={{ textAlign: "left", padding: "20px" }}>
+                <h4 style={{ fontSize: "1.1rem", marginBottom: "4px" }}>{r.route}</h4>
+                <p style={{ fontSize: "0.82rem", color: "#64748b" }}>⏱️ {r.time} • 🛣️ {r.dist}</p>
+                <div style={{ marginTop: "16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <strong style={{ fontSize: "1.15rem", color: "#0b3c6d" }}>{r.fare}</strong>
                   <button
-                    className="btn btn-outline btn-sm"
+                    className="btn-book-bus"
+                    style={{ padding: "6px 14px", fontSize: "0.82rem" }}
                     onClick={() => {
                       setPickupLocation("Pune");
                       setDestination(r.route.split("➔")[1].trim());
@@ -813,13 +847,13 @@ export default function VishalTravelsApp() {
         </div>
       </section>
 
-      {/* OUR FLEET SHOWCASE */}
-      <section className="section fleet-section" id="our-fleet">
+      {/* 8. OUR FLEET */}
+      <section className="fleet-section" id="our-fleet">
         <div className="container">
-          <div className="section-header">
-            <span className="section-eyebrow">VISHAL TRAVELS FLEET</span>
-            <h2 className="section-title">Explore Our Pune Rental Fleet</h2>
-            <p className="section-desc">Clean, sanitised, and well-maintained buses and travellers for every group size.</p>
+          <div className="section-head-center">
+            <span className="head-subtitle">WELL-MAINTAINED VEHICLES</span>
+            <h2 className="head-title">Our Fleet in Pune</h2>
+            <p className="head-desc">From Force Urbania VIP to Tempo Travellers and Volvo Coaches.</p>
           </div>
 
           <div className="fleet-filter-bar">
@@ -827,19 +861,19 @@ export default function VishalTravelsApp() {
               className={`fleet-filter-btn ${fleetFilter === "all" ? "active" : ""}`}
               onClick={() => setFleetFilter("all")}
             >
-              All Vehicles ({FLEET_DATA.length})
+              All Fleet ({FLEET_DATA.length})
             </button>
             <button
               className={`fleet-filter-btn ${fleetFilter === "urbania" ? "active" : ""}`}
               onClick={() => setFleetFilter("urbania")}
             >
-              Force Urbania VIP (17 Seats)
+              Force Urbania VIP
             </button>
             <button
               className={`fleet-filter-btn ${fleetFilter === "tempo" ? "active" : ""}`}
               onClick={() => setFleetFilter("tempo")}
             >
-              Tempo Travellers (17-26 Seats)
+              Tempo Travellers (17-26)
             </button>
             <button
               className={`fleet-filter-btn ${fleetFilter === "minibus" ? "active" : ""}`}
@@ -851,74 +885,43 @@ export default function VishalTravelsApp() {
               className={`fleet-filter-btn ${fleetFilter === "luxury-bus" ? "active" : ""}`}
               onClick={() => setFleetFilter("luxury-bus")}
             >
-              Luxury Volvo Coaches (49 Seats)
-            </button>
-            <button
-              className={`fleet-filter-btn ${fleetFilter === "suv" ? "active" : ""}`}
-              onClick={() => setFleetFilter("suv")}
-            >
-              Innova Crysta / SUVs
+              Luxury Volvo Coaches
             </button>
           </div>
 
           <div className="fleet-grid">
             {filteredFleet.map((vehicle) => (
-              <div key={vehicle.id} className="vehicle-card">
-                <div className="vehicle-thumb-wrap">
-                  <img src={vehicle.image} alt={vehicle.name} className="vehicle-thumb" />
-                  <span className="vehicle-cat-tag">{vehicle.categoryLabel}</span>
-                  <span className="vehicle-rating-tag">★ {vehicle.rating} ({vehicle.reviewsCount})</span>
+              <div key={vehicle.id} className="fleet-card">
+                <div className="fleet-img-wrap">
+                  <img src={vehicle.image} alt={vehicle.name} className="fleet-img" />
+                  <span className="fleet-tag">{vehicle.categoryLabel}</span>
                 </div>
-                <div className="vehicle-details">
-                  <h3 className="vehicle-name">{vehicle.name}</h3>
-                  <p className="vehicle-submodel">{vehicle.submodel}</p>
+                <div className="fleet-body">
+                  <h3 className="fleet-title">{vehicle.name}</h3>
+                  <p className="fleet-submodel">{vehicle.submodel}</p>
 
-                  <div className="vehicle-specs-grid">
-                    <div className="spec-cell">
-                      <span>👥 {vehicle.seatingText}</span>
-                    </div>
-                    <div className="spec-cell">
-                      <span>🧳 {vehicle.luggage}</span>
-                    </div>
-                    <div className="spec-cell">
-                      <span>⏱️ Min: {vehicle.minKmPerDay} km/day</span>
-                    </div>
-                    <div className="spec-cell">
-                      <span>👨‍✈️ DA: ₹{vehicle.driverAllowancePerDay}/day</span>
-                    </div>
+                  <div className="fleet-specs-grid">
+                    <div>👥 {vehicle.seatingText}</div>
+                    <div>🧳 {vehicle.luggage}</div>
+                    <div>⏱️ Min: {vehicle.minKmPerDay} km/day</div>
+                    <div>👨‍✈️ DA: ₹{vehicle.driverAllowancePerDay}/day</div>
                   </div>
 
-                  <div className="vehicle-amenities-pills">
-                    {vehicle.amenities.slice(0, 3).map((a, i) => (
-                      <span key={i} className="amenity-pill">✓ {a}</span>
-                    ))}
-                  </div>
-
-                  <div className="vehicle-pricing-footer">
-                    <div className="rate-stack">
-                      <span className="rate-min">Base Tariff</span>
-                      <strong className="rate-amount">₹{vehicle.ratePerKm} <small>/ KM</small></strong>
+                  <div className="fleet-footer">
+                    <div>
+                      <span style={{ fontSize: "0.72rem", color: "#64748b", display: "block" }}>Base Tariff</span>
+                      <strong style={{ fontSize: "1.35rem", color: "#0b3c6d" }}>₹{vehicle.ratePerKm} <small>/ KM</small></strong>
                     </div>
-                    <div className="vehicle-action-btns">
-                      <button
-                        className="btn btn-outline btn-sm"
-                        onClick={() => {
-                          setSelectedVehicle(vehicle);
-                          setIsBookingModalOpen(true);
-                        }}
-                      >
-                        Specs
-                      </button>
-                      <button
-                        className="btn btn-primary btn-sm"
-                        onClick={() => {
-                          setSelectedVehicle(vehicle);
-                          setIsBookingModalOpen(true);
-                        }}
-                      >
-                        Book Now
-                      </button>
-                    </div>
+                    <button
+                      className="btn-book-bus"
+                      style={{ padding: "8px 18px", fontSize: "0.88rem" }}
+                      onClick={() => {
+                        setSelectedVehicle(vehicle);
+                        setIsBookingModalOpen(true);
+                      }}
+                    >
+                      Book Now
+                    </button>
                   </div>
                 </div>
               </div>
@@ -927,223 +930,143 @@ export default function VishalTravelsApp() {
         </div>
       </section>
 
-      {/* FARE ESTIMATOR CALCULATOR (Vishal Travels "Bus Fair" Section) */}
-      <section className="section estimator-section" id="fare-calculator">
+      {/* 9. BUS FAIR ESTIMATOR CALCULATOR */}
+      <section className="calc-section" id="fare-calculator">
         <div className="container">
-          <div className="estimator-card">
-            <div className="estimator-left">
-              <span className="section-eyebrow">TRANSPARENT PUNE TARIFF</span>
-              <h2 className="estimator-title">Instant Bus Fair Estimator</h2>
-              <p className="estimator-desc">
-                Calculate your exact budget based on Vishal Travels standard per-km rate chart. Zero surprise fees.
+          <div className="calc-box-wrap">
+            <div>
+              <span style={{ color: "var(--topbar-bg)", fontWeight: 800, fontSize: "0.85rem", textTransform: "uppercase" }}>
+                TRANSPARENT PUNE TARIFF
+              </span>
+              <h2 style={{ fontSize: "2.2rem", fontWeight: 800, color: "#fff", margin: "8px 0 12px" }}>
+                Instant Bus Fair Estimator
+              </h2>
+              <p style={{ color: "#cbd5e1", fontSize: "0.95rem" }}>
+                Estimate your exact budget based on Vishal Travels Pune official rate card.
               </p>
 
-              <div className="calc-controls">
-                <div className="calc-control-group">
-                  <label htmlFor="calcVehicleType">Select Vehicle Model</label>
-                  <select
-                    id="calcVehicleType"
-                    className="calc-select"
-                    onChange={(e) => {
-                      const option = e.target.options[e.target.selectedIndex];
-                      setCalcRate(Number(e.target.value));
-                      setCalcDA(Number(option.getAttribute("data-da") || 500));
-                      setCalcVehicleName(option.getAttribute("data-name") || "");
-                    }}
-                  >
-                    <option value="38" data-da="500" data-name="Force Urbania VIP (17 Seater)">Force Urbania VIP 17 Seater (₹38/KM)</option>
-                    <option value="28" data-da="500" data-name="Tempo Traveller AC (17 Seater)">Tempo Traveller AC 17 Seater (₹28/KM)</option>
-                    <option value="34" data-da="600" data-name="Tempo Traveller AC (26 Seater)">Tempo Traveller AC 26 Seater (₹34/KM)</option>
-                    <option value="42" data-da="700" data-name="Executive Mini Bus (32 Seater)">Executive Mini Bus 32 Seater (₹42/KM)</option>
-                    <option value="60" data-da="900" data-name="Volvo Multi-Axle (49 Seater)">Volvo Multi-Axle 49 Seater (₹60/KM)</option>
-                    <option value="18" data-da="400" data-name="Innova Crysta / Ertiga (7 Seater)">Innova Crysta / Ertiga 7 Seater (₹18/KM)</option>
-                  </select>
-                </div>
+              <div style={{ marginTop: "24px" }}>
+                <label style={{ fontSize: "0.85rem", color: "#e2e8f0", display: "block", marginBottom: "6px" }}>
+                  Select Vehicle Model
+                </label>
+                <select
+                  style={{ width: "100%", height: "46px", background: "#061a33", border: "1px solid #1e3a63", color: "#fff", padding: "0 14px", borderRadius: "6px" }}
+                  onChange={(e) => {
+                    const opt = e.target.options[e.target.selectedIndex];
+                    setCalcRate(Number(e.target.value));
+                    setCalcDA(Number(opt.getAttribute("data-da") || 500));
+                    setCalcVehicleName(opt.getAttribute("data-name") || "");
+                  }}
+                >
+                  <option value="38" data-da="500" data-name="Force Urbania VIP (17 Seater)">Force Urbania VIP 17 Seater (₹38/KM)</option>
+                  <option value="28" data-da="500" data-name="Tempo Traveller AC (17 Seater)">Tempo Traveller AC 17 Seater (₹28/KM)</option>
+                  <option value="34" data-da="600" data-name="Tempo Traveller AC (26 Seater)">Tempo Traveller AC 26 Seater (₹34/KM)</option>
+                  <option value="42" data-da="700" data-name="Executive Mini Bus (32 Seater)">Executive Mini Bus 32 Seater (₹42/KM)</option>
+                  <option value="60" data-da="900" data-name="Volvo Multi-Axle (49 Seater)">Volvo Multi-Axle 49 Seater (₹60/KM)</option>
+                  <option value="18" data-da="400" data-name="Innova Crysta / Ertiga (7 Seater)">Innova Crysta / Ertiga 7 Seater (₹18/KM)</option>
+                </select>
+              </div>
 
-                <div className="calc-slider-group">
-                  <div className="slider-label-row">
-                    <span>Estimated Distance</span>
-                    <strong>{calcKm} KM</strong>
-                  </div>
-                  <input
-                    type="range"
-                    min="150"
-                    max="2000"
-                    step="25"
-                    value={calcKm}
-                    onChange={(e) => setCalcKm(Number(e.target.value))}
-                    className="custom-slider"
-                  />
-                  <div className="slider-marks">
-                    <span>150 KM</span>
-                    <span>1000 KM</span>
-                    <span>2000 KM</span>
-                  </div>
+              <div className="calc-slider-item">
+                <div className="slider-val-header">
+                  <span>Estimated Total Distance</span>
+                  <strong>{calcKm} KM</strong>
                 </div>
+                <input
+                  type="range"
+                  min="150"
+                  max="2000"
+                  step="25"
+                  value={calcKm}
+                  onChange={(e) => setCalcKm(Number(e.target.value))}
+                  className="calc-range-input"
+                />
+              </div>
 
-                <div className="calc-slider-group">
-                  <div className="slider-label-row">
-                    <span>Duration of Trip</span>
-                    <strong>{calcDays} Days</strong>
-                  </div>
-                  <input
-                    type="range"
-                    min="1"
-                    max="10"
-                    step="1"
-                    value={calcDays}
-                    onChange={(e) => setCalcDays(Number(e.target.value))}
-                    className="custom-slider"
-                  />
-                  <div className="slider-marks">
-                    <span>1 Day</span>
-                    <span>5 Days</span>
-                    <span>10 Days</span>
-                  </div>
+              <div className="calc-slider-item">
+                <div className="slider-val-header">
+                  <span>Trip Duration</span>
+                  <strong>{calcDays} Days</strong>
                 </div>
+                <input
+                  type="range"
+                  min="1"
+                  max="10"
+                  step="1"
+                  value={calcDays}
+                  onChange={(e) => setCalcDays(Number(e.target.value))}
+                  className="calc-range-input"
+                />
               </div>
             </div>
 
-            <div className="estimator-right">
-              <div className="fare-breakdown-box">
-                <div className="breakdown-header">
-                  <h3>Itemized Rate Quotation</h3>
-                  <span className="live-pill">⚡ Guaranteed Fair Fare</span>
+            <div className="calc-receipt-card">
+              <h3 style={{ fontSize: "1.2rem", color: "#0b3c6d", marginBottom: "4px" }}>Itemized Quotation</h3>
+              <div style={{ fontWeight: 700, fontSize: "1.05rem", color: "var(--topbar-bg)", marginBottom: "16px", borderBottom: "1px solid #e2e8f0", paddingBottom: "10px" }}>
+                {calcVehicleName}
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "10px", fontSize: "0.88rem", marginBottom: "18px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <span>Base Distance ({calcKm} KM @ ₹{calcRate}/km)</span>
+                  <strong>₹{totalBase.toLocaleString()}</strong>
                 </div>
-                <div className="vehicle-selected-name">
-                  {calcVehicleName}
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <span>Driver Allowance ({calcDays} Days @ ₹{calcDA}/day)</span>
+                  <strong>₹{totalDA.toLocaleString()}</strong>
                 </div>
-                <div className="breakdown-list">
-                  <div className="breakdown-item">
-                    <span>Base Kilometre Fare ({calcKm} KM @ ₹{calcRate}/km)</span>
-                    <strong>₹{totalBase.toLocaleString()}</strong>
-                  </div>
-                  <div className="breakdown-item">
-                    <span>Driver Allowance ({calcDays} Days @ ₹{calcDA}/day)</span>
-                    <strong>₹{totalDA.toLocaleString()}</strong>
-                  </div>
-                  <div className="breakdown-item">
-                    <span>Maharashtra Border & Sanitization</span>
-                    <span className="tag-free">Included</span>
-                  </div>
-                  <div className="breakdown-item">
-                    <span>GST (5% Transport Slab)</span>
-                    <strong>₹{totalGst.toLocaleString()}</strong>
-                  </div>
-                  <div className="breakdown-divider"></div>
-                  <div className="breakdown-item total-item">
-                    <span>Total Estimated Cost</span>
-                    <strong className="total-price">₹{totalEstimate.toLocaleString()}</strong>
-                  </div>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <span>Sanitization & First Aid</span>
+                  <strong style={{ color: "#16a34a" }}>Included</strong>
                 </div>
-                <p className="fare-note">* Tolls and parking receipts payable as actuals or bundled on request.</p>
-                <div className="breakdown-actions">
-                  <button
-                    className="btn btn-primary btn-block"
-                    onClick={() => {
-                      const match = FLEET_DATA.find((f) => f.name.includes(calcVehicleName.split(" ")[0])) || FLEET_DATA[0];
-                      setSelectedVehicle(match);
-                      setIsBookingModalOpen(true);
-                    }}
-                  >
-                    Lock Price & Book in Pune
-                  </button>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <span>GST (5% Transport Slab)</span>
+                  <strong>₹{totalGst.toLocaleString()}</strong>
+                </div>
+                <div style={{ height: "1px", background: "#e2e8f0", margin: "6px 0" }}></div>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "1.1rem", color: "#0b3c6d" }}>
+                  <span>Total Estimate</span>
+                  <strong style={{ fontSize: "1.5rem" }}>₹{totalEstimate.toLocaleString()}</strong>
                 </div>
               </div>
+
+              <button
+                className="btn-lets-go"
+                style={{ width: "100%" }}
+                onClick={() => {
+                  const match = FLEET_DATA.find((f) => f.name.includes(calcVehicleName.split(" ")[0])) || FLEET_DATA[0];
+                  setSelectedVehicle(match);
+                  setIsBookingModalOpen(true);
+                }}
+              >
+                Lock Price & Book
+              </button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* WHY CHOOSE US / ABOUT US (From vishaltravelspune.com) */}
-      <section className="section trust-section" id="why-choose-us">
+      {/* 10. REVIEWS & TESTIMONIALS */}
+      <section className="packages-section" id="reviews" style={{ background: "#ffffff" }}>
         <div className="container">
-          <div className="section-header">
-            <span className="section-eyebrow">WHO WE ARE</span>
-            <h2 className="section-title">Reliable Bus Rental Services by Vishal Travels</h2>
-            <p className="section-desc">
-              Vishal Travels is a trusted bus rental service in Pune offering tempo travellers, mini buses, and luxury coaches. We ensure safe, on-time, and comfortable travel for families, corporate groups, and tours across Maharashtra.
-            </p>
+          <div className="section-head-center">
+            <span className="head-subtitle">TESTIMONIALS</span>
+            <h2 className="head-title">What Our Customers Say</h2>
+            <p className="head-desc">Over 5,000+ satisfied passengers across Maharashtra.</p>
           </div>
 
-          <div className="trust-grid">
-            <div className="trust-item">
-              <div className="trust-icon-wrap">🛡️</div>
-              <h4>Police-Verified Drivers</h4>
-              <p>Experienced highway chauffeurs with background checks, commercial licenses, and defensive driving training.</p>
-            </div>
-            <div className="trust-item">
-              <div className="trust-icon-wrap">🛰️</div>
-              <h4>GPS-Tracked Fleet</h4>
-              <p>Live satellite tracking on every bus with centralized journey tracking for family security.</p>
-            </div>
-            <div className="trust-item">
-              <div className="trust-icon-wrap">💰</div>
-              <h4>Affordable & Transparent</h4>
-              <p>Best price in Pune with clear rate card. Zero hidden surcharges or surprise vehicle swaps.</p>
-            </div>
-            <div className="trust-item">
-              <div className="trust-icon-wrap">🎧</div>
-              <h4>24/7 Availability</h4>
-              <p>Round-the-clock booking hotline (+91 9764564699) and on-road breakdown replacement assistance.</p>
-            </div>
-            <div className="trust-item">
-              <div className="trust-icon-wrap">🧽</div>
-              <h4>Clean & Sanitized</h4>
-              <p>Deep vacuumed seats, sanitized interiors, working AC vents, and fresh clean blankets on long sleeper trips.</p>
-            </div>
-            <div className="trust-item">
-              <div className="trust-icon-wrap">✅</div>
-              <h4>RTO Registered & Insured</h4>
-              <p>100% compliant with Maharashtra Transport Department and comprehensive passenger insurance.</p>
-            </div>
-          </div>
-
-          <div className="stats-counter-bar">
-            <div className="stat-card">
-              <span className="stat-number">50+</span>
-              <span className="stat-label">Vehicles in Pune Fleet</span>
-            </div>
-            <div className="stat-card">
-              <span className="stat-number">15,000+</span>
-              <span className="stat-label">Happy Passengers</span>
-            </div>
-            <div className="stat-card">
-              <span className="stat-number">18+</span>
-              <span className="stat-label">Years Operating</span>
-            </div>
-            <div className="stat-card">
-              <span className="stat-number">99.4%</span>
-              <span className="stat-label">On-Time Pickup Rate</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* REVIEWS & TESTIMONIALS */}
-      <section className="section testimonials-section" id="reviews">
-        <div className="container">
-          <div className="section-header">
-            <span className="section-eyebrow">WHAT PUNE SAYS</span>
-            <h2 className="section-title">Google Reviews for Vishal Travels Pune</h2>
-            <p className="section-desc">Rated 4.9/5 by families, corporate HRs, and tour organizers in Pune.</p>
-          </div>
-
-          <div className="testimonials-carousel">
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "24px" }}>
             {REVIEWS_DATA.map((rev) => (
-              <div key={rev.id} className="testimonial-card">
-                <div className="review-stars">
+              <div key={rev.id} className="step-card" style={{ textAlign: "left" }}>
+                <div style={{ color: "#f5a623", marginBottom: "8px", fontSize: "1.1rem" }}>
                   {"★".repeat(rev.rating)}
                 </div>
-                <p className="review-text">"{rev.text}"</p>
-                <div className="reviewer-meta">
-                  <div className="reviewer-avatar">
-                    {rev.name.charAt(0)}
-                  </div>
-                  <div className="reviewer-info">
-                    <strong>{rev.name}</strong>
-                    <small>{rev.role} • {rev.city} ({rev.tripType})</small>
-                  </div>
+                <p style={{ fontStyle: "italic", marginBottom: "16px", color: "#334155" }}>
+                  "{rev.text}"
+                </p>
+                <div style={{ borderTop: "1px solid #e2e8f0", paddingTop: "12px" }}>
+                  <strong style={{ display: "block", color: "#0b3c6d" }}>{rev.name}</strong>
+                  <small style={{ color: "#64748b" }}>{rev.role} • {rev.city} ({rev.tripType})</small>
                 </div>
               </div>
             ))}
@@ -1151,221 +1074,132 @@ export default function VishalTravelsApp() {
         </div>
       </section>
 
-      {/* LIVE GPS TRACKING & SMART E-TICKET CALLOUT */}
-      <section className="section digital-app-section">
-        <div className="container">
-          <div className="digital-box">
-            <div className="digital-text">
-              <span className="badge-gold">⚡ REAL-TIME PASSENGER SAFETY</span>
-              <h2>Live GPS Tracking & Digital E-Tickets from Vishal Travels</h2>
-              <p>
-                Share your live tracking link with family members, get automated driver contact details via WhatsApp, and download official travel invoices online.
-              </p>
-              <div className="feature-bullets">
-                <div className="fb-item">✓ Live bus speedometer and satellite map telemetry</div>
-                <div className="fb-item">✓ Instant driver contact card dispatched via WhatsApp</div>
-                <div className="fb-item">✓ Verifiable digital E-Ticket with QR code</div>
-                <div className="fb-item">✓ 24/7 Pune journey control room monitoring</div>
-              </div>
-              <div className="cta-actions">
-                <button
-                  className="btn btn-secondary-light"
-                  onClick={() => setIsTrackerModalOpen(true)}
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="12" cy="12" r="10"/>
-                    <polygon points="10 8 16 12 10 16 10 8"/>
-                  </svg>
-                  Launch Live GPS Tracker Simulator
-                </button>
-                <a href="#booking-form" className="btn btn-primary">Book Your Bus Now</a>
-              </div>
-            </div>
-
-            <div className="digital-preview">
-              <div className="phone-mockup">
-                <div className="phone-header">
-                  <span>Vishal Travels Live Telemetry</span>
-                  <span className="live-dot-pulse">● LIVE GPS</span>
-                </div>
-                <div className="mockup-route">
-                  <strong>Pune ➔ Mahabaleshwar</strong>
-                  <small>Force Urbania VIP • MH-12-VT-9764</small>
-                </div>
-                <div className="mockup-progress-bar">
-                  <div className="mockup-fill" style={{ width: `${trackerProgress}%` }}></div>
-                </div>
-                <div className="mockup-stats">
-                  <div><span>Current Speed</span><strong>{trackerSpeed} km/h</strong></div>
-                  <div><span>Next Halt</span><strong>Shirwal Food Plaza</strong></div>
-                  <div><span>ETA</span><strong>04:30 PM</strong></div>
-                </div>
-                <div className="mockup-driver">
-                  <div className="driver-avatar">👨‍✈️</div>
-                  <div>
-                    <strong>Santosh Shinde (Verified)</strong>
-                    <p>★ 4.95 rating • 14 yrs highway experience</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* FOOTER (Vishal Travels Pune branding & contact details) */}
-      <footer className="main-footer">
-        <div className="container footer-grid">
-          <div className="footer-col brand-col">
-            <div className="logo-brand footer-logo">
-              <div className="logo-icon">
+      {/* 11. FOOTER (Vishal Travels Pune) */}
+      <footer className="vishal-footer" id="contact-us">
+        <div className="container footer-grid-4">
+          <div>
+            <div className="vishal-logo-wrap" style={{ marginBottom: "16px" }}>
+              <div className="vishal-logo-badge">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                   <rect x="3" y="6" width="18" height="12" rx="3"/>
                   <circle cx="7" cy="18" r="2"/>
                   <circle cx="17" cy="18" r="2"/>
                 </svg>
               </div>
-              <div className="logo-text">
-                <span className="logo-main text-white">Vishal Travels</span>
-                <span className="logo-sub text-gold">Pune's Most Trusted Rental</span>
+              <div className="vishal-logo-text">
+                <div className="vishal-brand-name">
+                  Vishal <span>Travels</span>
+                </div>
+                <span className="vishal-brand-tagline">JOURNEYS THAT CONNECT</span>
               </div>
             </div>
-            <p className="footer-about">
-              Vishal Travels offers AC & Non-AC tempo travellers, Force Urbanias, mini buses & luxury coaches in Pune. Specialised in Ashtavinayak Darshan, 5 Jyotirlinga Yatra, and corporate transit across Maharashtra.
+            <p style={{ fontSize: "0.88rem", lineHeight: 1.6, color: "#94a3b8" }}>
+              Vishal Travels offers AC & Non-AC tempo travellers, Force Urbanias, mini buses & luxury coaches in Pune. Safe, reliable, and on-time travel across Maharashtra.
             </p>
-            <div className="social-links">
-              <a href="https://www.facebook.com/share/14X2F187jBq/" target="_blank" rel="noreferrer" className="social-icon" aria-label="Facebook">FB</a>
-              <a href="https://www.instagram.com/vishaltravelspune?utm_source=qr" target="_blank" rel="noreferrer" className="social-icon" aria-label="Instagram">IG</a>
-              <a href="https://wa.me/919764564699" target="_blank" rel="noreferrer" className="social-icon" aria-label="WhatsApp">WA</a>
-            </div>
           </div>
 
-          <div className="footer-col">
+          <div>
             <h4 className="footer-heading">Quick Links</h4>
-            <ul className="footer-links">
-              <li><a href="#home">Home</a></li>
-              <li><a href="#booking-form">Book a Bus Online</a></li>
-              <li><a href="#routes-trips">Routes & Trips</a></li>
-              <li><a href="#tour-packages">Pilgrimage Packages</a></li>
-              <li><a href="#our-fleet">Tempo Traveller & Fleet</a></li>
-              <li><a href="#fare-calculator">Bus Fare Calculator</a></li>
-              <li><a href="#why-choose-us">About Vishal Travels</a></li>
-            </ul>
+            <div className="footer-links-list">
+              <a href="#home">Home</a>
+              <a href="#booking-form-section">Book a Bus</a>
+              <a href="#routes-trips">Routes & Trips</a>
+              <a href="#tour-packages">Packages</a>
+              <a href="#our-fleet">Our Fleet</a>
+              <a href="#fare-calculator">Bus Fair</a>
+            </div>
           </div>
 
-          <div className="footer-col">
-            <h4 className="footer-heading">Contact Vishal Travels Pune</h4>
-            <div className="footer-contact-item">
-              <span className="icon">📍</span>
+          <div>
+            <h4 className="footer-heading">Contact Details</h4>
+            <div style={{ fontSize: "0.88rem", display: "flex", flexDirection: "column", gap: "10px" }}>
               <div>
-                <strong>Main Office:</strong><br />
-                Pune, Maharashtra, India - 411038
+                <strong>Office:</strong><br />
+                Pune, Maharashtra, India
               </div>
-            </div>
-            <div className="footer-contact-item">
-              <span className="icon">📞</span>
               <div>
-                <strong>Direct Booking Phone Numbers:</strong><br />
+                <strong>Helplines:</strong><br />
                 <a href="tel:+919764564699" style={{ color: "#fff" }}>+91 9764564699</a><br />
                 <a href="tel:+919372459371" style={{ color: "#fff" }}>+91 9372459371</a><br />
                 <a href="tel:+918600118437" style={{ color: "#fff" }}>+91 8600118437</a>
               </div>
             </div>
-            <div className="footer-contact-item">
-              <span className="icon">💬</span>
-              <div>
-                <strong>WhatsApp Inquiries:</strong><br />
-                <a href="https://wa.me/919764564699" style={{ color: "#25d366" }}>+91 9764564699</a>
-              </div>
-            </div>
           </div>
 
-          <div className="footer-col">
-            <h4 className="footer-heading">Quick Inquiry Callback</h4>
-            <p className="query-note">Need an instant rate quote for your Pune journey?</p>
+          <div>
+            <h4 className="footer-heading">Quick Inquiry</h4>
+            <p style={{ fontSize: "0.82rem", marginBottom: "10px" }}>Need instant quote? Send your route:</p>
             <form
-              className="footer-query-form"
               onSubmit={(e) => {
                 e.preventDefault();
-                triggerToast("Enquiry sent to Vishal Travels desk! We will call back shortly.", "success");
+                triggerToast("Enquiry sent to Vishal Travels! We will call back in 5 mins.", "success");
                 e.currentTarget.reset();
               }}
+              style={{ display: "flex", flexDirection: "column", gap: "8px" }}
             >
-              <input type="text" placeholder="Your Name" required />
-              <input type="tel" placeholder="Mobile / WhatsApp Number" required />
-              <textarea rows={2} placeholder="Trip Route (e.g. Pune to Mahabaleshwar)..." required></textarea>
-              <button type="submit" className="btn btn-primary btn-block">Request Quote</button>
+              <input
+                type="text"
+                placeholder="Your Name"
+                required
+                style={{ width: "100%", height: "38px", background: "#0b223d", border: "1px solid #1e3a63", color: "#fff", padding: "0 10px", borderRadius: "4px", fontSize: "0.85rem" }}
+              />
+              <input
+                type="tel"
+                placeholder="Phone Number"
+                required
+                style={{ width: "100%", height: "38px", background: "#0b223d", border: "1px solid #1e3a63", color: "#fff", padding: "0 10px", borderRadius: "4px", fontSize: "0.85rem" }}
+              />
+              <button type="submit" className="btn-lets-go" style={{ height: "40px", fontSize: "0.9rem", marginTop: "4px" }}>
+                Send Enquiry
+              </button>
             </form>
           </div>
         </div>
 
-        <div className="footer-bottom">
-          <div className="container footer-bottom-content">
-            <p>© 2026 Vishal Travels. All Rights Reserved. Pune, Maharashtra.</p>
-            <div className="footer-legal-links">
-              <a href="#">Terms of Service</a>
-              <span>•</span>
-              <a href="#">Cancellation Policy</a>
-              <span>•</span>
-              <a href="#">Privacy Policy</a>
-            </div>
+        <div className="footer-bottom-bar">
+          <div className="container" style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "10px" }}>
+            <span>© 2026 Vishal Travels. All Rights Reserved. Pune, Maharashtra.</span>
+            <span>Privacy Policy • Terms & Conditions</span>
           </div>
         </div>
       </footer>
-
-      {/* FLOATING ACTION BUTTONS (With Vishal Travels Sonar Wave effect) */}
-      <div className="floating-fab-container">
-        {/* Call Now */}
-        <a href="tel:+919764564699" className="fab-btn fab-call" aria-label="Call Vishal Travels">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-          </svg>
-          <span className="fab-label">Call +91 9764564699</span>
-        </a>
-
-        {/* WhatsApp Chat with Sonar Pulse */}
-        <button
-          className="fab-btn fab-whatsapp"
-          onClick={() => setIsWaOpen(!isWaOpen)}
-          aria-label="WhatsApp Vishal Travels"
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm0 18.15c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.192 8.192 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23zm4.52-6.17c-.25-.12-1.47-.72-1.7-.81-.23-.08-.39-.12-.56.12-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.12-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.49-.4-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.22.25-.86.84-.86 2.05 0 1.21.88 2.38 1 2.54.12.17 1.74 2.65 4.21 3.72.59.25 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.11-.23-.17-.48-.29z"/>
-          </svg>
-          <span className="fab-label">WhatsApp</span>
-        </button>
-      </div>
 
       {/* WHATSAPP MODAL POPUP */}
       {isWaOpen && (
         <div className="whatsapp-chat-modal">
           <div className="wa-header">
-            <div className="wa-avatar">
-              <img
-                src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&auto=format&fit=crop&q=80"
-                alt="Vishal Travels Desk"
-                className="wa-avatar-img"
-              />
-              <span className="wa-online-dot"></span>
+            <span style={{ fontSize: "1.5rem" }}>👨‍💼</span>
+            <div>
+              <strong style={{ display: "block", fontSize: "0.9rem" }}>Vishal Travels Pune Desk</strong>
+              <small style={{ color: "#e2e8f0" }}>Online • Instant Response</small>
             </div>
-            <div className="wa-header-info">
-              <strong>Vishal Travels Pune Desk</strong>
-              <p>Online • Instant Response</p>
-            </div>
-            <button className="wa-close-btn" onClick={() => setIsWaOpen(false)}>✕</button>
+            <button
+              onClick={() => setIsWaOpen(false)}
+              style={{ marginLeft: "auto", background: "none", border: "none", color: "#fff", fontSize: "1.2rem", cursor: "pointer" }}
+            >
+              ✕
+            </button>
           </div>
           <div className="wa-body">
             {waMessages.map((msg, i) => (
               <div key={i} className={`wa-message ${msg.sender === "bot" ? "received" : "sent"}`}>
                 <p>{msg.text}</p>
-                <span className="wa-time">{msg.time}</span>
               </div>
             ))}
           </div>
-          <div className="wa-quick-replies">
-            <button className="wa-chip" onClick={() => handleSendWa("Book Ashtavinayak Darshan Package")}>🛕 Ashtavinayak Package</button>
-            <button className="wa-chip" onClick={() => handleSendWa("Force Urbania 17 Seater in Pune")}>🚐 Force Urbania VIP</button>
-            <button className="wa-chip" onClick={() => handleSendWa("Pune to Mumbai Bus Rental")}>🛣️ Pune ➔ Mumbai</button>
+          <div style={{ padding: "8px 12px", background: "#f8fafc", display: "flex", gap: "6px", flexWrap: "wrap" }}>
+            <button
+              onClick={() => handleSendWa("Ashtavinayak Darshan bus booking")}
+              style={{ background: "#fff", border: "1px solid #cbd5e1", borderRadius: "20px", padding: "3px 10px", fontSize: "0.72rem", cursor: "pointer" }}
+            >
+              🛕 Ashtavinayak
+            </button>
+            <button
+              onClick={() => handleSendWa("Force Urbania 17 seater in Pune")}
+              style={{ background: "#fff", border: "1px solid #cbd5e1", borderRadius: "20px", padding: "3px 10px", fontSize: "0.72rem", cursor: "pointer" }}
+            >
+              🚐 Force Urbania VIP
+            </button>
           </div>
           <form
             className="wa-footer"
@@ -1386,124 +1220,103 @@ export default function VishalTravelsApp() {
         </div>
       )}
 
-      {/* RESERVATION MODAL */}
+      {/* RESERVATION CONFIRMATION MODAL */}
       {isBookingModalOpen && selectedVehicle && (
         <div className="modal-backdrop">
           <div className="modal-dialog">
             <div className="modal-header">
-              <div className="modal-title-wrap">
-                <h3>Book with Vishal Travels Pune</h3>
-                <span className="badge-gold">{selectedVehicle.name}</span>
-              </div>
+              <h3>Book with Vishal Travels Pune</h3>
               <button className="modal-close-btn" onClick={() => setIsBookingModalOpen(false)}>✕</button>
             </div>
 
             <div className="modal-body">
-              <div className="modal-section-grid">
-                <div className="modal-vehicle-preview">
-                  <img src={selectedVehicle.image} alt={selectedVehicle.name} className="modal-img" />
-                  <div className="modal-amenities-tags">
-                    {selectedVehicle.amenities.map((a, i) => (
-                      <span key={i} className="amenity-pill">✓ {a}</span>
-                    ))}
-                  </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "18px", background: "#f8fafc", padding: "16px", borderRadius: "8px" }}>
+                <div>
+                  <h4 style={{ color: "#0b3c6d", marginBottom: "4px" }}>{selectedVehicle.name}</h4>
+                  <p style={{ fontSize: "0.82rem", color: "#64748b" }}>{selectedVehicle.seatingText}</p>
+                  <p style={{ fontSize: "0.82rem", color: "#64748b" }}>Rate: <strong>₹{selectedVehicle.ratePerKm}/km</strong> (Min {selectedVehicle.minKmPerDay} km/day)</p>
                 </div>
-                <div className="modal-tariff-card">
-                  <h4>Tariff Policy in Pune</h4>
-                  <div className="tariff-line"><span>Rate Per KM:</span> <strong>₹{selectedVehicle.ratePerKm}/km</strong></div>
-                  <div className="tariff-line"><span>Min. Billing / Day:</span> <strong>{selectedVehicle.minKmPerDay} km</strong></div>
-                  <div className="tariff-line"><span>Driver Allowance:</span> <strong>₹{selectedVehicle.driverAllowancePerDay} / day</strong></div>
-                  <div className="tariff-line"><span>Seating:</span> <strong>{selectedVehicle.seatingText}</strong></div>
-                  <div className="tariff-line text-success"><span>Assistance:</span> <strong>24/7 Breakdown Backup</strong></div>
+                <div style={{ textAlign: "right" }}>
+                  <span style={{ background: "#dcfce7", color: "#16a34a", padding: "4px 8px", borderRadius: "4px", fontSize: "0.75rem", fontWeight: 700 }}>
+                    ● 24/7 Pune Dispatch Ready
+                  </span>
                 </div>
               </div>
 
-              <form className="reservation-form" onSubmit={handleConfirmReservation}>
-                <h4 className="form-subhead">Passenger & Trip Details</h4>
-                <div className="form-row-2">
-                  <div className="form-field">
+              <form onSubmit={handleConfirmReservation}>
+                <div className="bf-grid-2">
+                  <div className="bf-field">
                     <label>Passenger Name *</label>
                     <input
                       type="text"
-                      value={custName}
-                      onChange={(e) => setCustName(e.target.value)}
+                      defaultValue={custName || "Sanjay Shinde"}
                       required
                     />
                   </div>
-                  <div className="form-field">
-                    <label>Mobile Number (WhatsApp) *</label>
+                  <div className="bf-field">
+                    <label>Mobile Number *</label>
                     <input
                       type="tel"
-                      value={custPhone}
-                      onChange={(e) => setCustPhone(e.target.value)}
+                      defaultValue={custPhone || "9764564699"}
                       required
                     />
                   </div>
                 </div>
 
-                <div className="form-row-2">
-                  <div className="form-field">
-                    <label>Pickup Location in Pune *</label>
+                <div className="bf-grid-2">
+                  <div className="bf-field">
+                    <label>Pickup Location *</label>
                     <input
                       type="text"
-                      value={pickupLocation}
-                      onChange={(e) => setPickupLocation(e.target.value)}
+                      defaultValue={pickupLocation}
                       required
                     />
                   </div>
-                  <div className="form-field">
-                    <label>Destination City *</label>
+                  <div className="bf-field">
+                    <label>Destination *</label>
                     <input
                       type="text"
-                      value={destination}
-                      onChange={(e) => setDestination(e.target.value)}
+                      defaultValue={destination}
                       required
                     />
                   </div>
                 </div>
 
-                <div className="form-row-2">
-                  <div className="form-field">
-                    <label>Start Date *</label>
+                <div className="bf-grid-2">
+                  <div className="bf-field">
+                    <label>Date of Journey *</label>
                     <input
                       type="date"
-                      value={startDate}
-                      onChange={(e) => setStartDate(e.target.value)}
+                      defaultValue={startDate}
                       required
                     />
                   </div>
-                  <div className="form-field">
-                    <label>Pickup Time *</label>
+                  <div className="bf-field">
+                    <label>Reporting Time *</label>
                     <input type="time" defaultValue="06:30" required />
                   </div>
                 </div>
 
-                <div className="payment-selection-box">
-                  <h4>Confirmation & Advance Mode</h4>
-                  <div className="payment-options">
-                    <label className="pay-option">
-                      <input type="radio" name="payType" value="advance" defaultChecked />
-                      <div className="pay-option-content">
-                        <strong>Token Advance (Pay ₹2,000 Now via UPI)</strong>
-                        <small>Balance paid to driver upon boarding</small>
-                      </div>
-                    </label>
-                    <label className="pay-option">
-                      <input type="radio" name="payType" value="paylater" />
-                      <div className="pay-option-content">
-                        <strong>Pay on Boarding / Cash to Driver</strong>
-                        <small>Confirmed via phone call from Vishal Travels</small>
-                      </div>
-                    </label>
-                  </div>
+                <div style={{ background: "#f8fafc", padding: "14px", borderRadius: "6px", margin: "16px 0", border: "1px solid #e2e8f0" }}>
+                  <label style={{ display: "flex", gap: "10px", alignItems: "center", cursor: "pointer" }}>
+                    <input type="radio" name="payToken" defaultChecked />
+                    <div>
+                      <strong style={{ fontSize: "0.92rem", display: "block" }}>Token Advance Booking (₹2,000 via UPI)</strong>
+                      <small style={{ color: "#64748b" }}>Balance payable to driver upon departure</small>
+                    </div>
+                  </label>
                 </div>
 
-                <div className="modal-footer-actions">
-                  <button type="button" className="btn btn-outline" onClick={() => setIsBookingModalOpen(false)}>
+                <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+                  <button
+                    type="button"
+                    style={{ padding: "10px 18px", border: "1px solid #cbd5e1", background: "none", borderRadius: "6px", cursor: "pointer", fontWeight: 700 }}
+                    onClick={() => setIsBookingModalOpen(false)}
+                  >
                     Cancel
                   </button>
-                  <button type="submit" className="btn btn-primary glow-effect">
-                    Confirm Reservation & Issue E-Ticket
+                  <button type="submit" className="btn-lets-go" style={{ width: "auto", padding: "10px 24px", marginTop: 0 }}>
+                    Confirm & Issue E-Ticket
                   </button>
                 </div>
               </form>
@@ -1512,112 +1325,69 @@ export default function VishalTravelsApp() {
         </div>
       )}
 
-      {/* E-TICKET ISSUED MODAL */}
+      {/* E-TICKET VOUCHER MODAL */}
       {isTicketModalOpen && generatedTicket && (
         <div className="modal-backdrop">
-          <div className="modal-dialog ticket-dialog">
-            <div className="modal-header ticket-modal-header">
-              <div className="ticket-status-badge">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                BOOKING CONFIRMED • VISHAL TRAVELS PUNE
-              </div>
+          <div className="modal-dialog">
+            <div className="modal-header" style={{ background: "#0b3c6d", color: "#fff" }}>
+              <h3 style={{ color: "#fff" }}>BOOKING CONFIRMED • VISHAL TRAVELS PUNE</h3>
               <button className="modal-close-btn" onClick={() => setIsTicketModalOpen(false)}>✕</button>
             </div>
 
-            <div className="modal-body ticket-print-body" id="eTicketContent">
-              <div className="ticket-card">
-                <div className="ticket-card-header">
-                  <div className="ticket-brand">
-                    <h3>Vishal Travels Pune</h3>
-                    <p>Official Bus & Tempo Traveller Booking Voucher</p>
+            <div className="modal-body" id="printTicketArea">
+              <div style={{ border: "2px dashed #cbd5e1", borderRadius: "8px", padding: "20px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #e2e8f0", paddingBottom: "12px", marginBottom: "14px" }}>
+                  <div>
+                    <h3 style={{ color: "#0b3c6d", margin: 0 }}>Vishal Travels Pune</h3>
+                    <small style={{ color: "#64748b" }}>Booking Voucher & E-Ticket</small>
                   </div>
-                  <div className="ticket-pnr-box">
-                    <span className="pnr-label">BOOKING ID</span>
-                    <strong className="pnr-val">{generatedTicket.pnr}</strong>
-                  </div>
-                </div>
-
-                <div className="ticket-route-strip">
-                  <div className="route-point">
-                    <span className="label">ORIGIN</span>
-                    <h4>{generatedTicket.from}</h4>
-                  </div>
-                  <div className="route-arrow">
-                    <span>➔</span>
-                    <small>Outstation Tour</small>
-                  </div>
-                  <div className="route-point">
-                    <span className="label">DESTINATION</span>
-                    <h4>{generatedTicket.to}</h4>
+                  <div style={{ textAlign: "right" }}>
+                    <span style={{ fontSize: "0.72rem", color: "#64748b", display: "block" }}>PNR NUMBER</span>
+                    <strong style={{ color: "var(--topbar-bg)", fontSize: "1.2rem" }}>{generatedTicket.pnr}</strong>
                   </div>
                 </div>
 
-                <div className="ticket-details-grid">
-                  <div className="detail-cell">
-                    <span className="cell-label">Customer Name</span>
-                    <strong>{generatedTicket.name}</strong>
+                <div style={{ background: "#f1f5f9", padding: "12px", borderRadius: "6px", display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
+                  <div>
+                    <span style={{ fontSize: "0.7rem", color: "#64748b", display: "block" }}>FROM</span>
+                    <strong style={{ fontSize: "1.1rem" }}>{generatedTicket.from}</strong>
                   </div>
-                  <div className="detail-cell">
-                    <span className="cell-label">Phone</span>
-                    <strong>+91 {generatedTicket.phone}</strong>
-                  </div>
-                  <div className="detail-cell">
-                    <span className="cell-label">Vehicle Assigned</span>
-                    <strong>{generatedTicket.vehicle}</strong>
-                  </div>
-                  <div className="detail-cell">
-                    <span className="cell-label">Start Date</span>
-                    <strong>{generatedTicket.date}</strong>
-                  </div>
-                  <div className="detail-cell">
-                    <span className="cell-label">Support Helpline</span>
-                    <strong>+91 9764564699</strong>
-                  </div>
-                  <div className="detail-cell">
-                    <span className="cell-label">Payment Mode</span>
-                    <strong className="text-success">{generatedTicket.payment}</strong>
+                  <div style={{ color: "var(--topbar-bg)", fontSize: "1.2rem" }}>➔</div>
+                  <div style={{ textAlign: "right" }}>
+                    <span style={{ fontSize: "0.7rem", color: "#64748b", display: "block" }}>TO</span>
+                    <strong style={{ fontSize: "1.1rem" }}>{generatedTicket.to}</strong>
                   </div>
                 </div>
 
-                <div className="ticket-driver-section">
-                  <div className="driver-info">
-                    <span className="cell-label">Assigned Chauffeur</span>
-                    <strong>Santosh Shinde (Heavy Badge Verified)</strong>
-                    <small>📞 +91 9764564699 • Vehicle: MH-12-VT-9764</small>
-                  </div>
-                  <div className="qr-code-box">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                      <rect x="3" y="3" width="7" height="7"/>
-                      <rect x="14" y="3" width="7" height="7"/>
-                      <rect x="3" y="14" width="7" height="7"/>
-                      <rect x="15" y="15" width="2" height="2"/>
-                      <rect x="18" y="18" width="2" height="2"/>
-                    </svg>
-                    <span>Scan to Track</span>
-                  </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", fontSize: "0.85rem", marginBottom: "16px" }}>
+                  <div>Passenger: <strong>{generatedTicket.name}</strong></div>
+                  <div>Phone: <strong>+91 {generatedTicket.phone}</strong></div>
+                  <div>Vehicle: <strong>{generatedTicket.vehicle}</strong></div>
+                  <div>Journey Date: <strong>{generatedTicket.date}</strong></div>
+                  <div>Assigned Driver: <strong>Santosh Shinde (Verified)</strong></div>
+                  <div>Helpline: <strong>+91 9764564699</strong></div>
                 </div>
 
-                <div className="ticket-instructions">
-                  <p>
-                    <strong>Note:</strong> Chauffeur will call you 2 hours prior to journey. For any updates, dial Vishal Travels 24/7 hotline at <strong>+91 9764564699</strong>.
-                  </p>
+                <div style={{ background: "#e0f2fe", padding: "10px 14px", borderRadius: "6px", fontSize: "0.82rem", color: "#0369a1" }}>
+                  ✓ Driver will contact you 2 hours before trip. Toll and state tax payable as actuals or bundled.
                 </div>
               </div>
 
-              <div className="ticket-actions">
-                <button className="btn btn-outline" onClick={() => window.print()}>
-                  🖨️ Print / Save Ticket
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "18px" }}>
+                <button
+                  style={{ padding: "8px 18px", border: "1px solid #cbd5e1", background: "none", borderRadius: "6px", cursor: "pointer", fontWeight: 700 }}
+                  onClick={() => window.print()}
+                >
+                  🖨️ Print Ticket
                 </button>
                 <button
-                  className="btn btn-primary"
+                  className="btn-book-bus"
                   onClick={() => {
                     setIsTicketModalOpen(false);
                     setIsTrackerModalOpen(true);
                   }}
                 >
-                  🛰️ Track Live Location
+                  🛰️ Track Live GPS
                 </button>
               </div>
             </div>
@@ -1628,85 +1398,37 @@ export default function VishalTravelsApp() {
       {/* LIVE GPS TELEMETRY SIMULATOR */}
       {isTrackerModalOpen && (
         <div className="modal-backdrop">
-          <div className="modal-dialog tracker-dialog">
+          <div className="modal-dialog">
             <div className="modal-header">
-              <div>
-                <h3>🛰️ Live GPS Vehicle Telemetry • Vishal Travels</h3>
-                <p>Real-time vehicle speed, satellite coordinates, and safe driver monitoring</p>
-              </div>
+              <h3>🛰️ Live GPS Telemetry • Vishal Travels Pune</h3>
               <button className="modal-close-btn" onClick={() => setIsTrackerModalOpen(false)}>✕</button>
             </div>
 
-            <div className="modal-body tracker-body">
-              <div className="simulated-map-container">
-                <div className="map-highway-line">
-                  <div className="map-progress-highlight" style={{ width: `${trackerProgress}%` }}></div>
-                  <div className="map-bus-marker" style={{ left: `${trackerProgress}%` }}>
-                    <div className="marker-tooltip">
-                      <span>MH-12-VT-9764 [Urbania]</span><br />
-                      <strong>{trackerSpeed} km/h</strong>
-                    </div>
-                    <div className="marker-icon">🚌</div>
-                  </div>
-                  <div className="map-city-point origin-point">
-                    <span className="city-dot"></span>
-                    <strong>Pune (Shivaji Nagar)</strong>
-                    <small>Departed 06:30 AM</small>
-                  </div>
-                  <div className="map-city-point dest-point">
-                    <span className="city-dot"></span>
-                    <strong>{destination}</strong>
-                    <small>ETA 04:30 PM</small>
+            <div className="modal-body">
+              <div style={{ height: "180px", background: "#0b223d", borderRadius: "8px", position: "relative", display: "flex", alignItems: "center", padding: "0 30px", border: "1px solid #1e3a63" }}>
+                <div style={{ width: "100%", height: "6px", background: "#1e3a63", borderRadius: "3px", position: "relative" }}>
+                  <div style={{ width: `${trackerProgress}%`, height: "100%", background: "linear-gradient(90deg, #10b981, #f5a623)", borderRadius: "3px" }}></div>
+                  <div style={{ position: "absolute", left: `${trackerProgress}%`, top: "50%", transform: "translate(-50%, -50%)", fontSize: "1.6rem" }}>
+                    🚌
                   </div>
                 </div>
-                <div className="map-live-tag">
-                  <span className="blinking-dot"></span> GPS SATELLITE LOCK: ACTIVE (12 SATELLITES)
+                <div style={{ position: "absolute", top: "12px", left: "16px", color: "#10b981", fontSize: "0.75rem", fontWeight: 800 }}>
+                  ● GPS SATELLITE LOCK: ACTIVE (MH-12-VT-9764)
                 </div>
               </div>
 
-              <div className="telemetry-grid">
-                <div className="telemetry-card">
-                  <span>Speed Governor</span>
-                  <strong>{trackerSpeed} km/h</strong>
-                  <small className="text-success">Within Safe Expressway Limit (&lt;80)</small>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px", marginTop: "16px" }}>
+                <div style={{ background: "#f8fafc", padding: "12px", borderRadius: "6px", border: "1px solid #e2e8f0" }}>
+                  <span style={{ fontSize: "0.75rem", color: "#64748b", display: "block" }}>Speed Governor</span>
+                  <strong style={{ fontSize: "1.2rem", color: "#0b3c6d" }}>{trackerSpeed} km/h</strong>
                 </div>
-                <div className="telemetry-card">
-                  <span>Journey Progress</span>
-                  <strong>{trackerProgress}% Completed</strong>
-                  <small>Highway traffic clear</small>
+                <div style={{ background: "#f8fafc", padding: "12px", borderRadius: "6px", border: "1px solid #e2e8f0" }}>
+                  <span style={{ fontSize: "0.75rem", color: "#64748b", display: "block" }}>Progress</span>
+                  <strong style={{ fontSize: "1.2rem", color: "#0b3c6d" }}>{trackerProgress}% Done</strong>
                 </div>
-                <div className="telemetry-card">
-                  <span>Next Rest Stop</span>
-                  <strong>Shirwal Food Plaza</strong>
-                  <small>ETA: 20 mins</small>
-                </div>
-                <div className="telemetry-card">
-                  <span>Emergency SOS Desk</span>
-                  <button
-                    className="btn-sos-call"
-                    onClick={() => triggerToast("🚨 Emergency SOS dispatched to Vishal Travels Pune Control Room!", "warning")}
-                  >
-                    🚨 TRIGGER SOS
-                  </button>
-                </div>
-              </div>
-
-              <div className="driver-comm-box">
-                <div className="driver-meta">
-                  <div className="driver-img">👨‍✈️</div>
-                  <div>
-                    <strong>Santosh Shinde (Lead Chauffeur)</strong>
-                    <p>Badge: MH-12-COMM-8912 • Police Verified • 14 yrs Experience</p>
-                  </div>
-                </div>
-                <div className="driver-actions">
-                  <a href="tel:+919764564699" className="btn btn-outline btn-sm">📞 Call Driver</a>
-                  <button
-                    className="btn btn-primary btn-sm"
-                    onClick={() => triggerToast("Live tracking link copied to clipboard & sent to your WhatsApp!", "success")}
-                  >
-                    📲 Share Live Link
-                  </button>
+                <div style={{ background: "#f8fafc", padding: "12px", borderRadius: "6px", border: "1px solid #e2e8f0" }}>
+                  <span style={{ fontSize: "0.75rem", color: "#64748b", display: "block" }}>Next Rest Halt</span>
+                  <strong style={{ fontSize: "1rem", color: "#0b3c6d" }}>Shirwal Plaza</strong>
                 </div>
               </div>
             </div>
@@ -1714,11 +1436,11 @@ export default function VishalTravelsApp() {
         </div>
       )}
 
-      {/* TOAST NOTIFICATION CONTAINER */}
+      {/* TOAST NOTIFICATION */}
       {toast && (
         <div className="toast-container">
-          <div className={`toast toast-${toast.type}`}>
-            <span>{toast.type === "success" ? "✓" : toast.type === "warning" ? "⚠️" : "ℹ️"}</span>
+          <div className="toast">
+            <span>{toast.type === "success" ? "✓" : "ℹ️"}</span>
             <span>{toast.text}</span>
           </div>
         </div>
