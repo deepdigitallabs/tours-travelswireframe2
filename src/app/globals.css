@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Vishal Travels Pune - Exact Design System & Token-Driven Stylesheet
+   Vishal Travels Pune - Enhanced Token-Driven Design with Rich Transitions
    ========================================================================== */
 
 :root {
@@ -33,10 +33,15 @@
   
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
   --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
-  --shadow-lg: 0 12px 28px rgba(15, 23, 42, 0.12);
+  --shadow-lg: 0 14px 34px rgba(15, 23, 42, 0.12);
+  --shadow-hover: 0 20px 40px rgba(11, 60, 109, 0.16);
   --shadow-stats: 0 8px 30px rgba(0, 0, 0, 0.18);
   
-  --transition: all 0.2s ease-in-out;
+  /* Smooth Motion Tokens */
+  --transition-fast: all 0.15s ease-out;
+  --transition-normal: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-spring: all 0.45s cubic-bezier(0.34, 1.4, 0.64, 1);
 }
 
 /* Base Reset */
@@ -48,6 +53,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 90px;
   font-size: 16px;
 }
 
@@ -70,7 +76,7 @@ h1, h2, h3, h4, h5, h6 {
 a {
   text-decoration: none;
   color: inherit;
-  transition: var(--transition);
+  transition: var(--transition-normal);
 }
 
 ul {
@@ -90,6 +96,74 @@ button, input, select, textarea {
 }
 
 /* ==========================================================================
+   Keyframe Animations for Entrance & Micro-interactions
+   ========================================================================== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideDownDropdown {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes bounceSubtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 4px 12px rgba(0, 157, 248, 0.3); }
+  50% { box-shadow: 0 6px 20px rgba(0, 157, 248, 0.55); }
+}
+
+@keyframes sonarWave {
+  0% { transform: scale(1); opacity: 0.65; }
+  70% { transform: scale(2.2); opacity: 0; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(60px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* ==========================================================================
    1. Top Bar (Exact Yellow/Gold from Screenshot)
    ========================================================================== */
 .vishal-topbar {
@@ -99,6 +173,7 @@ button, input, select, textarea {
   font-size: 0.88rem;
   font-weight: 600;
   letter-spacing: 0.01em;
+  transition: var(--transition-normal);
 }
 
 .vishal-topbar-content {
@@ -121,11 +196,13 @@ button, input, select, textarea {
   align-items: center;
   gap: 6px;
   color: #ffffff;
-  transition: var(--transition);
+  transition: var(--transition-fast);
 }
 
 .topbar-phone-item:hover {
-  opacity: 0.85;
+  transform: translateY(-1px);
+  color: #fff9ea;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
 }
 
 .topbar-social-links {
@@ -145,16 +222,17 @@ button, input, select, textarea {
   color: #ffffff;
   font-size: 0.78rem;
   font-weight: 700;
-  transition: var(--transition);
+  transition: var(--transition-normal);
 }
 
 .topbar-social-icon:hover {
   background: #ffffff;
   color: var(--topbar-bg);
+  transform: translateY(-2px) scale(1.08);
 }
 
 /* ==========================================================================
-   2. Main Header / Navigation (Exact Pure White Bar with Logo & Blue Button)
+   2. Main Header / Navigation (Pure White Bar with Dropdowns)
    ========================================================================== */
 .vishal-header {
   position: sticky;
@@ -163,6 +241,11 @@ button, input, select, textarea {
   background: #ffffff;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
   border-bottom: 1px solid #edf2f7;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.vishal-header.scrolled {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
 
 .vishal-header-inner {
@@ -177,6 +260,11 @@ button, input, select, textarea {
   display: flex;
   align-items: center;
   gap: 10px;
+  transition: var(--transition-normal);
+}
+
+.vishal-logo-wrap:hover {
+  transform: scale(1.02);
 }
 
 .vishal-logo-badge {
@@ -189,6 +277,12 @@ button, input, select, textarea {
   justify-content: center;
   color: #ffffff;
   box-shadow: 0 4px 10px rgba(11, 60, 109, 0.25);
+  transition: var(--transition-normal);
+}
+
+.vishal-logo-wrap:hover .vishal-logo-badge {
+  box-shadow: 0 6px 16px rgba(2, 132, 199, 0.4);
+  transform: rotate(-3deg);
 }
 
 .vishal-logo-text {
@@ -216,11 +310,15 @@ button, input, select, textarea {
   text-transform: uppercase;
 }
 
-/* Nav Menu Links */
+/* Nav Menu Links with Animated Dropdowns */
 .vishal-nav-menu {
   display: flex;
   align-items: center;
   gap: 22px;
+}
+
+.nav-item-has-dropdown {
+  position: relative;
 }
 
 .vishal-nav-item {
@@ -229,10 +327,23 @@ button, input, select, textarea {
   color: #1e293b;
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 6px 0;
+  gap: 5px;
+  padding: 10px 0;
   position: relative;
-  transition: var(--transition);
+  transition: var(--transition-normal);
+  cursor: pointer;
+}
+
+.vishal-nav-item::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--btn-blue);
+  border-radius: 2px;
+  transition: width 0.25s ease-in-out;
 }
 
 .vishal-nav-item:hover,
@@ -240,9 +351,61 @@ button, input, select, textarea {
   color: var(--btn-blue);
 }
 
-.vishal-nav-item .dropdown-caret {
-  font-size: 0.72rem;
+.vishal-nav-item:hover::after,
+.vishal-nav-item.active::after {
+  width: 100%;
+}
+
+.dropdown-caret {
+  font-size: 0.68rem;
   color: #94a3b8;
+  transition: transform 0.25s ease;
+}
+
+.nav-item-has-dropdown:hover .dropdown-caret {
+  transform: rotate(180deg);
+  color: var(--btn-blue);
+}
+
+/* Nav Dropdown Menu */
+.nav-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 240px;
+  background: #ffffff;
+  border-radius: var(--radius-md);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+  border: 1px solid #e2e8f0;
+  padding: 8px 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1002;
+}
+
+.nav-item-has-dropdown:hover .nav-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.nav-dropdown-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 18px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #334155;
+  transition: var(--transition-fast);
+}
+
+.nav-dropdown-link:hover {
+  background: #f0f9ff;
+  color: var(--btn-blue);
+  padding-left: 22px;
 }
 
 /* Blue "Book Your Bus" Button */
@@ -257,15 +420,32 @@ button, input, select, textarea {
   align-items: center;
   gap: 8px;
   box-shadow: 0 4px 12px rgba(0, 157, 248, 0.3);
-  transition: var(--transition);
+  transition: var(--transition-normal);
   border: none;
   cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-book-bus::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+  transition: left 0.6s ease;
+}
+
+.btn-book-bus:hover::after {
+  left: 100%;
 }
 
 .btn-book-bus:hover {
   background: var(--btn-blue-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(0, 157, 248, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 157, 248, 0.45);
 }
 
 .mobile-toggle {
@@ -274,14 +454,15 @@ button, input, select, textarea {
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
+  color: var(--text-dark);
 }
 
 /* ==========================================================================
-   3. Hero Section (Exact Replica of Screenshot)
+   3. Hero Section (Exact Replica of Screenshot with Entrance Animations)
    ========================================================================== */
 .vishal-hero {
   position: relative;
-  min-height: 580px;
+  min-height: 590px;
   background: linear-gradient(rgba(17, 24, 39, 0.72), rgba(15, 23, 42, 0.82)),
               url('https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1600&auto=format&fit=crop&q=80') center/cover no-repeat;
   display: flex;
@@ -291,9 +472,10 @@ button, input, select, textarea {
   padding: 70px 20px 50px;
   text-align: center;
   color: #ffffff;
+  overflow: hidden;
 }
 
-/* Yellow/Gold "WELCOME TO VISHAL TRAVEL" Badge */
+/* Yellow/Orange "WELCOME TO VISHAL TRAVEL" Badge */
 .hero-welcome-badge {
   display: inline-block;
   background-color: var(--topbar-bg);
@@ -306,9 +488,16 @@ button, input, select, textarea {
   border-radius: var(--radius-xs);
   margin-bottom: 22px;
   box-shadow: 0 4px 10px rgba(245, 166, 35, 0.35);
+  animation: fadeInDown 0.6s ease-out;
+  transition: var(--transition-normal);
 }
 
-/* Huge Headline */
+.hero-welcome-badge:hover {
+  transform: scale(1.04);
+  box-shadow: 0 6px 16px rgba(245, 166, 35, 0.5);
+}
+
+/* Huge Headline with FadeInUp */
 .hero-main-title {
   font-size: 2.85rem;
   font-weight: 800;
@@ -317,6 +506,7 @@ button, input, select, textarea {
   margin: 0 auto 18px;
   color: #ffffff;
   letter-spacing: -0.02em;
+  animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
 }
 
 /* Subtitle */
@@ -327,6 +517,7 @@ button, input, select, textarea {
   max-width: 820px;
   margin: 0 auto 40px;
   font-weight: 400;
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
 }
 
 /* Bottom Stats / Trust Bar (White Card in Screenshot) */
@@ -343,17 +534,29 @@ button, input, select, textarea {
   gap: 0;
   max-width: 960px;
   width: 100%;
+  animation: fadeInUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+  transition: var(--transition-normal);
+}
+
+.hero-stats-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.22);
 }
 
 .stats-card-item {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 0 16px;
+  padding: 4px 16px;
   font-size: 0.92rem;
   font-weight: 700;
   color: #1e293b;
   border-right: 1.5px solid #e2e8f0;
+  transition: var(--transition-fast);
+}
+
+.stats-card-item:hover {
+  color: var(--primary-blue);
 }
 
 .stats-card-item:last-child {
@@ -363,6 +566,7 @@ button, input, select, textarea {
 .stats-star {
   color: #f59e0b;
   font-size: 1.1rem;
+  animation: bounceSubtle 2s infinite ease-in-out;
 }
 
 /* Floating Action Circle Buttons on Bottom-Left */
@@ -387,7 +591,7 @@ button, input, select, textarea {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
   cursor: pointer;
   border: none;
-  transition: var(--transition);
+  transition: var(--transition-spring);
 }
 
 .fab-call-circle {
@@ -396,7 +600,8 @@ button, input, select, textarea {
 
 .fab-call-circle:hover {
   background: #0369a1;
-  transform: scale(1.08);
+  transform: translateY(-3px) scale(1.1);
+  box-shadow: 0 8px 24px rgba(2, 132, 199, 0.45);
 }
 
 .fab-wa-circle {
@@ -417,15 +622,38 @@ button, input, select, textarea {
   animation: sonarWave 1.8s infinite;
 }
 
-@keyframes sonarWave {
-  0% { transform: scale(1); opacity: 0.6; }
-  70% { transform: scale(2.2); opacity: 0; }
-  100% { transform: scale(2.4); opacity: 0; }
-}
-
 .fab-wa-circle:hover {
   background: #1ebd56;
-  transform: scale(1.08);
+  transform: translateY(-3px) scale(1.1);
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.45);
+}
+
+/* Scroll To Top Button */
+.btn-scroll-top {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #0b3c6d;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  z-index: 997;
+  opacity: 0.9;
+  transition: var(--transition-spring);
+}
+
+.btn-scroll-top:hover {
+  opacity: 1;
+  transform: translateY(-4px) scale(1.08);
+  background: var(--btn-blue);
+  box-shadow: var(--shadow-lg);
 }
 
 /* ==========================================================================
@@ -475,10 +703,18 @@ button, input, select, textarea {
   align-items: center;
   gap: 14px;
   background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  border: 1.5px solid #e2e8f0;
   padding: 14px 20px;
   border-radius: var(--radius-md);
   margin-top: 6px;
+  transition: var(--transition-normal);
+}
+
+.contact-quick-pill:hover {
+  transform: translateX(4px);
+  border-color: #cbd5e1;
+  background: #f1f5f9;
+  box-shadow: var(--shadow-sm);
 }
 
 .contact-pill-icon {
@@ -491,6 +727,11 @@ button, input, select, textarea {
   align-items: center;
   justify-content: center;
   font-size: 1.2rem;
+  transition: var(--transition-normal);
+}
+
+.contact-quick-pill:hover .contact-pill-icon {
+  transform: scale(1.08) rotate(-4deg);
 }
 
 .contact-pill-text strong {
@@ -512,6 +753,12 @@ button, input, select, textarea {
   border-radius: var(--radius-lg);
   padding: 30px;
   box-shadow: var(--shadow-md);
+  transition: var(--transition-normal);
+}
+
+.booking-form-box:hover {
+  border-color: #cbd5e1;
+  box-shadow: var(--shadow-lg);
 }
 
 .bf-grid-2 {
@@ -543,14 +790,15 @@ button, input, select, textarea {
   font-size: 0.92rem;
   background: #ffffff;
   color: #1e293b;
-  transition: var(--transition);
+  transition: var(--transition-normal);
 }
 
 .bf-field input:focus,
 .bf-field select:focus {
   outline: none;
   border-color: var(--btn-blue);
-  box-shadow: 0 0 0 3px rgba(0, 157, 248, 0.15);
+  box-shadow: 0 0 0 3px rgba(0, 157, 248, 0.18);
+  transform: translateY(-1px);
 }
 
 .btn-lets-go {
@@ -563,14 +811,19 @@ button, input, select, textarea {
   border: none;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: var(--transition);
+  transition: var(--transition-spring);
   margin-top: 10px;
+  box-shadow: 0 4px 14px rgba(245, 166, 35, 0.3);
 }
 
 .btn-lets-go:hover {
   background: #e59400;
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(245, 166, 35, 0.35);
+  box-shadow: 0 8px 22px rgba(245, 166, 35, 0.45);
+}
+
+.btn-lets-go:active {
+  transform: translateY(0);
 }
 
 /* ==========================================================================
@@ -620,12 +873,12 @@ button, input, select, textarea {
   text-align: center;
   box-shadow: var(--shadow-sm);
   border-top: 4px solid var(--btn-blue);
-  transition: var(--transition);
+  transition: var(--transition-smooth);
 }
 
 .step-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-hover);
 }
 
 .step-number-icon {
@@ -640,6 +893,11 @@ button, input, select, textarea {
   justify-content: center;
   font-size: 1.5rem;
   font-weight: 800;
+  transition: var(--transition-spring);
+}
+
+.step-card:hover .step-number-icon {
+  transform: scale(1.15) rotate(5deg);
 }
 
 .step-card h4 {
@@ -655,7 +913,7 @@ button, input, select, textarea {
 }
 
 /* ==========================================================================
-   6. Tour Packages (Pune Specials: Ashtavinayak, Jyotirlinga, etc.)
+   6. Tour Packages (Pune Specials)
    ========================================================================== */
 .packages-section {
   padding: 70px 0;
@@ -676,23 +934,30 @@ button, input, select, textarea {
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
-  transition: var(--transition);
+  transition: var(--transition-smooth);
 }
 
 .package-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-hover);
+  border-color: #cbd5e1;
 }
 
 .pkg-img-wrap {
   position: relative;
   height: 190px;
+  overflow: hidden;
 }
 
 .pkg-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.package-card:hover .pkg-img {
+  transform: scale(1.08);
 }
 
 .pkg-badge {
@@ -705,6 +970,12 @@ button, input, select, textarea {
   font-weight: 700;
   padding: 4px 10px;
   border-radius: var(--radius-xs);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: var(--transition-fast);
+}
+
+.package-card:hover .pkg-badge {
+  transform: scale(1.05);
 }
 
 .pkg-body {
@@ -718,6 +989,11 @@ button, input, select, textarea {
   font-size: 1.3rem;
   color: #0b3c6d;
   margin-bottom: 4px;
+  transition: var(--transition-fast);
+}
+
+.package-card:hover .pkg-title {
+  color: var(--btn-blue);
 }
 
 .pkg-subtitle {
@@ -792,14 +1068,20 @@ button, input, select, textarea {
   border-radius: var(--radius-full);
   cursor: pointer;
   font-size: 0.88rem;
-  transition: var(--transition);
+  transition: var(--transition-normal);
 }
 
-.fleet-filter-btn.active,
 .fleet-filter-btn:hover {
+  border-color: #0b3c6d;
+  color: #0b3c6d;
+  transform: translateY(-1px);
+}
+
+.fleet-filter-btn.active {
   background: #0b3c6d;
   color: #ffffff;
   border-color: #0b3c6d;
+  box-shadow: 0 4px 12px rgba(11, 60, 109, 0.25);
 }
 
 .fleet-grid {
@@ -816,23 +1098,30 @@ button, input, select, textarea {
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
-  transition: var(--transition);
+  transition: var(--transition-smooth);
 }
 
 .fleet-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-hover);
+  border-color: #cbd5e1;
 }
 
 .fleet-img-wrap {
   position: relative;
   height: 210px;
+  overflow: hidden;
 }
 
 .fleet-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fleet-card:hover .fleet-img {
+  transform: scale(1.08);
 }
 
 .fleet-tag {
@@ -845,6 +1134,7 @@ button, input, select, textarea {
   font-weight: 700;
   padding: 4px 10px;
   border-radius: var(--radius-xs);
+  backdrop-filter: blur(4px);
 }
 
 .fleet-body {
@@ -904,6 +1194,7 @@ button, input, select, textarea {
   display: grid;
   grid-template-columns: 1.3fr 1fr;
   gap: 36px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
 }
 
 .calc-slider-item {
@@ -929,6 +1220,9 @@ button, input, select, textarea {
   width: 100%;
   accent-color: var(--topbar-bg);
   cursor: pointer;
+  height: 6px;
+  border-radius: 3px;
+  transition: var(--transition-fast);
 }
 
 .calc-receipt-card {
@@ -937,6 +1231,7 @@ button, input, select, textarea {
   border-radius: var(--radius-lg);
   padding: 26px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  transition: var(--transition-normal);
 }
 
 /* ==========================================================================
@@ -981,8 +1276,13 @@ button, input, select, textarea {
   font-size: 0.88rem;
 }
 
+.footer-links-list a {
+  transition: var(--transition-fast);
+}
+
 .footer-links-list a:hover {
   color: #ffffff;
+  padding-left: 4px;
 }
 
 .footer-bottom-bar {
@@ -1007,6 +1307,7 @@ button, input, select, textarea {
   justify-content: center;
   padding: 20px;
   overflow-y: auto;
+  animation: fadeIn 0.25s ease-out;
 }
 
 .modal-dialog {
@@ -1016,12 +1317,7 @@ button, input, select, textarea {
   width: 100%;
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
   overflow: hidden;
-  animation: modalIn 0.2s ease-out;
-}
-
-@keyframes modalIn {
-  from { opacity: 0; transform: scale(0.96); }
-  to { opacity: 1; transform: scale(1); }
+  animation: slideDownDropdown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .modal-header {
@@ -1045,6 +1341,12 @@ button, input, select, textarea {
   border-radius: 50%;
   cursor: pointer;
   font-weight: 700;
+  transition: var(--transition-fast);
+}
+
+.modal-close-btn:hover {
+  background: #e2e8f0;
+  transform: rotate(90deg);
 }
 
 .modal-body {
@@ -1066,6 +1368,7 @@ button, input, select, textarea {
   z-index: 1001;
   overflow: hidden;
   border: 1px solid #e2e8f0;
+  animation: slideDownDropdown 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .wa-header {
@@ -1092,6 +1395,7 @@ button, input, select, textarea {
   padding: 8px 12px;
   border-radius: 10px;
   font-size: 0.85rem;
+  animation: fadeIn 0.2s ease-out;
 }
 
 .wa-message.received {
@@ -1127,6 +1431,11 @@ button, input, select, textarea {
   height: 32px;
   border-radius: 50%;
   cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.wa-send-btn:hover {
+  transform: scale(1.08);
 }
 
 /* Toast */
@@ -1151,6 +1460,7 @@ button, input, select, textarea {
   gap: 10px;
   font-size: 0.9rem;
   font-weight: 600;
+  animation: toastSlideIn 0.35s cubic-bezier(0.34, 1.4, 0.64, 1);
 }
 
 /* Responsive */
@@ -1192,4 +1502,140 @@ button, input, select, textarea {
   .footer-grid-4 {
     grid-template-columns: 1fr;
   }
+  .btn-scroll-top {
+    bottom: 84px;
+    right: 16px;
+  }
 }
+
+/* ==========================================================================
+   11. Mobile Drawer Navigation Animation
+   ========================================================================== */
+.vishal-mobile-drawer {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border-bottom: 3px solid var(--btn-blue);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  padding: 16px 24px;
+  gap: 4px;
+  animation: slideDownDropdown 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1001;
+}
+
+.vishal-mobile-link {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e293b;
+  padding: 12px 0;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: var(--transition-fast);
+}
+
+.vishal-mobile-link:hover {
+  color: var(--btn-blue);
+  padding-left: 8px;
+}
+
+/* ==========================================================================
+   12. FAQ Accordion Section with Fluid Smooth Transitions
+   ========================================================================== */
+.faq-section {
+  padding: 70px 0;
+  background: #ffffff;
+}
+
+.faq-container {
+  max-width: 860px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.faq-card {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: var(--transition-normal);
+}
+
+.faq-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: var(--shadow-sm);
+}
+
+.faq-card.open {
+  border-color: var(--btn-blue);
+  box-shadow: 0 8px 24px rgba(0, 157, 248, 0.09);
+}
+
+.faq-question-btn {
+  width: 100%;
+  padding: 18px 22px;
+  background: none;
+  border: none;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0b3c6d;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.faq-question-btn:hover {
+  color: var(--btn-blue);
+}
+
+.faq-chevron {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.82rem;
+  color: #64748b;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.25s ease, color 0.25s ease;
+  flex-shrink: 0;
+}
+
+.faq-card.open .faq-chevron {
+  transform: rotate(180deg);
+  background: #e0f2fe;
+  color: var(--btn-blue);
+}
+
+.faq-answer-wrap {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.38s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+  opacity: 0;
+}
+
+.faq-card.open .faq-answer-wrap {
+  max-height: 400px;
+  opacity: 1;
+}
+
+.faq-answer-content {
+  padding: 0 22px 20px;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: #475569;
+  border-top: 1px dashed #e2e8f0;
+  padding-top: 14px;
+}
+

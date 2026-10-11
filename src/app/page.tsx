@@ -259,8 +259,39 @@ const REVIEWS_DATA: Review[] = [
   }
 ];
 
+interface FaqItem {
+  q: string;
+  a: string;
+}
+
+const FAQ_DATA: FaqItem[] = [
+  {
+    q: "What types of buses and tempo travellers are available for hire in Pune?",
+    a: "Vishal Travels provides a comprehensive fleet including Force Urbania Luxury VIP (13 & 17 seater), Force Tempo Travellers (17, 20 & 26 seater AC/Non-AC), Executive Mini Buses (32 seater), and Luxury Multi-Axle Volvo / BharatBenz Coaches (45-55 seater). All vehicles are equipped with push-back seats, powerful air conditioning, charging ports, and luggage carriers."
+  },
+  {
+    q: "How are the rental charges calculated for outstation trips from Pune?",
+    a: "For outstation journeys, billing is typically based on per-kilometer tariff with a standard minimum average of 300 km per calendar day. In addition, driver allowance (DA) applies per day (₹500 to ₹700 depending on vehicle). Tolls, parking, and state entry permits are paid as actuals or can be bundled into an all-inclusive quotation upon request."
+  },
+  {
+    q: "Can we hire Force Urbania or Tempo Traveller for hill stations like Mahabaleshwar and Lonavala?",
+    a: "Yes! All our drivers are seasoned professionals with extensive experience navigating ghat sections including Bhor Ghat, Pasarni Ghat, and Amba Ghat. Our vehicles undergo regular brake and tire inspections to guarantee maximum passenger safety on steep terrain."
+  },
+  {
+    q: "What is the advance booking token and cancellation policy?",
+    a: "You can confirm your booking with a small token advance of ₹1,000 to ₹2,000 via UPI / bank transfer. The remaining balance can be settled with the driver at pickup or upon trip conclusion. If you need to reschedule or cancel with 24 hours prior notice, your token can be transferred to a future travel date with zero cancellation fee."
+  },
+  {
+    q: "Are the vehicles sanitized and do you provide 24/7 support during the trip?",
+    a: "Absolutely. Every bus is deep cleaned and sanitized before dispatch from our Pune hub. You also receive live GPS tracking access and a dedicated 24/7 trip coordinator contact (+91 9764564699) throughout your journey."
+  }
+];
+
 export default function VishalTravelsWebsite() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
   // Quick Form State
   const [custName, setCustName] = useState("");
@@ -325,6 +356,25 @@ export default function VishalTravelsWebsite() {
     setStartDate(today.toISOString().split("T")[0]);
     const afterTomorrow = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000);
     setReturnDate(afterTomorrow.toISOString().split("T")[0]);
+
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 40);
+      const sections = ["home", "booking-form-section", "steps-section", "tour-packages", "routes-trips", "our-fleet", "fare-calculator", "reviews", "faq", "contact-us"];
+      const scrollPos = window.scrollY + 120;
+      for (const sec of sections) {
+        const el = document.getElementById(sec);
+        if (el) {
+          const top = el.offsetTop;
+          const height = el.offsetHeight;
+          if (scrollPos >= top && scrollPos < top + height) {
+            setActiveSection(sec);
+            break;
+          }
+        }
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // GPS simulation
@@ -423,7 +473,7 @@ export default function VishalTravelsWebsite() {
       </div>
 
       {/* 2. MAIN HEADER (Pure White with Vishal Travels Logo & Sky Blue Button) */}
-      <header className="vishal-header" id="mainHeader">
+      <header className={`vishal-header ${isScrolled ? "scrolled" : ""}`} id="mainHeader">
         <div className="container vishal-header-inner">
           {/* Logo Matching Screenshot */}
           <a href="#home" className="vishal-logo-wrap">
@@ -446,20 +496,75 @@ export default function VishalTravelsWebsite() {
             </div>
           </a>
 
-          {/* Navigation Links from Screenshot */}
+          {/* Navigation Links from Screenshot with Smooth Dropdowns */}
           <nav className="vishal-nav-menu">
-            <a href="#home" className="vishal-nav-item active">Home</a>
-            <a href="#about-us" className="vishal-nav-item">About Us</a>
-            <a href="#routes-trips" className="vishal-nav-item">
-              Routes & Trips <span className="dropdown-caret">▼</span>
+            <a href="#home" className={`vishal-nav-item ${activeSection === "home" ? "active" : ""}`}>
+              Home
             </a>
-            <a href="#tour-packages" className="vishal-nav-item">
-              Packages <span className="dropdown-caret">▼</span>
+            <a href="#about-us" className={`vishal-nav-item ${activeSection === "about-us" ? "active" : ""}`}>
+              About Us
             </a>
-            <a href="#fare-calculator" className="vishal-nav-item">Bus Fair</a>
-            <a href="#our-fleet" className="vishal-nav-item">Gallery</a>
-            <a href="#why-choose-us" className="vishal-nav-item">Blog</a>
-            <a href="#contact-us" className="vishal-nav-item">Contact Us</a>
+
+            {/* Routes & Trips with Interactive Animated Dropdown */}
+            <div className="nav-item-has-dropdown">
+              <a href="#routes-trips" className={`vishal-nav-item ${activeSection === "routes-trips" ? "active" : ""}`}>
+                Routes & Trips <span className="dropdown-caret">▼</span>
+              </a>
+              <div className="nav-dropdown-menu">
+                <a href="#routes-trips" className="nav-dropdown-link" onClick={() => { setPickupLocation("Pune"); setDestination("Mahabaleshwar"); }}>
+                  <span>Pune ➔ Mahabaleshwar</span> <small style={{ color: "var(--topbar-bg)", fontWeight: 700 }}>₹4,200</small>
+                </a>
+                <a href="#routes-trips" className="nav-dropdown-link" onClick={() => { setPickupLocation("Pune"); setDestination("Shirdi"); }}>
+                  <span>Pune ➔ Shirdi Mandir</span> <small style={{ color: "var(--topbar-bg)", fontWeight: 700 }}>₹4,800</small>
+                </a>
+                <a href="#routes-trips" className="nav-dropdown-link" onClick={() => { setPickupLocation("Pune"); setDestination("Mumbai Airport"); }}>
+                  <span>Pune ➔ Mumbai Airport</span> <small style={{ color: "var(--topbar-bg)", fontWeight: 700 }}>₹3,500</small>
+                </a>
+                <a href="#routes-trips" className="nav-dropdown-link" onClick={() => { setPickupLocation("Pune"); setDestination("Chiplun"); }}>
+                  <span>Pune ➔ Chiplun / Konkan</span> <small style={{ color: "var(--topbar-bg)", fontWeight: 700 }}>₹5,400</small>
+                </a>
+                <a href="#routes-trips" className="nav-dropdown-link" onClick={() => { setPickupLocation("Pune"); setDestination("Goa"); }}>
+                  <span>Pune ➔ Goa Coastal</span> <small style={{ color: "var(--topbar-bg)", fontWeight: 700 }}>₹14,500</small>
+                </a>
+              </div>
+            </div>
+
+            {/* Packages with Interactive Animated Dropdown */}
+            <div className="nav-item-has-dropdown">
+              <a href="#tour-packages" className={`vishal-nav-item ${activeSection === "tour-packages" ? "active" : ""}`}>
+                Packages <span className="dropdown-caret">▼</span>
+              </a>
+              <div className="nav-dropdown-menu">
+                <a href="#tour-packages" className="nav-dropdown-link" onClick={() => setDestination("Ashtavinayak Darshan")}>
+                  <span>🛕 Ashtavinayak 8 Ganpati</span> <small style={{ color: "var(--btn-blue)", fontWeight: 700 }}>2 Days</small>
+                </a>
+                <a href="#tour-packages" className="nav-dropdown-link" onClick={() => setDestination("5 Jyotirlinga")}>
+                  <span>🔱 5 Jyotirlinga Maharashtra</span> <small style={{ color: "var(--btn-blue)", fontWeight: 700 }}>4 Days</small>
+                </a>
+                <a href="#tour-packages" className="nav-dropdown-link" onClick={() => setDestination("Mahabaleshwar & Panchgani")}>
+                  <span>🍓 Mahabaleshwar Tour</span> <small style={{ color: "var(--btn-blue)", fontWeight: 700 }}>2 Days</small>
+                </a>
+                <a href="#tour-packages" className="nav-dropdown-link" onClick={() => setDestination("Shirdi & Shani Shingnapur")}>
+                  <span>🙏 Shirdi Sai Baba Darshan</span> <small style={{ color: "var(--btn-blue)", fontWeight: 700 }}>1-2 Days</small>
+                </a>
+                <a href="#tour-packages" className="nav-dropdown-link" onClick={() => setDestination("Malvan & Goa")}>
+                  <span>🏖️ Malvan Scuba & Goa</span> <small style={{ color: "var(--btn-blue)", fontWeight: 700 }}>4 Days</small>
+                </a>
+              </div>
+            </div>
+
+            <a href="#fare-calculator" className={`vishal-nav-item ${activeSection === "fare-calculator" ? "active" : ""}`}>
+              Bus Fair
+            </a>
+            <a href="#our-fleet" className={`vishal-nav-item ${activeSection === "our-fleet" ? "active" : ""}`}>
+              Gallery
+            </a>
+            <a href="#why-choose-us" className={`vishal-nav-item ${activeSection === "why-choose-us" ? "active" : ""}`}>
+              Blog
+            </a>
+            <a href="#contact-us" className={`vishal-nav-item ${activeSection === "contact-us" ? "active" : ""}`}>
+              Contact Us
+            </a>
           </nav>
 
           {/* Sky Blue "Book Your Bus" Button from Screenshot */}
@@ -472,9 +577,47 @@ export default function VishalTravelsWebsite() {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle navigation menu"
           >
-            ☰
+            {mobileMenuOpen ? "✕" : "☰"}
           </button>
         </div>
+
+        {/* Mobile Animated Dropdown Drawer */}
+        {mobileMenuOpen && (
+          <div className="vishal-mobile-drawer">
+            <a href="#home" className="vishal-mobile-link" onClick={() => setMobileMenuOpen(false)}>
+              <span>Home</span> <span>➔</span>
+            </a>
+            <a href="#booking-form-section" className="vishal-mobile-link" onClick={() => setMobileMenuOpen(false)}>
+              <span>Book a Bus</span> <span>➔</span>
+            </a>
+            <a href="#tour-packages" className="vishal-mobile-link" onClick={() => setMobileMenuOpen(false)}>
+              <span>Tour Packages</span> <span>➔</span>
+            </a>
+            <a href="#routes-trips" className="vishal-mobile-link" onClick={() => setMobileMenuOpen(false)}>
+              <span>Routes & Trips</span> <span>➔</span>
+            </a>
+            <a href="#our-fleet" className="vishal-mobile-link" onClick={() => setMobileMenuOpen(false)}>
+              <span>Our Fleet</span> <span>➔</span>
+            </a>
+            <a href="#fare-calculator" className="vishal-mobile-link" onClick={() => setMobileMenuOpen(false)}>
+              <span>Bus Fair Calculator</span> <span>➔</span>
+            </a>
+            <a href="#faq" className="vishal-mobile-link" onClick={() => setMobileMenuOpen(false)}>
+              <span>Frequently Asked Questions</span> <span>➔</span>
+            </a>
+            <a href="#contact-us" className="vishal-mobile-link" onClick={() => setMobileMenuOpen(false)}>
+              <span>Contact Us</span> <span>➔</span>
+            </a>
+            <div style={{ marginTop: "12px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+              <a href="tel:+919764564699" className="btn-lets-go" style={{ textAlign: "center", textDecoration: "none", lineHeight: "50px", padding: 0 }}>
+                📞 Call Now
+              </a>
+              <a href="https://wa.me/919764564699" className="btn-book-bus" style={{ justifyContent: "center", textDecoration: "none" }}>
+                💬 WhatsApp
+              </a>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* 3. HERO SECTION (Identical to User Screenshot) */}
@@ -1074,7 +1217,40 @@ export default function VishalTravelsWebsite() {
         </div>
       </section>
 
-      {/* 11. FOOTER (Vishal Travels Pune) */}
+      {/* 11. FAQ ACCORDION WITH SMOOTH EXPAND/COLLAPSE TRANSITIONS */}
+      <section className="faq-section" id="faq">
+        <div className="container">
+          <div className="section-head-center">
+            <span className="head-subtitle">GOT QUESTIONS?</span>
+            <h2 className="head-title">Frequently Asked Questions</h2>
+            <p className="head-desc">
+              Clear answers regarding bus rental rates, Force Urbania booking, outstation permits, and driver allowances in Pune.
+            </p>
+          </div>
+
+          <div className="faq-container">
+            {FAQ_DATA.map((faq, idx) => (
+              <div key={idx} className={`faq-card ${openFaqIndex === idx ? "open" : ""}`}>
+                <button
+                  className="faq-question-btn"
+                  onClick={() => setOpenFaqIndex(openFaqIndex === idx ? null : idx)}
+                  aria-expanded={openFaqIndex === idx}
+                >
+                  <span>{faq.q}</span>
+                  <span className="faq-chevron">▼</span>
+                </button>
+                <div className="faq-answer-wrap">
+                  <div className="faq-answer-content">
+                    {faq.a}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 12. FOOTER (Vishal Travels Pune) */}
       <footer className="vishal-footer" id="contact-us">
         <div className="container footer-grid-4">
           <div>
@@ -1107,6 +1283,7 @@ export default function VishalTravelsWebsite() {
               <a href="#tour-packages">Packages</a>
               <a href="#our-fleet">Our Fleet</a>
               <a href="#fare-calculator">Bus Fair</a>
+              <a href="#faq">FAQ</a>
             </div>
           </div>
 
@@ -1444,6 +1621,21 @@ export default function VishalTravelsWebsite() {
             <span>{toast.text}</span>
           </div>
         </div>
+      )}
+
+      {/* FLOATING SMOOTH BACK TO TOP BUTTON */}
+      {isScrolled && (
+        <button
+          className="btn-scroll-top"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          aria-label="Back to top"
+          title="Back to top"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <line x1="12" y1="19" x2="12" y2="5"/>
+            <polyline points="5 12 12 5 19 12"/>
+          </svg>
+        </button>
       )}
     </>
   );
