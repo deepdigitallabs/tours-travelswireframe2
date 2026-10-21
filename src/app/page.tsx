@@ -1121,28 +1121,6 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
                 </div>
               </div>
             </div>
-
-            <div className="booking-contact-row">
-              <a href="tel:+919800000000" className="contact-quick-card">
-                <div className="contact-card-icon">📞</div>
-                <div className="contact-card-text">
-                  <small>Call 24/7 Helpline</small>
-                  <strong>+91 9800000000</strong>
-                </div>
-              </a>
-              <a
-                href="https://wa.me/919800000000"
-                target="_blank"
-                rel="noreferrer"
-                className="contact-quick-card wa"
-              >
-                <div className="contact-card-icon">💬</div>
-                <div className="contact-card-text">
-                  <small>Instant WhatsApp</small>
-                  <strong>+91 9800000000</strong>
-                </div>
-              </a>
-            </div>
           </div>
 
           {/* Right Column: Executive Trip Booking Console */}
