@@ -702,11 +702,11 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
     }
     const a = document.createElement("a");
     a.href = generatedTicketImage;
-    a.download = `Vishal_Travels_ETicket_${generatedTicket?.pnr || "Voucher"}.png`;
+    a.download = `Vishal_Travels_Voucher_${generatedTicket?.pnr || "Enquiry"}.png`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    triggerToast("E-Ticket voucher image downloaded successfully!", "success");
+    triggerToast("Trip summary voucher image downloaded successfully!", "success");
   };
 
   const handleSendWa = (userMsg: string) => {
@@ -2033,57 +2033,154 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
         </div>
       )}
 
-      {/* RESERVATION CONFIRMATION MODAL */}
-      {isBookingModalOpen && selectedVehicle && (
+      {/* RESERVATION / TOUR BOOKING MODAL */}
+      {isBookingModalOpen && (selectedVehicle || selectedPackage) && (
         <div className="modal-backdrop">
           <div className="modal-dialog">
             <div className="modal-header">
-              <h3>Reserve {selectedVehicle.name}</h3>
-              <button className="modal-close-btn" onClick={() => setIsBookingModalOpen(false)}>
+              <h3>
+                {selectedPackage
+                  ? `Book Tour: ${selectedPackage.title}`
+                  : `Reserve ${selectedVehicle?.name || "Vehicle"}`}
+              </h3>
+              <button
+                className="modal-close-btn"
+                onClick={() => {
+                  setIsBookingModalOpen(false);
+                  setSelectedPackage(null);
+                }}
+              >
                 ✕
               </button>
             </div>
 
             <div className="modal-body">
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: "16px",
-                  marginBottom: "18px",
-                  background: "#f8fafc",
-                  padding: "16px",
-                  borderRadius: "8px",
-                  border: "1px solid #e2e8f0"
-                }}
-              >
-                <div>
-                  <h4 style={{ color: "var(--navy-900)", marginBottom: "4px" }}>
-                    {selectedVehicle.name}
-                  </h4>
-                  <p style={{ fontSize: "0.82rem", color: "#64748b" }}>
-                    {selectedVehicle.seatingText}
-                  </p>
-                  <p style={{ fontSize: "0.82rem", color: "#64748b" }}>
-                    Rate: <strong>₹{selectedVehicle.ratePerKm}/km</strong> (Min{" "}
-                    {selectedVehicle.minKmPerDay} km/day)
-                  </p>
+              {selectedPackage ? (
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1.2fr 0.8fr",
+                    gap: "16px",
+                    marginBottom: "18px",
+                    background: "#f8fafc",
+                    padding: "16px",
+                    borderRadius: "8px",
+                    border: "1.5px solid #e2e8f0"
+                  }}
+                >
+                  <div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
+                      <span
+                        style={{
+                          background: "var(--gold-500)",
+                          color: "#071324",
+                          fontWeight: 800,
+                          fontSize: "0.72rem",
+                          padding: "2px 8px",
+                          borderRadius: "4px"
+                        }}
+                      >
+                        {selectedPackage.tag}
+                      </span>
+                      <h4 style={{ color: "var(--navy-900)", margin: 0, fontSize: "1.05rem" }}>
+                        {selectedPackage.title}
+                      </h4>
+                    </div>
+                    <p style={{ fontSize: "0.82rem", color: "#64748b", margin: "4px 0" }}>
+                      {selectedPackage.subtitle}
+                    </p>
+                    <div style={{ fontSize: "0.82rem", color: "#334155", display: "flex", gap: "12px", marginTop: "6px" }}>
+                      <span>⏱️ <strong>{selectedPackage.duration}</strong></span>
+                      <span>🛣️ <strong>{selectedPackage.distanceKm} KM</strong></span>
+                    </div>
+                    <div style={{ marginTop: "8px", fontSize: "0.78rem", color: "#475569" }}>
+                      <strong>Circuit Highlights:</strong>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "4px", marginTop: "4px" }}>
+                        {selectedPackage.highlights.map((h, i) => (
+                          <span
+                            key={i}
+                            style={{
+                              background: "#ffffff",
+                              border: "1px solid #cbd5e1",
+                              padding: "2px 6px",
+                              borderRadius: "4px",
+                              fontSize: "0.75rem"
+                            }}
+                          >
+                            • {h}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  <div style={{ textAlign: "right", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                    <div>
+                      <span
+                        style={{
+                          background: "#dcfce7",
+                          color: "#16a34a",
+                          padding: "4px 10px",
+                          borderRadius: "6px",
+                          fontSize: "0.75rem",
+                          fontWeight: 700,
+                          display: "inline-block"
+                        }}
+                      >
+                        ● 24/7 Pune Dispatch Ready
+                      </span>
+                    </div>
+                    <div style={{ background: "#ffffff", padding: "10px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
+                      <span style={{ fontSize: "0.75rem", color: "#64748b", display: "block" }}>Starting From</span>
+                      <strong style={{ fontSize: "1.3rem", color: "var(--navy-900)" }}>
+                        ₹{selectedPackage.startingPrice.toLocaleString()}
+                      </strong>
+                      <small style={{ display: "block", color: "#64748b", fontSize: "0.72rem" }}>
+                        AC Tempo / Urbania with Chauffeur
+                      </small>
+                    </div>
+                  </div>
                 </div>
-                <div style={{ textAlign: "right" }}>
-                  <span
-                    style={{
-                      background: "#dcfce7",
-                      color: "#16a34a",
-                      padding: "4px 10px",
-                      borderRadius: "6px",
-                      fontSize: "0.75rem",
-                      fontWeight: 700
-                    }}
-                  >
-                    ● 24/7 Pune Dispatch Ready
-                  </span>
+              ) : selectedVehicle ? (
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    gap: "16px",
+                    marginBottom: "18px",
+                    background: "#f8fafc",
+                    padding: "16px",
+                    borderRadius: "8px",
+                    border: "1px solid #e2e8f0"
+                  }}
+                >
+                  <div>
+                    <h4 style={{ color: "var(--navy-900)", marginBottom: "4px" }}>
+                      {selectedVehicle.name}
+                    </h4>
+                    <p style={{ fontSize: "0.82rem", color: "#64748b" }}>
+                      {selectedVehicle.seatingText}
+                    </p>
+                    <p style={{ fontSize: "0.82rem", color: "#64748b" }}>
+                      Rate: <strong>₹{selectedVehicle.ratePerKm}/km</strong> (Min{" "}
+                      {selectedVehicle.minKmPerDay} km/day)
+                    </p>
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    <span
+                      style={{
+                        background: "#dcfce7",
+                        color: "#16a34a",
+                        padding: "4px 10px",
+                        borderRadius: "6px",
+                        fontSize: "0.75rem",
+                        fontWeight: 700
+                      }}
+                    >
+                      ● 24/7 Pune Dispatch Ready
+                    </span>
+                  </div>
                 </div>
-              </div>
+              ) : null}
 
               <form onSubmit={handleConfirmReservation}>
                 <div className="bf-grid-2">
@@ -2118,7 +2215,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
                     />
                   </div>
                   <div className="bf-field">
-                    <label>Destination *</label>
+                    <label>Destination / Tour *</label>
                     <input
                       type="text"
                       value={modalDestination}
@@ -2160,16 +2257,28 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
                       cursor: "pointer",
                       fontWeight: 700
                     }}
-                    onClick={() => setIsBookingModalOpen(false)}
+                    onClick={() => {
+                      setIsBookingModalOpen(false);
+                      setSelectedPackage(null);
+                    }}
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     className="btn-header-cta"
-                    style={{ padding: "10px 24px" }}
+                    style={{
+                      padding: "10px 24px",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      background: "linear-gradient(135deg, #16a34a 0%, #15803d 100%)",
+                      color: "#fff",
+                      border: "none",
+                      boxShadow: "0 4px 14px rgba(22, 163, 74, 0.35)"
+                    }}
                   >
-                    Confirm &amp; Issue E-Ticket
+                    <span>💬</span> Send Enquiry to Owner on WhatsApp
                   </button>
                 </div>
               </form>
@@ -2187,9 +2296,9 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
               style={{ background: "var(--navy-900)", color: "#fff" }}
             >
               <div>
-                <h3 style={{ color: "#fff", fontSize: "1.2rem" }}>BOOKING CONFIRMED • VISHAL TRAVELS PUNE</h3>
-                <small style={{ color: "#10b981", fontWeight: 700 }}>
-                  ✓ Details &amp; E-Ticket Sent to Owner on WhatsApp (+91 9764564699)
+                <h3 style={{ color: "#fff", fontSize: "1.2rem" }}>BOOKING ENQUIRY CRAFTED • VISHAL TRAVELS PUNE</h3>
+                <small style={{ color: "#38bdf8", fontWeight: 700 }}>
+                  ✓ Details Sent to Owner on WhatsApp (+91 9764564699)
                 </small>
               </div>
               <button
@@ -2221,7 +2330,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
                 }}
               >
                 <span>
-                  📲 <strong>WhatsApp Dispatched:</strong> Booking text &amp; PNR voucher sent to Vishal Travels Owner (+91 9764564699).
+                  📲 <strong>WhatsApp Dispatched:</strong> Your trip enquiry message has been crafted and sent to Vishal Travels Owner (+91 9764564699). We will check vehicle availability and confirm shortly!
                 </span>
                 <a
                   href={`https://wa.me/919764564699?text=${encodeURIComponent(lastWaText)}`}
@@ -2249,7 +2358,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
                 <div style={{ marginBottom: "16px", borderRadius: "8px", overflow: "hidden", border: "1.5px solid #cbd5e1" }}>
                   <img
                     src={generatedTicketImage}
-                    alt="Vishal Travels Generated E-Ticket Voucher"
+                    alt="Vishal Travels Generated Trip Voucher"
                     style={{ width: "100%", height: "auto", display: "block" }}
                   />
                 </div>
@@ -2268,7 +2377,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
                 >
                   <div>
                     <h3 style={{ color: "var(--navy-900)", margin: 0 }}>Vishal Travels Pune</h3>
-                    <small style={{ color: "#64748b" }}>Official Booking Voucher &amp; E-Ticket</small>
+                    <small style={{ color: "#64748b" }}>Trip Enquiry Summary &amp; Estimate Voucher</small>
                   </div>
                   <div style={{ textAlign: "right" }}>
                     <span style={{ fontSize: "0.72rem", color: "#64748b", display: "block" }}>
@@ -2367,7 +2476,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
                     }}
                     onClick={handleDownloadTicketImage}
                   >
-                    <span>📥</span> Download E-Ticket Image (PNG)
+                    <span>📥</span> Download Trip Voucher (PNG)
                   </button>
                 )}
 
@@ -2382,7 +2491,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
                   }}
                   onClick={() => window.print()}
                 >
-                  🖨️ Print Ticket
+                  🖨️ Print Trip Voucher
                 </button>
 
                 <button
