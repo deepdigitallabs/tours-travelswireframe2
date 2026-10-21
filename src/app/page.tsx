@@ -594,9 +594,6 @@ export default function HomePage() {
     const waText = `*TRIP ENQUIRY & RESERVATION REQUEST*
 *Vishal Travels Pune*
 --------------------------------------------
-*Enquiry Ref:* ${pnr}
-*Passenger Name:* ${passengerName}
-*Mobile Number:* +91 ${passengerPhone}
 *Vehicle Selected:* ${vehicleChoice}
 *Pickup Point:* ${fromLoc}
 *Destination:* ${toLoc}
@@ -611,8 +608,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my journey and s
       window.open(waUrl, "_blank");
     }
 
-    setIsTicketModalOpen(true);
-    triggerToast("Trip enquiry crafted & sent to Owner on WhatsApp (+91 9800000000).", "success");
+    triggerToast("Trip enquiry crafted! Opening WhatsApp to send to Vishal Travels (+91 9800000000)...", "success");
   };
 
   const handleConfirmReservation = (e: React.FormEvent) => {
@@ -656,24 +652,18 @@ _Namaskar Vishal Travels! Please check vehicle availability for my journey and s
       ? `*TOUR PACKAGE BOOKING ENQUIRY*
 *Vishal Travels Pune*
 --------------------------------------------
-*Enquiry Ref:* ${pnr}
 *Tour Package:* ${selectedPackage.title}
 *Subtitle:* ${selectedPackage.subtitle}
 *Duration & Distance:* ${selectedPackage.duration} • ${selectedPackage.distanceKm} KM
 *Package Fare:* Starting From ₹${selectedPackage.startingPrice.toLocaleString()}
-*Passenger Name:* ${passengerName}
-*Mobile Number:* +91 ${passengerPhone}
 *Pickup Point:* ${fromLocation}
 *Journey Date:* ${journeyDate}
 *Reporting Time:* ${reportingTime}
 --------------------------------------------
-_Namaskar Vishal Travels! Please check vehicle availability for our tour and share the final itinerary quotation._`
+_Namaskar Vishal Travels! Please check vehicle availability for our tour and share the final quotation._`
       : `*TRIP ENQUIRY & RESERVATION REQUEST*
 *Vishal Travels Pune*
 --------------------------------------------
-*Enquiry Ref:* ${pnr}
-*Passenger Name:* ${passengerName}
-*Mobile Number:* +91 ${passengerPhone}
 *Vehicle Requested:* ${vehicleName}
 *Pickup Point:* ${fromLocation}
 *Destination:* ${toLocation}
@@ -691,8 +681,8 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
     }
 
     setIsBookingModalOpen(false);
-    setIsTicketModalOpen(true);
-    triggerToast("Trip enquiry crafted & sent to Owner on WhatsApp (+91 9800000000).", "success");
+    setSelectedPackage(null);
+    triggerToast("Trip enquiry crafted! Opening WhatsApp to send to Vishal Travels (+91 9800000000)...", "success");
   };
 
   const handleDownloadTicketImage = () => {
@@ -1161,7 +1151,6 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
               <div className="bf-header-title">
                 <span>🚌</span> Trip Booking Console
               </div>
-              <span className="bf-header-badge">Direct WhatsApp Booking</span>
             </div>
 
             <div className="bf-body">
@@ -1197,30 +1186,6 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
               </div>
 
               <form onSubmit={handleQuickBookSubmit}>
-                <div className="bf-grid-2">
-                  <div className="bf-field">
-                    <label htmlFor="formCustName">Your Full Name *</label>
-                    <input
-                      type="text"
-                      id="formCustName"
-                      placeholder="e.g. Rahul Patil"
-                      value={custName}
-                      onChange={(e) => setCustName(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="bf-field">
-                    <label htmlFor="formCustPhone">Mobile Number (WhatsApp) *</label>
-                    <input
-                      type="tel"
-                      id="formCustPhone"
-                      placeholder="10-digit mobile number"
-                      value={custPhone}
-                      onChange={(e) => setCustPhone(e.target.value)}
-                      required
-                    />
-                  </div>
-                </div>
 
                 <div className="bf-grid-2">
                   <div className="bf-field">
@@ -1464,14 +1429,25 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
                 </div>
                 <button
                   className="btn-card-book"
-                  style={{ width: "100%", padding: "8px 0" }}
+                  style={{ width: "100%", padding: "8px 0", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px" }}
                   onClick={() => {
-                    setDestination(r.route.split("➔")[1].trim());
-                    setSelectedVehicle(FLEET_DATA[0]);
-                    setIsBookingModalOpen(true);
+                    const waText = `*ROUTE RESERVATION ENQUIRY*
+*Vishal Travels Pune*
+--------------------------------------------
+*Selected Route:* ${r.route}
+*Duration:* ${r.time}
+*Estimated Distance:* ${r.dist}
+*Standard Fare:* ${r.fare}
+--------------------------------------------
+_Namaskar Vishal Travels! I want to reserve a vehicle for the ${r.route} route (${r.dist}). Please share available vehicles and the best quotation._`;
+                    const waUrl = `https://wa.me/919800000000?text=${encodeURIComponent(waText)}`;
+                    if (typeof window !== "undefined") {
+                      window.open(waUrl, "_blank");
+                    }
+                    triggerToast(`Opening WhatsApp for ${r.route} reservation...`, "success");
                   }}
                 >
-                  Reserve This Route
+                  <span>💬</span> Reserve This Route
                 </button>
               </div>
             ))}
@@ -2060,51 +2036,51 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
                   style={{
                     display: "grid",
                     gridTemplateColumns: "1.2fr 0.8fr",
-                    gap: "16px",
-                    marginBottom: "18px",
+                    gap: "12px",
+                    marginBottom: "12px",
                     background: "#f8fafc",
-                    padding: "16px",
+                    padding: "10px 12px",
                     borderRadius: "8px",
-                    border: "1.5px solid #e2e8f0"
+                    border: "1px solid #e2e8f0"
                   }}
                 >
                   <div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "3px" }}>
                       <span
                         style={{
                           background: "var(--gold-500)",
                           color: "#071324",
                           fontWeight: 800,
-                          fontSize: "0.72rem",
-                          padding: "2px 8px",
+                          fontSize: "0.65rem",
+                          padding: "1px 6px",
                           borderRadius: "4px"
                         }}
                       >
                         {selectedPackage.tag}
                       </span>
-                      <h4 style={{ color: "var(--navy-900)", margin: 0, fontSize: "1.05rem" }}>
+                      <h4 style={{ color: "var(--navy-900)", margin: 0, fontSize: "0.92rem", fontWeight: 700 }}>
                         {selectedPackage.title}
                       </h4>
                     </div>
-                    <p style={{ fontSize: "0.82rem", color: "#64748b", margin: "4px 0" }}>
+                    <p style={{ fontSize: "0.75rem", color: "#64748b", margin: "2px 0 4px" }}>
                       {selectedPackage.subtitle}
                     </p>
-                    <div style={{ fontSize: "0.82rem", color: "#334155", display: "flex", gap: "12px", marginTop: "6px" }}>
+                    <div style={{ fontSize: "0.75rem", color: "#334155", display: "flex", gap: "10px" }}>
                       <span>⏱️ <strong>{selectedPackage.duration}</strong></span>
                       <span>🛣️ <strong>{selectedPackage.distanceKm} KM</strong></span>
                     </div>
-                    <div style={{ marginTop: "8px", fontSize: "0.78rem", color: "#475569" }}>
-                      <strong>Circuit Highlights:</strong>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: "4px", marginTop: "4px" }}>
+                    <div style={{ marginTop: "6px", fontSize: "0.72rem", color: "#475569" }}>
+                      <strong style={{ fontSize: "0.7rem", color: "#64748b" }}>Circuit Highlights:</strong>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "3px", marginTop: "2px" }}>
                         {selectedPackage.highlights.map((h, i) => (
                           <span
                             key={i}
                             style={{
                               background: "#ffffff",
                               border: "1px solid #cbd5e1",
-                              padding: "2px 6px",
-                              borderRadius: "4px",
-                              fontSize: "0.75rem"
+                              padding: "1px 5px",
+                              borderRadius: "3px",
+                              fontSize: "0.68rem"
                             }}
                           >
                             • {h}
@@ -2119,23 +2095,23 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
                         style={{
                           background: "#dcfce7",
                           color: "#16a34a",
-                          padding: "4px 10px",
-                          borderRadius: "6px",
-                          fontSize: "0.75rem",
+                          padding: "2px 6px",
+                          borderRadius: "4px",
+                          fontSize: "0.68rem",
                           fontWeight: 700,
                           display: "inline-block"
                         }}
                       >
-                        ● 24/7 Pune Dispatch Ready
+                        ● 24/7 Pune Ready
                       </span>
                     </div>
-                    <div style={{ background: "#ffffff", padding: "10px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
-                      <span style={{ fontSize: "0.75rem", color: "#64748b", display: "block" }}>Starting From</span>
-                      <strong style={{ fontSize: "1.3rem", color: "var(--navy-900)" }}>
+                    <div style={{ background: "#ffffff", padding: "6px 8px", borderRadius: "6px", border: "1px solid #e2e8f0" }}>
+                      <span style={{ fontSize: "0.68rem", color: "#64748b", display: "block" }}>Starting From</span>
+                      <strong style={{ fontSize: "1.1rem", color: "var(--navy-900)" }}>
                         ₹{selectedPackage.startingPrice.toLocaleString()}
                       </strong>
-                      <small style={{ display: "block", color: "#64748b", fontSize: "0.72rem" }}>
-                        AC Tempo / Urbania with Chauffeur
+                      <small style={{ display: "block", color: "#64748b", fontSize: "0.65rem" }}>
+                        AC Tempo / Urbania
                       </small>
                     </div>
                   </div>
@@ -2145,22 +2121,22 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
                   style={{
                     display: "grid",
                     gridTemplateColumns: "1fr 1fr",
-                    gap: "16px",
-                    marginBottom: "18px",
+                    gap: "12px",
+                    marginBottom: "12px",
                     background: "#f8fafc",
-                    padding: "16px",
+                    padding: "10px 12px",
                     borderRadius: "8px",
                     border: "1px solid #e2e8f0"
                   }}
                 >
                   <div>
-                    <h4 style={{ color: "var(--navy-900)", marginBottom: "4px" }}>
+                    <h4 style={{ color: "var(--navy-900)", margin: "0 0 2px", fontSize: "0.92rem", fontWeight: 700 }}>
                       {selectedVehicle.name}
                     </h4>
-                    <p style={{ fontSize: "0.82rem", color: "#64748b" }}>
+                    <p style={{ fontSize: "0.75rem", color: "#64748b", margin: "2px 0" }}>
                       {selectedVehicle.seatingText}
                     </p>
-                    <p style={{ fontSize: "0.82rem", color: "#64748b" }}>
+                    <p style={{ fontSize: "0.75rem", color: "#64748b", margin: 0 }}>
                       Rate: <strong>₹{selectedVehicle.ratePerKm}/km</strong> (Min{" "}
                       {selectedVehicle.minKmPerDay} km/day)
                     </p>
@@ -2170,92 +2146,65 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
                       style={{
                         background: "#dcfce7",
                         color: "#16a34a",
-                        padding: "4px 10px",
-                        borderRadius: "6px",
-                        fontSize: "0.75rem",
+                        padding: "2px 6px",
+                        borderRadius: "4px",
+                        fontSize: "0.68rem",
                         fontWeight: 700
                       }}
                     >
-                      ● 24/7 Pune Dispatch Ready
+                      ● 24/7 Pune Ready
                     </span>
                   </div>
                 </div>
               ) : null}
 
               <form onSubmit={handleConfirmReservation}>
-                <div className="bf-grid-2">
-                  <div className="bf-field">
-                    <label>Passenger Name *</label>
-                    <input
-                      type="text"
-                      value={modalName}
-                      onChange={(e) => setModalName(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="bf-field">
-                    <label>Mobile Number *</label>
-                    <input
-                      type="tel"
-                      value={modalPhone}
-                      onChange={(e) => setModalPhone(e.target.value)}
-                      required
-                    />
-                  </div>
+                <div className="bf-field" style={{ marginBottom: "10px" }}>
+                  <label style={{ fontSize: "0.78rem", marginBottom: "4px", display: "block", fontWeight: 600 }}>Pickup Location *</label>
+                  <input
+                    type="text"
+                    value={modalPickup}
+                    placeholder="Pune (Any Landmark / Swargate / Hinjewadi)"
+                    onChange={(e) => setModalPickup(e.target.value)}
+                    style={{ padding: "8px 12px", fontSize: "0.85rem" }}
+                    required
+                  />
                 </div>
 
-                <div className="bf-grid-2">
+                <div className="bf-grid-2" style={{ gap: "10px", marginBottom: "10px" }}>
                   <div className="bf-field">
-                    <label>Pickup Location *</label>
-                    <input
-                      type="text"
-                      value={modalPickup}
-                      onChange={(e) => setModalPickup(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="bf-field">
-                    <label>Destination / Tour *</label>
-                    <input
-                      type="text"
-                      value={modalDestination}
-                      onChange={(e) => setModalDestination(e.target.value)}
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="bf-grid-2">
-                  <div className="bf-field">
-                    <label>Date of Journey *</label>
+                    <label style={{ fontSize: "0.78rem", marginBottom: "4px", display: "block", fontWeight: 600 }}>Date of Journey *</label>
                     <input
                       type="date"
                       value={modalDate}
                       onChange={(e) => setModalDate(e.target.value)}
+                      style={{ padding: "8px 12px", fontSize: "0.85rem" }}
                       required
                     />
                   </div>
                   <div className="bf-field">
-                    <label>Reporting Time *</label>
+                    <label style={{ fontSize: "0.78rem", marginBottom: "4px", display: "block", fontWeight: 600 }}>Reporting Time *</label>
                     <input
                       type="time"
                       value={modalTime}
                       onChange={(e) => setModalTime(e.target.value)}
+                      style={{ padding: "8px 12px", fontSize: "0.85rem" }}
                       required
                     />
                   </div>
                 </div>
 
-                <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "16px" }}>
+                <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", marginTop: "14px" }}>
                   <button
                     type="button"
                     style={{
-                      padding: "10px 18px",
+                      padding: "8px 14px",
                       border: "1.5px solid #cbd5e1",
                       background: "none",
-                      borderRadius: "8px",
+                      borderRadius: "6px",
                       cursor: "pointer",
-                      fontWeight: 700
+                      fontWeight: 600,
+                      fontSize: "0.82rem"
                     }}
                     onClick={() => {
                       setIsBookingModalOpen(false);
@@ -2268,14 +2217,17 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
                     type="submit"
                     className="btn-header-cta"
                     style={{
-                      padding: "10px 24px",
+                      padding: "8px 18px",
                       display: "inline-flex",
                       alignItems: "center",
-                      gap: "8px",
+                      gap: "6px",
                       background: "linear-gradient(135deg, #16a34a 0%, #15803d 100%)",
                       color: "#fff",
                       border: "none",
-                      boxShadow: "0 4px 14px rgba(22, 163, 74, 0.35)"
+                      borderRadius: "6px",
+                      fontSize: "0.85rem",
+                      fontWeight: 700,
+                      boxShadow: "0 3px 10px rgba(22, 163, 74, 0.3)"
                     }}
                   >
                     <span>💬</span> Send Enquiry
@@ -2287,227 +2239,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
         </div>
       )}
 
-      {/* E-TICKET VOUCHER MODAL */}
-      {isTicketModalOpen && generatedTicket && (
-        <div className="modal-backdrop">
-          <div className="modal-dialog">
-            <div
-              className="modal-header"
-              style={{ background: "var(--navy-900)", color: "#fff" }}
-            >
-              <div>
-                <h3 style={{ color: "#fff", fontSize: "1.2rem" }}>BOOKING ENQUIRY CRAFTED • VISHAL TRAVELS PUNE</h3>
-                <small style={{ color: "#38bdf8", fontWeight: 700 }}>
-                  ✓ Details Sent to Owner on WhatsApp (+91 9800000000)
-                </small>
-              </div>
-              <button
-                className="modal-close-btn"
-                style={{ background: "rgba(255,255,255,0.2)", color: "#fff" }}
-                onClick={() => setIsTicketModalOpen(false)}
-              >
-                ✕
-              </button>
-            </div>
 
-            <div className="modal-body" id="printTicketArea">
-              {/* WhatsApp Sent Alert Banner */}
-              <div
-                style={{
-                  background: "#dcfce7",
-                  border: "1.5px solid #86efac",
-                  color: "#166534",
-                  padding: "12px 16px",
-                  borderRadius: "8px",
-                  marginBottom: "16px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  flexWrap: "wrap",
-                  gap: "10px",
-                  fontSize: "0.88rem",
-                  fontWeight: 600
-                }}
-              >
-                <span>
-                  📲 <strong>WhatsApp Dispatched:</strong> Your trip enquiry message has been crafted and sent to Vishal Travels Owner (+91 9800000000). We will check vehicle availability and confirm shortly!
-                </span>
-                <a
-                  href={`https://wa.me/919800000000?text=${encodeURIComponent(lastWaText)}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{
-                    background: "#16a34a",
-                    color: "#ffffff",
-                    padding: "6px 14px",
-                    borderRadius: "6px",
-                    textDecoration: "none",
-                    fontWeight: 700,
-                    fontSize: "0.82rem",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "6px"
-                  }}
-                >
-                  <span>💬</span> Re-open WhatsApp
-                </a>
-              </div>
-
-              {/* Generated Image Preview if available */}
-              {generatedTicketImage && (
-                <div style={{ marginBottom: "16px", borderRadius: "8px", overflow: "hidden", border: "1.5px solid #cbd5e1" }}>
-                  <img
-                    src={generatedTicketImage}
-                    alt="Vishal Travels Generated Trip Voucher"
-                    style={{ width: "100%", height: "auto", display: "block" }}
-                  />
-                </div>
-              )}
-
-              {/* Fallback Detailed Voucher Card */}
-              <div style={{ border: "2px dashed #cbd5e1", borderRadius: "10px", padding: "20px" }}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    borderBottom: "1px solid #e2e8f0",
-                    paddingBottom: "12px",
-                    marginBottom: "14px"
-                  }}
-                >
-                  <div>
-                    <h3 style={{ color: "var(--navy-900)", margin: 0 }}>Vishal Travels Pune</h3>
-                    <small style={{ color: "#64748b" }}>Trip Enquiry Summary &amp; Estimate Voucher</small>
-                  </div>
-                  <div style={{ textAlign: "right" }}>
-                    <span style={{ fontSize: "0.72rem", color: "#64748b", display: "block" }}>
-                      PNR NUMBER
-                    </span>
-                    <strong style={{ color: "#d97706", fontSize: "1.2rem" }}>
-                      {generatedTicket.pnr}
-                    </strong>
-                  </div>
-                </div>
-
-                <div
-                  style={{
-                    background: "#f1f5f9",
-                    padding: "12px 16px",
-                    borderRadius: "8px",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: "14px"
-                  }}
-                >
-                  <div>
-                    <span style={{ fontSize: "0.7rem", color: "#64748b", display: "block" }}>
-                      FROM
-                    </span>
-                    <strong style={{ fontSize: "1.05rem" }}>{generatedTicket.from}</strong>
-                  </div>
-                  <div style={{ color: "var(--gold-600)", fontSize: "1.2rem" }}>➔</div>
-                  <div style={{ textAlign: "right" }}>
-                    <span style={{ fontSize: "0.7rem", color: "#64748b", display: "block" }}>
-                      TO
-                    </span>
-                    <strong style={{ fontSize: "1.05rem" }}>{generatedTicket.to}</strong>
-                  </div>
-                </div>
-
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr",
-                    gap: "10px",
-                    fontSize: "0.86rem",
-                    marginBottom: "16px"
-                  }}
-                >
-                  <div>
-                    Passenger: <strong>{generatedTicket.name}</strong>
-                  </div>
-                  <div>
-                    Phone: <strong>+91 {generatedTicket.phone}</strong>
-                  </div>
-                  <div>
-                    Vehicle: <strong>{generatedTicket.vehicle}</strong>
-                  </div>
-                  <div>
-                    Journey Date: <strong>{generatedTicket.date}</strong>
-                  </div>
-                  <div>
-                    Assigned Driver: <strong>Santosh Shinde (Verified)</strong>
-                  </div>
-                  <div>
-                    Helpline: <strong>+91 9800000000</strong>
-                  </div>
-                </div>
-
-                <div
-                  style={{
-                    background: "#e0f2fe",
-                    padding: "10px 14px",
-                    borderRadius: "6px",
-                    fontSize: "0.82rem",
-                    color: "#0369a1"
-                  }}
-                >
-                  ✓ Chauffeur will call 2 hours prior to journey. Toll and state tax payable as actuals or bundled.
-                </div>
-              </div>
-
-              {/* Modal Action Buttons: Download Image, Print, Track GPS */}
-              <div style={{ display: "flex", justifyContent: "flex-end", flexWrap: "wrap", gap: "10px", marginTop: "18px" }}>
-                {generatedTicketImage && (
-                  <button
-                    style={{
-                      padding: "8px 18px",
-                      background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-                      color: "#ffffff",
-                      border: "none",
-                      borderRadius: "8px",
-                      cursor: "pointer",
-                      fontWeight: 700,
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "6px",
-                      boxShadow: "0 4px 12px rgba(16, 185, 129, 0.3)"
-                    }}
-                    onClick={handleDownloadTicketImage}
-                  >
-                    <span>📥</span> Download Trip Voucher (PNG)
-                  </button>
-                )}
-
-                <button
-                  style={{
-                    padding: "8px 18px",
-                    border: "1.5px solid #cbd5e1",
-                    background: "none",
-                    borderRadius: "8px",
-                    cursor: "pointer",
-                    fontWeight: 700
-                  }}
-                  onClick={() => window.print()}
-                >
-                  🖨️ Print Trip Voucher
-                </button>
-
-                <button
-                  className="btn-header-cta"
-                  onClick={() => {
-                    setIsTicketModalOpen(false);
-                    setIsTrackerModalOpen(true);
-                  }}
-                >
-                  🛰️ Track Live GPS
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* LIVE GPS TELEMETRY SIMULATOR */}
       {isTrackerModalOpen && (
