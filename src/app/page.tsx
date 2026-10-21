@@ -1161,7 +1161,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
               <div className="bf-header-title">
                 <span>🚌</span> Trip Booking Console
               </div>
-              <span className="bf-header-badge">Instant E-Ticket Ready</span>
+              <span className="bf-header-badge">Direct WhatsApp Booking</span>
             </div>
 
             <div className="bf-body">
@@ -1303,7 +1303,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
                 </div>
 
                 <button type="submit" className="btn-submit-booking">
-                  <span>Confirm Itinerary &amp; Generate E-Ticket</span>
+                  <span>💬 Send Booking Request on WhatsApp</span>
                   <span>➔</span>
                 </button>
               </form>
@@ -1411,11 +1411,10 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
                       className="btn-header-cta"
                       style={{ padding: "8px 18px", fontSize: "0.85rem" }}
                       onClick={() => {
-                        setDestination(pkg.title);
-                        const match =
-                          FLEET_DATA.find((f) => f.name.includes("Urbania") || f.name.includes("Tempo")) ||
-                          FLEET_DATA[0];
-                        setSelectedVehicle(match);
+                        setSelectedPackage(pkg);
+                        setSelectedVehicle(null);
+                        setModalDestination(`${pkg.title} (${pkg.duration})`);
+                        setModalPickup("Pune (Any Landmark / Swargate / Hinjewadi)");
                         setIsBookingModalOpen(true);
                       }}
                     >
