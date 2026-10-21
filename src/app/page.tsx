@@ -752,8 +752,8 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
             <a href="tel:+919800000001" className="topbar-phone-item">
               <span>📞</span> +91 9800000001
             </a>
-            <a href="tel:+918600118437" className="topbar-phone-item">
-              <span>📞</span> +91 8600118437
+            <a href="tel:+919800000002" className="topbar-phone-item">
+              <span>📞</span> +91 9800000002
             </a>
           </div>
 
@@ -1860,8 +1860,8 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
                   +91 9800000001
                 </a>
                 <br />
-                <a href="tel:+918600118437" style={{ color: "#ffffff" }}>
-                  +91 8600118437
+                <a href="tel:+919800000002" style={{ color: "#ffffff" }}>
+                  +91 9800000002
                 </a>
               </div>
             </div>
