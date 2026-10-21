@@ -898,7 +898,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
                   onClick={() => setDestination("Ashtavinayak Darshan")}
                 >
                   <span>🛕 Ashtavinayak 8 Ganpati</span>
-                  <small style={{ color: "var(--blue-accent)", fontWeight: 700 }}>2 Days</small>
+                  <small style={{ color: "var(--gold-600)", fontWeight: 700 }}>2 Days</small>
                 </a>
                 <a
                   href="#tour-packages"
@@ -906,7 +906,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
                   onClick={() => setDestination("5 Jyotirlinga")}
                 >
                   <span>🔱 5 Jyotirlinga Circuit</span>
-                  <small style={{ color: "var(--blue-accent)", fontWeight: 700 }}>4 Days</small>
+                  <small style={{ color: "var(--gold-600)", fontWeight: 700 }}>4 Days</small>
                 </a>
                 <a
                   href="#tour-packages"
@@ -914,7 +914,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
                   onClick={() => setDestination("Mahabaleshwar & Panchgani")}
                 >
                   <span>🍓 Mahabaleshwar Weekend</span>
-                  <small style={{ color: "var(--blue-accent)", fontWeight: 700 }}>2 Days</small>
+                  <small style={{ color: "var(--gold-600)", fontWeight: 700 }}>2 Days</small>
                 </a>
                 <a
                   href="#tour-packages"
@@ -922,7 +922,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
                   onClick={() => setDestination("Shirdi & Shani Shingnapur")}
                 >
                   <span>🙏 Shirdi Sai Baba Darshan</span>
-                  <small style={{ color: "var(--blue-accent)", fontWeight: 700 }}>1-2 Days</small>
+                  <small style={{ color: "var(--gold-600)", fontWeight: 700 }}>1-2 Days</small>
                 </a>
                 <a
                   href="#tour-packages"
@@ -930,7 +930,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
                   onClick={() => setDestination("Malvan & Goa")}
                 >
                   <span>🏖️ Malvan Scuba & Goa</span>
-                  <small style={{ color: "var(--blue-accent)", fontWeight: 700 }}>4 Days</small>
+                  <small style={{ color: "var(--gold-600)", fontWeight: 700 }}>4 Days</small>
                 </a>
               </div>
             </div>
@@ -1149,7 +1149,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
           <div className="booking-form-box">
             <div className="bf-header-strip">
               <div className="bf-header-title">
-                <span>🚌</span> Trip Booking Console
+                <span>🚌</span> Quick Trip Booking
               </div>
             </div>
 
@@ -1292,8 +1292,15 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
           <div className="steps-grid">
             <div className="step-card">
               <div className="step-header-row">
-                <div className="step-icon-badge">🚐</div>
-                <span className="step-order-number">01</span>
+                <div className="step-icon-badge">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <rect x="3" y="4" width="18" height="15" rx="3" />
+                    <circle cx="7" cy="19" r="2" />
+                    <circle cx="17" cy="19" r="2" />
+                    <path d="M3 11h18M7 4v7M17 4v7M12 4v7" />
+                  </svg>
+                </div>
+                <span className="step-order-pill">STEP 01</span>
               </div>
               <h4>Curate Fleet &amp; Route</h4>
               <p>
@@ -1304,8 +1311,13 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
 
             <div className="step-card">
               <div className="step-header-row">
-                <div className="step-icon-badge">📄</div>
-                <span className="step-order-number">02</span>
+                <div className="step-icon-badge">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg>
+                </div>
+                <span className="step-order-pill">STEP 02</span>
               </div>
               <h4>Transparent Fare Lock</h4>
               <p>
@@ -1316,8 +1328,13 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
 
             <div className="step-card">
               <div className="step-header-row">
-                <div className="step-icon-badge">🛰️</div>
-                <span className="step-order-number">03</span>
+                <div className="step-icon-badge">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10" />
+                    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+                  </svg>
+                </div>
+                <span className="step-order-pill">STEP 03</span>
               </div>
               <h4>Verified Chauffeur &amp; GPS Dispatch</h4>
               <p>
@@ -1560,37 +1577,37 @@ _Namaskar Vishal Travels! I want to reserve a vehicle for the ${r.route} route (
                 style={{
                   color: "#fbbf24",
                   fontWeight: 800,
-                  fontSize: "0.82rem",
-                  letterSpacing: "0.1em",
+                  fontSize: "0.75rem",
+                  letterSpacing: "0.08em",
                   textTransform: "uppercase"
                 }}
               >
                 TRANSPARENT PUNE TARIFF
               </span>
-              <h2 style={{ fontSize: "2.3rem", fontWeight: 800, color: "#fff", margin: "8px 0 12px" }}>
+              <h2 style={{ fontSize: "1.45rem", fontWeight: 800, color: "#fff", margin: "4px 0 6px" }}>
                 Instant Bus Fare Estimator
               </h2>
-              <p style={{ color: "#cbd5e1", fontSize: "0.98rem", lineHeight: 1.6 }}>
+              <p style={{ color: "#cbd5e1", fontSize: "0.85rem", lineHeight: 1.45 }}>
                 Estimate your exact road travel budget according to Vishal Travels official rate card.
                 Zero hidden driver or fuel surcharges.
               </p>
 
-              <div style={{ marginTop: "24px" }}>
+              <div style={{ marginTop: "14px" }}>
                 <label
-                  style={{ fontSize: "0.84rem", color: "#e2e8f0", display: "block", marginBottom: "6px" }}
+                  style={{ fontSize: "0.78rem", color: "#e2e8f0", display: "block", marginBottom: "4px" }}
                 >
                   Select Vehicle Model
                 </label>
                 <select
                   style={{
                     width: "100%",
-                    height: "48px",
+                    height: "40px",
                     background: "#07172e",
                     border: "1.5px solid #1e3a63",
                     color: "#fff",
-                    padding: "0 14px",
+                    padding: "0 12px",
                     borderRadius: "8px",
-                    fontSize: "0.92rem"
+                    fontSize: "0.86rem"
                   }}
                   onChange={(e) => {
                     const opt = e.target.options[e.target.selectedIndex];
@@ -1656,7 +1673,7 @@ _Namaskar Vishal Travels! I want to reserve a vehicle for the ${r.route} route (
             <div className="calc-receipt-card">
               <div>
                 <div className="receipt-header">
-                  <h3 style={{ fontSize: "1.2rem", color: "var(--navy-900)", marginBottom: "4px" }}>
+                  <h3 style={{ fontSize: "1.05rem", color: "var(--navy-900)", marginBottom: "2px" }}>
                     Itemized Fare Quotation
                   </h3>
                   <div className="receipt-vehicle-name">{calcVehicleName}</div>
