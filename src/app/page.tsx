@@ -384,9 +384,20 @@ export default function HomePage() {
     phone: string;
     vehicle: string;
     date: string;
+    time: string;
     from: string;
     to: string;
   } | null>(null);
+  const [generatedTicketImage, setGeneratedTicketImage] = useState<string | null>(null);
+  const [lastWaText, setLastWaText] = useState<string>("");
+
+  // Reservation Modal Form State (Defaulting to User Request Values)
+  const [modalName, setModalName] = useState("Sanjay Shinde");
+  const [modalPhone, setModalPhone] = useState("9764564699");
+  const [modalPickup, setModalPickup] = useState("Pune (Any Landmark)");
+  const [modalDestination, setModalDestination] = useState("Mumbai International Airport (T2)");
+  const [modalDate, setModalDate] = useState("2026-10-22");
+  const [modalTime, setModalTime] = useState("06:30");
 
   // Live GPS Telemetry Simulation State
   const [isTrackerModalOpen, setIsTrackerModalOpen] = useState(false);
@@ -437,37 +448,246 @@ export default function HomePage() {
     setTimeout(() => setToast(null), 4000);
   };
 
+  // Canvas-based High-Resolution E-Ticket Image Generator
+  const createTicketCanvasImage = (ticket: {
+    pnr: string;
+    name: string;
+    phone: string;
+    vehicle: string;
+    date: string;
+    time: string;
+    from: string;
+    to: string;
+    advance: string;
+  }) => {
+    if (typeof window === "undefined") return null;
+    try {
+      const canvas = document.createElement("canvas");
+      canvas.width = 960;
+      canvas.height = 680;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return null;
+
+      // Executive Midnight Gradient
+      const grad = ctx.createLinearGradient(0, 0, 960, 680);
+      grad.addColorStop(0, "#050d1a");
+      grad.addColorStop(0.5, "#0a1932");
+      grad.addColorStop(1, "#122a50");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 960, 680);
+
+      // Gold Perimeter Border
+      ctx.strokeStyle = "#f59e0b";
+      ctx.lineWidth = 4;
+      ctx.strokeRect(18, 18, 924, 644);
+
+      // Card Inner Surface
+      ctx.fillStyle = "rgba(255, 255, 255, 0.04)";
+      ctx.fillRect(36, 36, 888, 608);
+
+      // Header Brand
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 32px -apple-system, BlinkMacSystemFont, sans-serif";
+      ctx.fillText("VISHAL TRAVELS PUNE", 60, 85);
+
+      ctx.fillStyle = "#fbbf24";
+      ctx.font = "bold 15px -apple-system, BlinkMacSystemFont, sans-serif";
+      ctx.fillText("OFFICIAL BOOKING CONFIRMATION & E-TICKET VOUCHER", 60, 115);
+
+      // Gold PNR Ribbon
+      ctx.fillStyle = "#f59e0b";
+      ctx.fillRect(660, 55, 230, 52);
+      ctx.fillStyle = "#071324";
+      ctx.font = "bold 19px -apple-system, BlinkMacSystemFont, sans-serif";
+      ctx.fillText(`PNR: ${ticket.pnr}`, 678, 88);
+
+      // Divider Line
+      ctx.strokeStyle = "rgba(245, 158, 11, 0.35)";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(60, 140);
+      ctx.lineTo(890, 140);
+      ctx.stroke();
+
+      // Route Strip
+      ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
+      ctx.fillRect(60, 160, 830, 84);
+
+      ctx.fillStyle = "#94a3b8";
+      ctx.font = "13px -apple-system, BlinkMacSystemFont, sans-serif";
+      ctx.fillText("PICKUP / ORIGIN", 80, 186);
+      ctx.fillText("DESTINATION", 520, 186);
+
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 20px -apple-system, BlinkMacSystemFont, sans-serif";
+      ctx.fillText(ticket.from, 80, 220);
+      ctx.fillStyle = "#f59e0b";
+      ctx.font = "bold 24px -apple-system, BlinkMacSystemFont, sans-serif";
+      ctx.fillText("➔", 460, 220);
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 20px -apple-system, BlinkMacSystemFont, sans-serif";
+      ctx.fillText(ticket.to, 520, 220);
+
+      // Details 2-Column Grid
+      const drawItem = (label: string, val: string, x: number, y: number) => {
+        ctx.fillStyle = "#94a3b8";
+        ctx.font = "13px -apple-system, BlinkMacSystemFont, sans-serif";
+        ctx.fillText(label, x, y);
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 17px -apple-system, BlinkMacSystemFont, sans-serif";
+        ctx.fillText(val, x, y + 25);
+      };
+
+      drawItem("PASSENGER NAME", ticket.name, 80, 285);
+      drawItem("CONTACT MOBILE", `+91 ${ticket.phone}`, 520, 285);
+      drawItem("VEHICLE RESERVED", ticket.vehicle, 80, 360);
+      drawItem("JOURNEY DATE & TIME", `${ticket.date} • ${ticket.time}`, 520, 360);
+      drawItem("PAYMENT STATUS", ticket.advance, 80, 435);
+      drawItem("DISPATCH HELPLINE", "+91 9764564699 / 9372459371", 520, 435);
+
+      // Green Guarantee Strip
+      ctx.fillStyle = "rgba(16, 185, 129, 0.16)";
+      ctx.fillRect(60, 495, 830, 52);
+      ctx.fillStyle = "#10b981";
+      ctx.font = "bold 15px -apple-system, BlinkMacSystemFont, sans-serif";
+      ctx.fillText("✓ Driver details & live GPS tracking link dispatched 2 hours prior to journey.", 80, 528);
+
+      ctx.fillStyle = "#64748b";
+      ctx.font = "12px -apple-system, BlinkMacSystemFont, sans-serif";
+      ctx.fillText("Vishal Travels Pune • Swargate & Hinjewadi Hub • Verified Maharashtra Tourist Permit Fleet", 60, 595);
+
+      return canvas.toDataURL("image/png");
+    } catch {
+      return null;
+    }
+  };
+
   const handleQuickBookSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const pnr = "VT-PUN-" + Math.floor(100000 + Math.random() * 900000);
-    setGeneratedTicket({
+    const passengerName = custName || "Guest Traveler";
+    const passengerPhone = custPhone || "9764564699";
+    const vehicleChoice = `${seatingCapacity} • ${busType}`;
+    const journeyDate = startDate;
+    const reportingTime = "06:30 AM";
+    const fromLoc = pickupLocation;
+    const toLoc = destination;
+    const advanceInfo = "Token Advance Booking (₹2,000 via UPI)";
+
+    const ticketData = {
       pnr,
-      name: custName || "Guest Traveler",
-      phone: custPhone || "9764564699",
-      vehicle: `${seatingCapacity} • ${busType}`,
-      date: startDate,
-      from: pickupLocation,
-      to: destination
-    });
+      name: passengerName,
+      phone: passengerPhone,
+      vehicle: vehicleChoice,
+      date: journeyDate,
+      time: reportingTime,
+      from: fromLoc,
+      to: toLoc,
+      advance: advanceInfo
+    };
+
+    const imgData = createTicketCanvasImage(ticketData);
+    setGeneratedTicketImage(imgData);
+    setGeneratedTicket(ticketData);
+
+    // Send formatted WhatsApp text to owner (+91 9764564699)
+    const ownerPhone = "919764564699";
+    const waText = `*NEW BOOKING RESERVATION - VISHAL TRAVELS PUNE*
+--------------------------------------------
+*PNR Number:* ${pnr}
+*Passenger Name:* ${passengerName}
+*Mobile Number:* +91 ${passengerPhone}
+*Vehicle Selected:* ${vehicleChoice}
+*Pickup Point:* ${fromLoc}
+*Destination:* ${toLoc}
+*Journey Date:* ${journeyDate}
+*Reporting Time:* ${reportingTime}
+*Payment Token:* ${advanceInfo}
+*Status:* 24/7 Pune Dispatch Ready
+--------------------------------------------
+_Automated reservation sent to Vishal Travels Owner (+91 9764564699)_`;
+
+    setLastWaText(waText);
+    const waUrl = `https://wa.me/${ownerPhone}?text=${encodeURIComponent(waText)}`;
+    if (typeof window !== "undefined") {
+      window.open(waUrl, "_blank");
+    }
+
     setIsTicketModalOpen(true);
-    triggerToast("Reservation created! Your E-Ticket voucher is ready.", "success");
+    triggerToast("Reservation created! Details sent to Owner on WhatsApp (+91 9764564699).", "success");
   };
 
   const handleConfirmReservation = (e: React.FormEvent) => {
     e.preventDefault();
     const pnr = "VT-CONF-" + Math.floor(100000 + Math.random() * 900000);
-    setGeneratedTicket({
+    const vehicleName = selectedVehicle ? selectedVehicle.name : "Toyota Innova Crysta & Maruti Ertiga";
+    const passengerName = modalName || custName || "Sanjay Shinde";
+    const passengerPhone = modalPhone || custPhone || "9764564699";
+    const fromLocation = modalPickup || pickupLocation || "Pune (Any Landmark)";
+    const toLocation = modalDestination || destination || "Mumbai International Airport (T2)";
+    const journeyDate = modalDate || startDate || "2026-10-22";
+    const reportingTime = modalTime || "06:30 AM";
+    const advanceStatus = "Token Advance Booking (₹2,000 via UPI)";
+
+    const ticketData = {
       pnr,
-      name: custName || "Confirmed Guest",
-      phone: custPhone || "9764564699",
-      vehicle: selectedVehicle ? selectedVehicle.name : "Luxury Coach",
-      date: startDate,
-      from: pickupLocation,
-      to: destination
-    });
+      name: passengerName,
+      phone: passengerPhone,
+      vehicle: vehicleName,
+      date: journeyDate,
+      time: reportingTime,
+      from: fromLocation,
+      to: toLocation,
+      advance: advanceStatus
+    };
+
+    // 1. Generate downloadable image of the E-ticket voucher
+    const imgData = createTicketCanvasImage(ticketData);
+    setGeneratedTicketImage(imgData);
+    setGeneratedTicket(ticketData);
+
+    // 2. Prepare text message for WhatsApp to the owner (+91 9764564699)
+    const ownerPhone = "919764564699";
+    const waText = `*NEW BOOKING CONFIRMATION - VISHAL TRAVELS PUNE*
+--------------------------------------------
+*PNR Number:* ${pnr}
+*Passenger Name:* ${passengerName}
+*Mobile Number:* +91 ${passengerPhone}
+*Vehicle Reserved:* ${vehicleName}
+*Pickup Point:* ${fromLocation}
+*Destination:* ${toLocation}
+*Journey Date:* ${journeyDate}
+*Reporting Time:* ${reportingTime}
+*Payment Token:* ${advanceStatus}
+*Dispatch Status:* 24/7 Pune Dispatch Ready
+--------------------------------------------
+_Automated reservation sent to Vishal Travels Owner (+91 9764564699)_`;
+
+    setLastWaText(waText);
+
+    // 3. Open WhatsApp to send the text message to the owner directly!
+    const waUrl = `https://wa.me/${ownerPhone}?text=${encodeURIComponent(waText)}`;
+    if (typeof window !== "undefined") {
+      window.open(waUrl, "_blank");
+    }
+
     setIsBookingModalOpen(false);
     setIsTicketModalOpen(true);
-    triggerToast("Booking confirmed! GPS dispatch tracking activated.", "success");
+    triggerToast("Booking confirmed! Details sent to Owner on WhatsApp (+91 9764564699).", "success");
+  };
+
+  const handleDownloadTicketImage = () => {
+    if (!generatedTicketImage) {
+      triggerToast("Generating ticket image...", "info");
+      return;
+    }
+    const a = document.createElement("a");
+    a.href = generatedTicketImage;
+    a.download = `Vishal_Travels_ETicket_${generatedTicket?.pnr || "Voucher"}.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    triggerToast("E-Ticket voucher image downloaded successfully!", "success");
   };
 
   const handleSendWa = (userMsg: string) => {
@@ -1853,7 +2073,8 @@ export default function HomePage() {
                     <label>Passenger Name *</label>
                     <input
                       type="text"
-                      defaultValue={custName || "Sanjay Shinde"}
+                      value={modalName}
+                      onChange={(e) => setModalName(e.target.value)}
                       required
                     />
                   </div>
@@ -1861,7 +2082,8 @@ export default function HomePage() {
                     <label>Mobile Number *</label>
                     <input
                       type="tel"
-                      defaultValue={custPhone || "9764564699"}
+                      value={modalPhone}
+                      onChange={(e) => setModalPhone(e.target.value)}
                       required
                     />
                   </div>
@@ -1870,22 +2092,42 @@ export default function HomePage() {
                 <div className="bf-grid-2">
                   <div className="bf-field">
                     <label>Pickup Location *</label>
-                    <input type="text" defaultValue={pickupLocation} required />
+                    <input
+                      type="text"
+                      value={modalPickup}
+                      onChange={(e) => setModalPickup(e.target.value)}
+                      required
+                    />
                   </div>
                   <div className="bf-field">
                     <label>Destination *</label>
-                    <input type="text" defaultValue={destination} required />
+                    <input
+                      type="text"
+                      value={modalDestination}
+                      onChange={(e) => setModalDestination(e.target.value)}
+                      required
+                    />
                   </div>
                 </div>
 
                 <div className="bf-grid-2">
                   <div className="bf-field">
                     <label>Date of Journey *</label>
-                    <input type="date" defaultValue={startDate} required />
+                    <input
+                      type="date"
+                      value={modalDate}
+                      onChange={(e) => setModalDate(e.target.value)}
+                      required
+                    />
                   </div>
                   <div className="bf-field">
                     <label>Reporting Time *</label>
-                    <input type="time" defaultValue="06:30" required />
+                    <input
+                      type="time"
+                      value={modalTime}
+                      onChange={(e) => setModalTime(e.target.value)}
+                      required
+                    />
                   </div>
                 </div>
 
@@ -1946,7 +2188,12 @@ export default function HomePage() {
               className="modal-header"
               style={{ background: "var(--navy-900)", color: "#fff" }}
             >
-              <h3 style={{ color: "#fff" }}>BOOKING CONFIRMED • VISHAL TRAVELS PUNE</h3>
+              <div>
+                <h3 style={{ color: "#fff", fontSize: "1.2rem" }}>BOOKING CONFIRMED • VISHAL TRAVELS PUNE</h3>
+                <small style={{ color: "#10b981", fontWeight: 700 }}>
+                  ✓ Details &amp; E-Ticket Sent to Owner on WhatsApp (+91 9764564699)
+                </small>
+              </div>
               <button
                 className="modal-close-btn"
                 style={{ background: "rgba(255,255,255,0.2)", color: "#fff" }}
@@ -1957,7 +2204,61 @@ export default function HomePage() {
             </div>
 
             <div className="modal-body" id="printTicketArea">
-              <div style={{ border: "2px dashed #cbd5e1", borderRadius: "10px", padding: "22px" }}>
+              {/* WhatsApp Sent Alert Banner */}
+              <div
+                style={{
+                  background: "#dcfce7",
+                  border: "1.5px solid #86efac",
+                  color: "#166534",
+                  padding: "12px 16px",
+                  borderRadius: "8px",
+                  marginBottom: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  flexWrap: "wrap",
+                  gap: "10px",
+                  fontSize: "0.88rem",
+                  fontWeight: 600
+                }}
+              >
+                <span>
+                  📲 <strong>WhatsApp Dispatched:</strong> Booking text &amp; PNR voucher sent to Vishal Travels Owner (+91 9764564699).
+                </span>
+                <a
+                  href={`https://wa.me/919764564699?text=${encodeURIComponent(lastWaText)}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{
+                    background: "#16a34a",
+                    color: "#ffffff",
+                    padding: "6px 14px",
+                    borderRadius: "6px",
+                    textDecoration: "none",
+                    fontWeight: 700,
+                    fontSize: "0.82rem",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "6px"
+                  }}
+                >
+                  <span>💬</span> Re-open WhatsApp
+                </a>
+              </div>
+
+              {/* Generated Image Preview if available */}
+              {generatedTicketImage && (
+                <div style={{ marginBottom: "16px", borderRadius: "8px", overflow: "hidden", border: "1.5px solid #cbd5e1" }}>
+                  <img
+                    src={generatedTicketImage}
+                    alt="Vishal Travels Generated E-Ticket Voucher"
+                    style={{ width: "100%", height: "auto", display: "block" }}
+                  />
+                </div>
+              )}
+
+              {/* Fallback Detailed Voucher Card */}
+              <div style={{ border: "2px dashed #cbd5e1", borderRadius: "10px", padding: "20px" }}>
                 <div
                   style={{
                     display: "flex",
@@ -2049,7 +2350,29 @@ export default function HomePage() {
                 </div>
               </div>
 
-              <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "18px" }}>
+              {/* Modal Action Buttons: Download Image, Print, Track GPS */}
+              <div style={{ display: "flex", justifyContent: "flex-end", flexWrap: "wrap", gap: "10px", marginTop: "18px" }}>
+                {generatedTicketImage && (
+                  <button
+                    style={{
+                      padding: "8px 18px",
+                      background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                      color: "#ffffff",
+                      border: "none",
+                      borderRadius: "8px",
+                      cursor: "pointer",
+                      fontWeight: 700,
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      boxShadow: "0 4px 12px rgba(16, 185, 129, 0.3)"
+                    }}
+                    onClick={handleDownloadTicketImage}
+                  >
+                    <span>📥</span> Download E-Ticket Image (PNG)
+                  </button>
+                )}
+
                 <button
                   style={{
                     padding: "8px 18px",
@@ -2063,6 +2386,7 @@ export default function HomePage() {
                 >
                   🖨️ Print Ticket
                 </button>
+
                 <button
                   className="btn-header-cta"
                   onClick={() => {
