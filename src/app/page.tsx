@@ -394,7 +394,7 @@ export default function HomePage() {
 
   // Reservation Modal Form State (Defaulting to User Request Values)
   const [modalName, setModalName] = useState("Sanjay Shinde");
-  const [modalPhone, setModalPhone] = useState("9764564699");
+  const [modalPhone, setModalPhone] = useState("9800000000");
   const [modalPickup, setModalPickup] = useState("Pune (Any Landmark)");
   const [modalDestination, setModalDestination] = useState("Mumbai International Airport (T2)");
   const [modalDate, setModalDate] = useState("2026-10-22");
@@ -544,7 +544,7 @@ export default function HomePage() {
       drawItem("VEHICLE REQUESTED", ticket.vehicle, 80, 360);
       drawItem("JOURNEY DATE & TIME", `${ticket.date} • ${ticket.time}`, 520, 360);
       drawItem("ENQUIRY STATUS", "Forwarded via WhatsApp", 80, 435);
-      drawItem("DISPATCH HELPLINE", "+91 9764564699 / 9372459371", 520, 435);
+      drawItem("DISPATCH HELPLINE", "+91 9800000000 / 9800000001", 520, 435);
 
       // Green Guarantee Strip
       ctx.fillStyle = "rgba(16, 185, 129, 0.16)";
@@ -567,7 +567,7 @@ export default function HomePage() {
     e.preventDefault();
     const pnr = "VT-REQ-" + Math.floor(100000 + Math.random() * 900000);
     const passengerName = custName || "Guest Traveler";
-    const passengerPhone = custPhone || "9764564699";
+    const passengerPhone = custPhone || "9800000000";
     const vehicleChoice = `${seatingCapacity} • ${busType}`;
     const journeyDate = startDate;
     const reportingTime = "06:30 AM";
@@ -589,8 +589,8 @@ export default function HomePage() {
     setGeneratedTicketImage(imgData);
     setGeneratedTicket(ticketData);
 
-    // Send formatted WhatsApp text to owner (+91 9764564699)
-    const ownerPhone = "919764564699";
+    // Send formatted WhatsApp text to owner (+91 9800000000)
+    const ownerPhone = "919800000000";
     const waText = `*TRIP ENQUIRY & RESERVATION REQUEST*
 *Vishal Travels Pune*
 --------------------------------------------
@@ -612,7 +612,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my journey and s
     }
 
     setIsTicketModalOpen(true);
-    triggerToast("Trip enquiry crafted & sent to Owner on WhatsApp (+91 9764564699).", "success");
+    triggerToast("Trip enquiry crafted & sent to Owner on WhatsApp (+91 9800000000).", "success");
   };
 
   const handleConfirmReservation = (e: React.FormEvent) => {
@@ -626,7 +626,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my journey and s
       ? selectedVehicle.name
       : "Toyota Innova Crysta & Maruti Ertiga";
     const passengerName = modalName || custName || "Sanjay Shinde";
-    const passengerPhone = modalPhone || custPhone || "9764564699";
+    const passengerPhone = modalPhone || custPhone || "9800000000";
     const fromLocation = modalPickup || pickupLocation || "Pune (Any Landmark)";
     const toLocation = selectedPackage
       ? `${selectedPackage.title} (${selectedPackage.distanceKm} KM)`
@@ -650,8 +650,8 @@ _Namaskar Vishal Travels! Please check vehicle availability for my journey and s
     setGeneratedTicketImage(imgData);
     setGeneratedTicket(ticketData);
 
-    // 2. Prepare text message for WhatsApp to the owner (+91 9764564699)
-    const ownerPhone = "919764564699";
+    // 2. Prepare text message for WhatsApp to the owner (+91 9800000000)
+    const ownerPhone = "919800000000";
     const waText = selectedPackage
       ? `*TOUR PACKAGE BOOKING ENQUIRY*
 *Vishal Travels Pune*
@@ -692,7 +692,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
 
     setIsBookingModalOpen(false);
     setIsTicketModalOpen(true);
-    triggerToast("Trip enquiry crafted & sent to Owner on WhatsApp (+91 9764564699).", "success");
+    triggerToast("Trip enquiry crafted & sent to Owner on WhatsApp (+91 9800000000).", "success");
   };
 
   const handleDownloadTicketImage = () => {
@@ -715,11 +715,11 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
     setWaMessages(newMsgs);
     setWaInput("");
     setTimeout(() => {
-      let reply = "Dhanyawad! Our Pune booking manager is checking available buses for your dates. We will call you on +91 9764564699 shortly.";
+      let reply = "Dhanyawad! Our Pune booking manager is checking available buses for your dates. We will call you on +91 9800000000 shortly.";
       if (userMsg.toLowerCase().includes("ashtavinayak")) {
         reply = "🛕 Ashtavinayak Darshan 2-Day package available in AC Tempo Traveller (17-seater) & Force Urbania. Toll guidance included!";
       } else if (userMsg.toLowerCase().includes("urbania")) {
-        reply = "🚐 Force Urbania VIP available with Maharaja leather seats and charging ports. Call directly on +91 9764564699 for instant lock.";
+        reply = "🚐 Force Urbania VIP available with Maharaja leather seats and charging ports. Call directly on +91 9800000000 for instant lock.";
       }
       setWaMessages((prev) => [...prev, { sender: "bot" as const, text: reply }]);
     }, 700);
@@ -746,11 +746,11 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
             <span className="topbar-badge-pill">
               🛡️ MH Tourist Permit Fleet • Pune Hub
             </span>
-            <a href="tel:+919764564699" className="topbar-phone-item">
-              <span>📞</span> +91 9764564699
+            <a href="tel:+919800000000" className="topbar-phone-item">
+              <span>📞</span> +91 9800000000
             </a>
-            <a href="tel:+919372459371" className="topbar-phone-item">
-              <span>📞</span> +91 9372459371
+            <a href="tel:+919800000001" className="topbar-phone-item">
+              <span>📞</span> +91 9800000001
             </a>
             <a href="tel:+918600118437" className="topbar-phone-item">
               <span>📞</span> +91 8600118437
@@ -1012,14 +1012,14 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
             </a>
             <div style={{ marginTop: "14px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
               <a
-                href="tel:+919764564699"
+                href="tel:+919800000000"
                 className="btn-header-cta"
                 style={{ textAlign: "center", justifyContent: "center", textDecoration: "none" }}
               >
                 📞 Call Now
               </a>
               <a
-                href="https://wa.me/919764564699"
+                href="https://wa.me/919800000000"
                 style={{
                   background: "#25d366",
                   color: "#fff",
@@ -1133,15 +1133,15 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
             </div>
 
             <div className="booking-contact-row">
-              <a href="tel:+919764564699" className="contact-quick-card">
+              <a href="tel:+919800000000" className="contact-quick-card">
                 <div className="contact-card-icon">📞</div>
                 <div className="contact-card-text">
                   <small>Call 24/7 Helpline</small>
-                  <strong>+91 9764564699</strong>
+                  <strong>+91 9800000000</strong>
                 </div>
               </a>
               <a
-                href="https://wa.me/919764564699"
+                href="https://wa.me/919800000000"
                 target="_blank"
                 rel="noreferrer"
                 className="contact-quick-card wa"
@@ -1149,7 +1149,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
                 <div className="contact-card-icon">💬</div>
                 <div className="contact-card-text">
                   <small>Instant WhatsApp</small>
-                  <strong>+91 9764564699</strong>
+                  <strong>+91 9800000000</strong>
                 </div>
               </a>
             </div>
@@ -1852,12 +1852,12 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
               <div>
                 <strong>24/7 Dispatch Helplines:</strong>
                 <br />
-                <a href="tel:+919764564699" style={{ color: "#fbbf24", fontWeight: 700 }}>
-                  +91 9764564699
+                <a href="tel:+919800000000" style={{ color: "#fbbf24", fontWeight: 700 }}>
+                  +91 9800000000
                 </a>
                 <br />
-                <a href="tel:+919372459371" style={{ color: "#ffffff" }}>
-                  +91 9372459371
+                <a href="tel:+919800000001" style={{ color: "#ffffff" }}>
+                  +91 9800000001
                 </a>
                 <br />
                 <a href="tel:+918600118437" style={{ color: "#ffffff" }}>
@@ -1939,7 +1939,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
 
       {/* 13. FLOATING ACTION DOCK - Placed at Bottom-Right (Zero overlap with dev badge) */}
       <div className="floating-actions-dock">
-        <a href="tel:+919764564699" className="dock-action-pill dock-call-pill">
+        <a href="tel:+919800000000" className="dock-action-pill dock-call-pill">
           <span>📞</span>
           <span>Call Dispatch</span>
         </a>
@@ -2298,7 +2298,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
               <div>
                 <h3 style={{ color: "#fff", fontSize: "1.2rem" }}>BOOKING ENQUIRY CRAFTED • VISHAL TRAVELS PUNE</h3>
                 <small style={{ color: "#38bdf8", fontWeight: 700 }}>
-                  ✓ Details Sent to Owner on WhatsApp (+91 9764564699)
+                  ✓ Details Sent to Owner on WhatsApp (+91 9800000000)
                 </small>
               </div>
               <button
@@ -2330,10 +2330,10 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
                 }}
               >
                 <span>
-                  📲 <strong>WhatsApp Dispatched:</strong> Your trip enquiry message has been crafted and sent to Vishal Travels Owner (+91 9764564699). We will check vehicle availability and confirm shortly!
+                  📲 <strong>WhatsApp Dispatched:</strong> Your trip enquiry message has been crafted and sent to Vishal Travels Owner (+91 9800000000). We will check vehicle availability and confirm shortly!
                 </span>
                 <a
-                  href={`https://wa.me/919764564699?text=${encodeURIComponent(lastWaText)}`}
+                  href={`https://wa.me/919800000000?text=${encodeURIComponent(lastWaText)}`}
                   target="_blank"
                   rel="noreferrer"
                   style={{
@@ -2440,7 +2440,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
                     Assigned Driver: <strong>Santosh Shinde (Verified)</strong>
                   </div>
                   <div>
-                    Helpline: <strong>+91 9764564699</strong>
+                    Helpline: <strong>+91 9800000000</strong>
                   </div>
                 </div>
 

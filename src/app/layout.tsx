@@ -12,7 +12,7 @@ const manrope = Manrope({
 export const metadata: Metadata = {
   title: "Bus Rental in Pune | Tempo Traveller & Luxury Coach Hire – Vishal Travels",
   description:
-    "Hire AC tempo travellers (9–27 seater), mini buses, Force Urbanias & luxury coaches in Pune. Police-verified drivers, GPS-tracked fleet, 24/7 availability. Call Vishal Travels: +91 9764564699",
+    "Hire AC tempo travellers (9–27 seater), mini buses, Force Urbanias & luxury coaches in Pune. Police-verified drivers, GPS-tracked fleet, 24/7 availability. Call Vishal Travels: +91 9800000000",
   keywords: [
     "bus rental pune",
     "tempo traveller hire pune",
