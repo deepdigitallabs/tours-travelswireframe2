@@ -2278,7 +2278,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
                       boxShadow: "0 4px 14px rgba(22, 163, 74, 0.35)"
                     }}
                   >
-                    <span>💬</span> Send Enquiry to Owner on WhatsApp
+                    <span>💬</span> Send Enquiry
                   </button>
                 </div>
               </form>

@@ -2229,7 +2229,7 @@ button, input, select, textarea {
 /* Responsive Media Queries */
 @media (max-width: 992px) {
   .hero-main-title {
-    font-size: 2.3rem;
+    font-size: 2.2rem;
   }
   .booking-two-col {
     grid-template-columns: 1fr;
@@ -2263,28 +2263,204 @@ button, input, select, textarea {
   }
 }
 
+@media (max-width: 768px) {
+  .packages-grid,
+  .fleet-grid,
+  .routes-grid,
+  .testimonials-grid {
+    grid-template-columns: 1fr !important;
+    gap: 18px;
+  }
+
+  .vishal-topbar {
+    padding: 6px 0;
+  }
+  .topbar-phone-links {
+    width: 100%;
+    justify-content: center;
+    gap: 10px;
+  }
+  .topbar-phone-item:nth-child(n+3) {
+    display: none;
+  }
+  .topbar-right-group {
+    display: none;
+  }
+
+  .head-title {
+    font-size: 1.65rem;
+  }
+  .head-desc {
+    font-size: 0.92rem;
+  }
+}
+
 @media (max-width: 640px) {
+  body {
+    padding-bottom: 58px;
+  }
+
+  .hero-section {
+    padding: 40px 0 30px;
+  }
   .hero-main-title {
-    font-size: 1.85rem;
+    font-size: 1.7rem;
+    line-height: 1.28;
+  }
+  .hero-lead-text {
+    font-size: 0.92rem;
+  }
+  .hero-btn-row {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+  .hero-btn-row .btn-hero-primary,
+  .hero-btn-row .btn-hero-secondary {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    padding: 13px 18px;
+    font-size: 0.94rem;
+  }
+
+  .hero-stats-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 10px 12px;
+    width: 100%;
+    border-radius: 10px;
   }
   .stats-card-item {
     border-right: none;
-    padding: 6px 0;
+    padding: 6px 4px;
+    font-size: 0.78rem;
+    text-align: center;
+    justify-content: center;
   }
+  .stats-card-item:last-child {
+    grid-column: span 2;
+  }
+
   .bf-grid-2 {
     grid-template-columns: 1fr;
+    gap: 12px;
   }
   .booking-contact-row {
     grid-template-columns: 1fr;
   }
+  .bf-tabs-row {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+    gap: 6px;
+  }
+  .bf-tab-btn {
+    white-space: nowrap;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+  .popular-corridor-chips {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .corridor-chip {
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    padding: 4px 8px;
+  }
+
   .footer-grid-4 {
     grid-template-columns: 1fr;
+    gap: 24px;
   }
+
+  /* Mobile App Bar Floating Action Dock */
   .floating-actions-dock {
-    bottom: 16px;
-    right: 16px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background: rgba(7, 19, 36, 0.96);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(245, 158, 11, 0.35);
+    padding: 8px 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    z-index: 999;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.35);
+  }
+  .dock-action-pill {
+    height: 42px;
+    padding: 0 10px;
+    border-radius: 8px;
+    justify-content: center;
+    font-size: 0.84rem;
+    font-weight: 700;
   }
   .dock-action-pill span:last-child {
-    display: none;
+    display: inline !important;
+  }
+
+  /* Modal Mobile Responsiveness */
+  .modal-backdrop {
+    padding: 8px;
+    align-items: flex-end;
+  }
+  .modal-dialog {
+    max-height: 92vh;
+    border-radius: 16px 16px 0 0;
+    width: 100%;
+  }
+  .modal-header {
+    padding: 12px 16px;
+  }
+  .modal-header h3 {
+    font-size: 1.05rem;
+  }
+  .modal-body {
+    padding: 14px 16px;
+    max-height: calc(92vh - 55px);
+  }
+  .modal-body > div:first-child {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  /* Calculator Mobile Responsiveness */
+  .calc-card-preview {
+    padding: 16px;
+  }
+  .calc-price-amount {
+    font-size: 2.2rem;
+  }
+  .calc-preset-btns {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .calc-preset-pill {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .brand-logo-wrap img {
+    height: 38px;
+  }
+  .brand-title {
+    font-size: 1.15rem;
+  }
+  .brand-tagline {
+    font-size: 0.65rem;
   }
 }
