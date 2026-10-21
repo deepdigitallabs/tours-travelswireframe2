@@ -1373,8 +1373,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
                       </strong>
                     </div>
                     <button
-                      className="btn-header-cta"
-                      style={{ padding: "8px 18px", fontSize: "0.85rem" }}
+                      className="btn-pkg-book"
                       onClick={() => {
                         setSelectedPackage(pkg);
                         setSelectedVehicle(null);
@@ -1536,8 +1535,7 @@ _Namaskar Vishal Travels! I want to reserve a vehicle for the ${r.route} route (
                       </strong>
                     </div>
                     <button
-                      className="btn-header-cta"
-                      style={{ padding: "8px 18px", fontSize: "0.85rem" }}
+                      className="btn-pkg-book"
                       onClick={() => {
                         setSelectedVehicle(vehicle);
                         setIsBookingModalOpen(true);
@@ -1915,16 +1913,21 @@ _Namaskar Vishal Travels! I want to reserve a vehicle for the ${r.route} route (
 
       {/* 13. FLOATING ACTION DOCK - Placed at Bottom-Right (Zero overlap with dev badge) */}
       <div className="floating-actions-dock">
-        <a href="tel:+919800000000" className="dock-action-pill dock-call-pill">
-          <span>📞</span>
-          <span>Call Dispatch</span>
+        <a href="tel:+919800000000" className="dock-action-pill dock-call-pill" aria-label="Call Vishal Travels">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+          </svg>
+          <span>Call Now</span>
         </a>
         <button
           className="dock-action-pill dock-wa-pill"
           onClick={() => setIsWaOpen(!isWaOpen)}
+          aria-label="Chat on WhatsApp"
         >
-          <span>💬</span>
-          <span>WhatsApp Quote</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2ZM12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 14.99 3.8 13.47 3.8 11.91C3.8 7.37 7.5 3.67 12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15ZM16.57 14.36C16.32 14.24 15.11 13.64 14.88 13.56C14.65 13.47 14.49 13.43 14.32 13.68C14.16 13.92 13.69 14.48 13.55 14.64C13.41 14.8 13.26 14.82 13.01 14.7C12.77 14.58 11.98 14.32 11.04 13.49C10.31 12.84 9.82 12.03 9.68 11.79C9.53 11.54 9.66 11.41 9.79 11.28C9.9 11.17 10.03 11 10.15 10.86C10.27 10.72 10.31 10.62 10.39 10.45C10.47 10.29 10.43 10.15 10.37 10.03C10.31 9.9 9.82 8.7 9.62 8.2C9.42 7.72 9.22 7.78 9.07 7.78C8.93 7.77 8.76 7.77 8.6 7.77C8.44 7.77 8.17 7.83 7.95 8.07C7.72 8.32 7.09 8.91 7.09 10.11C7.09 11.31 7.97 12.47 8.09 12.63C8.21 12.8 9.81 15.26 12.27 16.32C12.85 16.57 13.31 16.72 13.66 16.83C14.25 17.02 14.78 16.99 15.2 16.93C15.68 16.86 16.67 16.33 16.87 15.76C17.08 15.19 17.08 14.7 17.02 14.6C16.96 14.49 16.81 14.43 16.57 14.36Z" />
+          </svg>
+          <span>WhatsApp Chat</span>
         </button>
       </div>
 
