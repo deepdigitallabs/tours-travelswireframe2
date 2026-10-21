@@ -693,22 +693,22 @@ button, input, select, textarea {
   color: #ffffff;
 }
 
-/* Refined Glass Stats Card Bar */
+/* Refined Glass Stats Card Bar - Single Line on Desktop Guaranteed */
 .hero-stats-card {
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   color: #0f172a;
   border-radius: var(--radius-md);
-  padding: 16px 28px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  padding: 14px 20px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.8);
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 0;
-  max-width: 980px;
+  justify-content: space-between;
+  flex-wrap: nowrap; /* Single line on desktop */
+  white-space: nowrap;
+  max-width: 1060px;
   width: 100%;
   animation: fadeInUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
   transition: var(--transition-normal);
@@ -716,23 +716,26 @@ button, input, select, textarea {
 
 .hero-stats-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.35);
 }
 
 .stats-card-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 4px 18px;
-  font-size: 0.9rem;
+  justify-content: center;
+  gap: 7px;
+  padding: 4px 14px;
+  font-size: 0.88rem;
   font-weight: 700;
   color: #1e293b;
   border-right: 1.5px solid #e2e8f0;
+  white-space: nowrap;
+  flex: 1 1 auto;
   transition: var(--transition-fast);
 }
 
 .stats-card-item:hover {
-  color: var(--blue-accent);
+  color: var(--gold-600);
 }
 
 .stats-card-item:last-child {
@@ -741,7 +744,7 @@ button, input, select, textarea {
 
 .stats-star {
   color: #f59e0b;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
 }
 
 /* ==========================================================================
@@ -2239,6 +2242,18 @@ button, input, select, textarea {
   }
   .footer-grid-4 {
     grid-template-columns: 1fr 1fr;
+  }
+  .hero-stats-card {
+    flex-wrap: wrap;
+    white-space: normal;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 16px;
+  }
+  .stats-card-item {
+    border-right: none;
+    padding: 4px 10px;
+    font-size: 0.85rem;
   }
   .vishal-nav-menu {
     display: none;

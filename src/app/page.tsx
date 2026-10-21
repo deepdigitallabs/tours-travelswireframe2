@@ -832,22 +832,22 @@ export default function HomePage() {
           </a>
         </div>
 
-        {/* Integrated Glass Stats Bar */}
+        {/* Exact Stats Bar in Single Line Desktop View */}
         <div className="hero-stats-card">
           <div className="stats-card-item">
-            <span className="stats-star">★</span> 4.9/5 on Google Reviews
+            <span className="stats-star">★</span> 4.8/5 on Google
           </div>
           <div className="stats-card-item">
-            15,000+ Outstation Trips
+            5,000+ Happy Customers
           </div>
           <div className="stats-card-item">
-            50+ Premium Fleet
+            10,000+ Trips Completed
           </div>
           <div className="stats-card-item">
-            100% Sanitized &amp; AC Inspected
+            7+ Years in Pune
           </div>
           <div className="stats-card-item">
-            Zero Hidden Toll Charges
+            50+ Vehicles in Fleet
           </div>
         </div>
       </section>
