@@ -377,6 +377,7 @@ export default function HomePage() {
   // Modals & Interactivity State
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
+  const [selectedPackage, setSelectedPackage] = useState<PackageTour | null>(null);
   const [isTicketModalOpen, setIsTicketModalOpen] = useState(false);
   const [generatedTicket, setGeneratedTicket] = useState<{
     pnr: string;
@@ -448,7 +449,7 @@ export default function HomePage() {
     setTimeout(() => setToast(null), 4000);
   };
 
-  // Canvas-based High-Resolution E-Ticket Image Generator
+  // Canvas-based High-Resolution Trip Voucher & Enquiry Image Generator
   const createTicketCanvasImage = (ticket: {
     pnr: string;
     name: string;
@@ -458,7 +459,7 @@ export default function HomePage() {
     time: string;
     from: string;
     to: string;
-    advance: string;
+    advance?: string;
   }) => {
     if (typeof window === "undefined") return null;
     try {
@@ -492,14 +493,14 @@ export default function HomePage() {
 
       ctx.fillStyle = "#fbbf24";
       ctx.font = "bold 15px -apple-system, BlinkMacSystemFont, sans-serif";
-      ctx.fillText("OFFICIAL BOOKING CONFIRMATION & E-TICKET VOUCHER", 60, 115);
+      ctx.fillText("BOOKING ENQUIRY & TRIP SUMMARY VOUCHER", 60, 115);
 
-      // Gold PNR Ribbon
+      // Gold Reference Ribbon
       ctx.fillStyle = "#f59e0b";
       ctx.fillRect(660, 55, 230, 52);
       ctx.fillStyle = "#071324";
-      ctx.font = "bold 19px -apple-system, BlinkMacSystemFont, sans-serif";
-      ctx.fillText(`PNR: ${ticket.pnr}`, 678, 88);
+      ctx.font = "bold 18px -apple-system, BlinkMacSystemFont, sans-serif";
+      ctx.fillText(`REF: ${ticket.pnr}`, 678, 88);
 
       // Divider Line
       ctx.strokeStyle = "rgba(245, 158, 11, 0.35)";
@@ -540,9 +541,9 @@ export default function HomePage() {
 
       drawItem("PASSENGER NAME", ticket.name, 80, 285);
       drawItem("CONTACT MOBILE", `+91 ${ticket.phone}`, 520, 285);
-      drawItem("VEHICLE RESERVED", ticket.vehicle, 80, 360);
+      drawItem("VEHICLE REQUESTED", ticket.vehicle, 80, 360);
       drawItem("JOURNEY DATE & TIME", `${ticket.date} • ${ticket.time}`, 520, 360);
-      drawItem("PAYMENT STATUS", ticket.advance, 80, 435);
+      drawItem("ENQUIRY STATUS", "Forwarded via WhatsApp", 80, 435);
       drawItem("DISPATCH HELPLINE", "+91 9764564699 / 9372459371", 520, 435);
 
       // Green Guarantee Strip
@@ -550,7 +551,7 @@ export default function HomePage() {
       ctx.fillRect(60, 495, 830, 52);
       ctx.fillStyle = "#10b981";
       ctx.font = "bold 15px -apple-system, BlinkMacSystemFont, sans-serif";
-      ctx.fillText("✓ Driver details & live GPS tracking link dispatched 2 hours prior to journey.", 80, 528);
+      ctx.fillText("✓ Request forwarded directly to Vishal Travels Owner on WhatsApp for availability check.", 80, 528);
 
       ctx.fillStyle = "#64748b";
       ctx.font = "12px -apple-system, BlinkMacSystemFont, sans-serif";
@@ -564,7 +565,7 @@ export default function HomePage() {
 
   const handleQuickBookSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const pnr = "VT-PUN-" + Math.floor(100000 + Math.random() * 900000);
+    const pnr = "VT-REQ-" + Math.floor(100000 + Math.random() * 900000);
     const passengerName = custName || "Guest Traveler";
     const passengerPhone = custPhone || "9764564699";
     const vehicleChoice = `${seatingCapacity} • ${busType}`;
@@ -572,7 +573,6 @@ export default function HomePage() {
     const reportingTime = "06:30 AM";
     const fromLoc = pickupLocation;
     const toLoc = destination;
-    const advanceInfo = "Token Advance Booking (₹2,000 via UPI)";
 
     const ticketData = {
       pnr,
@@ -582,8 +582,7 @@ export default function HomePage() {
       date: journeyDate,
       time: reportingTime,
       from: fromLoc,
-      to: toLoc,
-      advance: advanceInfo
+      to: toLoc
     };
 
     const imgData = createTicketCanvasImage(ticketData);
@@ -592,9 +591,10 @@ export default function HomePage() {
 
     // Send formatted WhatsApp text to owner (+91 9764564699)
     const ownerPhone = "919764564699";
-    const waText = `*NEW BOOKING RESERVATION - VISHAL TRAVELS PUNE*
+    const waText = `*TRIP ENQUIRY & RESERVATION REQUEST*
+*Vishal Travels Pune*
 --------------------------------------------
-*PNR Number:* ${pnr}
+*Enquiry Ref:* ${pnr}
 *Passenger Name:* ${passengerName}
 *Mobile Number:* +91 ${passengerPhone}
 *Vehicle Selected:* ${vehicleChoice}
@@ -602,10 +602,8 @@ export default function HomePage() {
 *Destination:* ${toLoc}
 *Journey Date:* ${journeyDate}
 *Reporting Time:* ${reportingTime}
-*Payment Token:* ${advanceInfo}
-*Status:* 24/7 Pune Dispatch Ready
 --------------------------------------------
-_Automated reservation sent to Vishal Travels Owner (+91 9764564699)_`;
+_Namaskar Vishal Travels! Please check vehicle availability for my journey and share the final quotation._`;
 
     setLastWaText(waText);
     const waUrl = `https://wa.me/${ownerPhone}?text=${encodeURIComponent(waText)}`;
@@ -614,20 +612,27 @@ _Automated reservation sent to Vishal Travels Owner (+91 9764564699)_`;
     }
 
     setIsTicketModalOpen(true);
-    triggerToast("Reservation created! Details sent to Owner on WhatsApp (+91 9764564699).", "success");
+    triggerToast("Trip enquiry crafted & sent to Owner on WhatsApp (+91 9764564699).", "success");
   };
 
   const handleConfirmReservation = (e: React.FormEvent) => {
     e.preventDefault();
-    const pnr = "VT-CONF-" + Math.floor(100000 + Math.random() * 900000);
-    const vehicleName = selectedVehicle ? selectedVehicle.name : "Toyota Innova Crysta & Maruti Ertiga";
+    const pnr = selectedPackage
+      ? "VT-TOUR-" + Math.floor(100000 + Math.random() * 900000)
+      : "VT-REQ-" + Math.floor(100000 + Math.random() * 900000);
+    const vehicleName = selectedPackage
+      ? `${selectedPackage.title} (${selectedPackage.duration})`
+      : selectedVehicle
+      ? selectedVehicle.name
+      : "Toyota Innova Crysta & Maruti Ertiga";
     const passengerName = modalName || custName || "Sanjay Shinde";
     const passengerPhone = modalPhone || custPhone || "9764564699";
     const fromLocation = modalPickup || pickupLocation || "Pune (Any Landmark)";
-    const toLocation = modalDestination || destination || "Mumbai International Airport (T2)";
+    const toLocation = selectedPackage
+      ? `${selectedPackage.title} (${selectedPackage.distanceKm} KM)`
+      : modalDestination || destination || "Mumbai International Airport (T2)";
     const journeyDate = modalDate || startDate || "2026-10-22";
     const reportingTime = modalTime || "06:30 AM";
-    const advanceStatus = "Token Advance Booking (₹2,000 via UPI)";
 
     const ticketData = {
       pnr,
@@ -637,31 +642,45 @@ _Automated reservation sent to Vishal Travels Owner (+91 9764564699)_`;
       date: journeyDate,
       time: reportingTime,
       from: fromLocation,
-      to: toLocation,
-      advance: advanceStatus
+      to: toLocation
     };
 
-    // 1. Generate downloadable image of the E-ticket voucher
+    // 1. Generate downloadable image of the Trip Summary Voucher
     const imgData = createTicketCanvasImage(ticketData);
     setGeneratedTicketImage(imgData);
     setGeneratedTicket(ticketData);
 
     // 2. Prepare text message for WhatsApp to the owner (+91 9764564699)
     const ownerPhone = "919764564699";
-    const waText = `*NEW BOOKING CONFIRMATION - VISHAL TRAVELS PUNE*
+    const waText = selectedPackage
+      ? `*TOUR PACKAGE BOOKING ENQUIRY*
+*Vishal Travels Pune*
 --------------------------------------------
-*PNR Number:* ${pnr}
+*Enquiry Ref:* ${pnr}
+*Tour Package:* ${selectedPackage.title}
+*Subtitle:* ${selectedPackage.subtitle}
+*Duration & Distance:* ${selectedPackage.duration} • ${selectedPackage.distanceKm} KM
+*Package Fare:* Starting From ₹${selectedPackage.startingPrice.toLocaleString()}
 *Passenger Name:* ${passengerName}
 *Mobile Number:* +91 ${passengerPhone}
-*Vehicle Reserved:* ${vehicleName}
+*Pickup Point:* ${fromLocation}
+*Journey Date:* ${journeyDate}
+*Reporting Time:* ${reportingTime}
+--------------------------------------------
+_Namaskar Vishal Travels! Please check vehicle availability for our tour and share the final itinerary quotation._`
+      : `*TRIP ENQUIRY & RESERVATION REQUEST*
+*Vishal Travels Pune*
+--------------------------------------------
+*Enquiry Ref:* ${pnr}
+*Passenger Name:* ${passengerName}
+*Mobile Number:* +91 ${passengerPhone}
+*Vehicle Requested:* ${vehicleName}
 *Pickup Point:* ${fromLocation}
 *Destination:* ${toLocation}
 *Journey Date:* ${journeyDate}
 *Reporting Time:* ${reportingTime}
-*Payment Token:* ${advanceStatus}
-*Dispatch Status:* 24/7 Pune Dispatch Ready
 --------------------------------------------
-_Automated reservation sent to Vishal Travels Owner (+91 9764564699)_`;
+_Namaskar Vishal Travels! Please check vehicle availability for my trip and share the final quotation._`;
 
     setLastWaText(waText);
 
@@ -673,7 +692,7 @@ _Automated reservation sent to Vishal Travels Owner (+91 9764564699)_`;
 
     setIsBookingModalOpen(false);
     setIsTicketModalOpen(true);
-    triggerToast("Booking confirmed! Details sent to Owner on WhatsApp (+91 9764564699).", "success");
+    triggerToast("Trip enquiry crafted & sent to Owner on WhatsApp (+91 9764564699).", "success");
   };
 
   const handleDownloadTicketImage = () => {
@@ -2131,27 +2150,7 @@ _Automated reservation sent to Vishal Travels Owner (+91 9764564699)_`;
                   </div>
                 </div>
 
-                <div
-                  style={{
-                    background: "#f8fafc",
-                    padding: "14px",
-                    borderRadius: "8px",
-                    margin: "16px 0",
-                    border: "1px solid #e2e8f0"
-                  }}
-                >
-                  <label style={{ display: "flex", gap: "10px", alignItems: "center", cursor: "pointer" }}>
-                    <input type="radio" name="payToken" defaultChecked />
-                    <div>
-                      <strong style={{ fontSize: "0.92rem", display: "block", color: "var(--navy-900)" }}>
-                        Token Advance Booking (₹2,000 via UPI)
-                      </strong>
-                      <small style={{ color: "#64748b" }}>Balance payable upon journey start</small>
-                    </div>
-                  </label>
-                </div>
-
-                <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+                <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "16px" }}>
                   <button
                     type="button"
                     style={{
