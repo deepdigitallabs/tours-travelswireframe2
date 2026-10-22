@@ -1034,7 +1034,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my trip and shar
         {/* Prestigious Trust Badge */}
         <div className="hero-trust-pill">
           <span className="star-badge">★</span>
-          <span>Pune's Highest Rated Luxury Fleet • 15+ Years of Excellence</span>
+          <span>Pune&apos;s Highest Rated Luxury Fleet • 15+ Years of Excellence</span>
         </div>
 
         {/* Dynamic Gradient Headline */}
@@ -1717,7 +1717,7 @@ _Namaskar Vishal Travels! I want to reserve a vehicle for the ${r.route} route (
               <div key={rev.id} className="testimonial-card">
                 <div>
                   <div className="review-stars">{"★".repeat(rev.rating)}</div>
-                  <p className="review-text">"{rev.text}"</p>
+                  <p className="review-text">&ldquo;{rev.text}&rdquo;</p>
                 </div>
                 <div className="reviewer-meta">
                   <div className="reviewer-avatar">
