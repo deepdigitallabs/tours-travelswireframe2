@@ -292,7 +292,11 @@ _Namaskar Vishal Travels! Please check vehicle availability for my journey and s
       </header>
 
       {/* 3. HERO SECTION - 2 Columns Desktop (#home & #booking-form-section) */}
-      <section className="hero-section" id="home">
+      <section className="hero-section" id="home" style={{ position: "relative", overflow: "hidden" }}>
+        {/* Decorative Blobs & Grain Overlay */}
+        <div className="blob blob-orange" style={{ top: "-100px", left: "-100px" }} aria-hidden="true"></div>
+        <div className="blob blob-violet" style={{ bottom: "-100px", right: "-80px" }} aria-hidden="true"></div>
+        <div className="grain" aria-hidden="true"></div>
         <div className="container">
           <div className="hero-grid">
             {/* Left Column: Headline, 3 Benefits, Trust Row */}
@@ -568,7 +572,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my journey and s
       {/* 4. TRUST STRIP - 4 Stats with Tinted Icon Circles (Overlapping Hero by ~40px) */}
       <section className="trust-strip-section">
         <div className="container">
-          <div className="trust-strip-card">
+          <div className="trust-strip-card pattern-dots">
             <div className="trust-strip-grid">
               <div className="trust-strip-item">
                 <div className="trust-strip-icon-circle">
@@ -615,7 +619,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my journey and s
       </section>
 
       {/* 5. PACKAGES - Card Grid with Category Colour Coding & Top Border (#tour-packages) */}
-      <section className="section-pad" id="tour-packages">
+      <section className="section-pad packages-section pattern-dots" id="tour-packages">
         <div className="container">
           <div className="section-header">
             <span className="section-tag">POPULAR OUTSTATION PACKAGES</span>
@@ -673,6 +677,19 @@ _Namaskar Vishal Travels! Please check vehicle availability for my journey and s
                   style={{ borderTop: `5px solid ${pkg.categoryColor}` }}
                 >
                   <div className="package-img-wrap">
+                    {/* Category Pattern Header Overlay */}
+                    <div
+                      className={`package-card-header-pattern ${
+                        pkg.category === "pilgrimage"
+                          ? "pattern-mandala"
+                          : pkg.category === "hill-station"
+                          ? "pattern-mountains"
+                          : pkg.category === "beach"
+                          ? "pattern-waves"
+                          : "pattern-diagonal"
+                      }`}
+                      aria-hidden="true"
+                    ></div>
                     <img src={pkg.image} alt={pkg.title} className="package-img" loading="lazy" />
                     <span
                       className="package-chip"
@@ -766,8 +783,11 @@ _Namaskar Vishal Travels! Please check vehicle availability for my journey and s
         </div>
       </section>
 
+      {/* Road Divider (Dashed Center-Line Road Marking) */}
+      <div className="pattern-road" aria-hidden="true"></div>
+
       {/* 6. ROUTES - Scannable List / Rows (#routes-trips) */}
-      <section className="section-pad" id="routes-trips" style={{ background: "#ffffff" }}>
+      <section className="section-pad routes-section pattern-topo" id="routes-trips">
         <div className="container">
           <div className="section-header">
             <span className="section-tag">HIGHWAY CORRIDORS</span>
@@ -821,7 +841,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my journey and s
       </section>
 
       {/* 7. FLEET - Color-Coded Cards & 2x2 Specs (#our-fleet) */}
-      <section className="section-pad" id="our-fleet">
+      <section className="section-pad fleet-section pattern-grid" id="our-fleet">
         <div className="container">
           <div className="section-header">
             <span className="section-tag">VERIFIED PUNE FLEET</span>
@@ -944,7 +964,10 @@ _Namaskar Vishal Travels! Please check vehicle availability for my journey and s
       </section>
 
       {/* 8. FARE ESTIMATOR - Dark Gradient Section with White Card (#fare-calculator) */}
-      <section className="estimator-dark-section" id="fare-calculator">
+      <section className="estimator-dark-section pattern-diagonal-dark" id="fare-calculator" style={{ position: "relative", overflow: "hidden" }}>
+        <div className="blob blob-violet" style={{ top: "10%", left: "-120px" }} aria-hidden="true"></div>
+        <div className="blob blob-orange" style={{ bottom: "10%", right: "-100px" }} aria-hidden="true"></div>
+        <div className="grain" aria-hidden="true"></div>
         <div className="container">
           <div className="section-header">
             <span className="section-tag" style={{ background: "rgba(255,255,255,0.15)", color: "#ffffff", borderColor: "rgba(255,255,255,0.3)" }}>
@@ -1138,7 +1161,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my journey and s
       </section>
 
       {/* 9. HOW IT WORKS - 3 Numbered Circles Joined by Dotted Line */}
-      <section className="section-pad">
+      <section className="section-pad how-it-works-section">
         <div className="container">
           <div className="section-header">
             <span className="section-tag">EFFORTLESS JOURNEY</span>
@@ -1177,7 +1200,8 @@ _Namaskar Vishal Travels! Please check vehicle availability for my journey and s
       </section>
 
       {/* 10. REVIEWS - Pastel Background, Coloured Initial Avatars (#reviews) */}
-      <section className="section-pad reviews-section-pastel" id="reviews">
+      <section className="section-pad reviews-section-pastel" id="reviews" style={{ position: "relative", overflow: "hidden" }}>
+        <div className="watermark-quote-bg" aria-hidden="true">&ldquo;</div>
         <div className="container">
           <div className="section-header">
             <span className="section-tag">PASSENGER TESTIMONIALS</span>
@@ -1239,7 +1263,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my journey and s
       </section>
 
       {/* 11. FAQ - Accordion with Orange Left Border on Active (#faq) */}
-      <section className="section-pad" id="faq">
+      <section className="section-pad faq-section pattern-dots-subtle" id="faq">
         <div className="container">
           <div className="section-header">
             <span className="section-tag">HELP &amp; POLICIES</span>
@@ -1279,8 +1303,67 @@ _Namaskar Vishal Travels! Please check vehicle availability for my journey and s
         </div>
       </section>
 
-      {/* 12. FOOTER - Navy with Gradient Top Bar */}
-      <footer className="site-footer">
+      {/* 12. FINAL CTA BAND - Orange-to-Violet Gradient + Blobs + Bus Silhouette */}
+      <section className="final-cta-section" aria-label="Book your executive travel">
+        <div className="blob blob-orange" style={{ top: "-100px", right: "20%" }} aria-hidden="true"></div>
+        <div className="blob blob-violet" style={{ bottom: "-80px", left: "10%" }} aria-hidden="true"></div>
+        <div className="grain" aria-hidden="true"></div>
+
+        {/* Stylized Bus Silhouette SVG */}
+        <svg
+          className="bus-silhouette-bg"
+          viewBox="0 0 500 240"
+          fill="currentColor"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          <path d="M450 180H425C425 163 411 150 395 150C378 150 365 163 365 180H165C165 163 151 150 135 150C118 150 105 163 105 180H60C48 180 40 172 40 160V80C40 50 65 40 95 40H400C440 40 460 70 460 100V160C460 172 455 180 450 180ZM80 70V120H150V70H80ZM170 70V120H250V70H170ZM270 70V120H350V70H270ZM370 70V120H430C430 95 420 70 395 70H370Z" />
+          <circle cx="135" cy="180" r="28" />
+          <circle cx="395" cy="180" r="28" />
+        </svg>
+
+        <div className="container final-cta-content">
+          <div className="final-cta-text">
+            <h2>Ready to Plan Your Group Journey?</h2>
+            <p>
+              Speak directly with our Swargate operations desk or get an instant WhatsApp quote with verified per-km billing. Fast dispatch across Pune and PCMC.
+            </p>
+          </div>
+
+          <div className="final-cta-actions">
+            <a
+              href={`https://wa.me/${SITE_CONFIG.WHATSAPP_NUMBER}?text=Namaskar%20Vishal%20Travels!%20I%20would%20like%20to%20check%20bus/tempo%20traveller%20availability%20for%20my%20upcoming%20journey.`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-whatsapp"
+              style={{ minHeight: "48px", fontSize: "0.95rem" }}
+            >
+              <MessageCircle size={20} strokeWidth={2} />
+              <span>Chat on WhatsApp</span>
+            </a>
+
+            <a
+              href={SITE_CONFIG.PHONE_TEL}
+              className="btn btn-white"
+              style={{ minHeight: "48px", fontSize: "0.95rem" }}
+            >
+              <Phone size={18} strokeWidth={2} />
+              <span>Call: {SITE_CONFIG.PHONE}</span>
+            </a>
+
+            <a
+              href="#booking-form-section"
+              className="btn btn-primary"
+              style={{ minHeight: "48px", fontSize: "0.95rem" }}
+            >
+              <span>Instant Quote</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* 13. FOOTER - Navy with 4px Gradient Top Bar & Pattern Topo */}
+      <footer className="site-footer pattern-topo-dark">
         <div className="footer-top-gradient-bar"></div>
         <div className="container footer-inner-content">
           <div className="footer-4-columns">
