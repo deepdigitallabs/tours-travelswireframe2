@@ -20,7 +20,8 @@ import {
   Info,
   Car,
   Bus,
-  Check
+  Check,
+  Sparkles
 } from "lucide-react";
 import {
   SITE_CONFIG,
@@ -48,6 +49,7 @@ export default function HomePage() {
   const [returnDate, setReturnDate] = useState("2026-10-27");
   const [passengerCount, setPassengerCount] = useState("14-17");
   const [recommendedVehicle, setRecommendedVehicle] = useState("Force Urbania VIP (17 Seater) / AC Tempo");
+  const [showReturnDate, setShowReturnDate] = useState(false);
   const [showCopyFallbackModal, setShowCopyFallbackModal] = useState(false);
   const [copiedText, setCopiedText] = useState(false);
 
@@ -350,7 +352,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my journey and s
                   <span className="card-fast-badge">Fast Dispatch</span>
                 </div>
 
-                {/* Segmented Control */}
+                {/* Segmented Control - Sleek */}
                 <div className="segmented-control">
                   <button
                     type="button"
@@ -374,7 +376,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my journey and s
                     className={`segment-btn ${tripType === "airport" ? "active" : ""}`}
                     onClick={() => {
                       setTripType("airport");
-                      setDropoff("Mumbai International Airport (T2)");
+                      setDropoff("Mumbai Airport (T2)");
                     }}
                   >
                     Airport
@@ -382,11 +384,11 @@ _Namaskar Vishal Travels! Please check vehicle availability for my journey and s
                 </div>
 
                 <form onSubmit={handleHeroBookingSubmit}>
-                  {/* Name & Phone */}
+                  {/* Row 1: Name & Phone */}
                   <div className="form-grid-2">
                     <div className="form-group">
                       <label className="form-label" htmlFor="formCustName">
-                        Your Full Name <span className="req">*</span>
+                        Full Name <span className="req">*</span>
                       </label>
                       <input
                         id="formCustName"
@@ -400,7 +402,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my journey and s
                     </div>
                     <div className="form-group">
                       <label className="form-label" htmlFor="formCustPhone">
-                        Mobile Phone <span className="req">*</span>
+                        Phone <span className="req">*</span>
                       </label>
                       <input
                         id="formCustPhone"
@@ -414,17 +416,17 @@ _Namaskar Vishal Travels! Please check vehicle availability for my journey and s
                     </div>
                   </div>
 
-                  {/* Pickup & Destination */}
+                  {/* Row 2: Pickup & Destination */}
                   <div className="form-grid-2">
                     <div className="form-group">
                       <label className="form-label" htmlFor="formPickup">
-                        Pickup Landmark in Pune <span className="req">*</span>
+                        Pickup (Pune) <span className="req">*</span>
                       </label>
                       <input
                         id="formPickup"
                         type="text"
                         className="form-input"
-                        placeholder="e.g. Swargate / Baner / Wakad"
+                        placeholder="Swargate / Hinjewadi"
                         value={pickup}
                         onChange={(e) => setPickup(e.target.value)}
                         required
@@ -438,7 +440,7 @@ _Namaskar Vishal Travels! Please check vehicle availability for my journey and s
                         id="formDropoff"
                         type="text"
                         className="form-input"
-                        placeholder="e.g. Mahabaleshwar / Shirdi"
+                        placeholder="Mahabaleshwar / Shirdi"
                         value={dropoff}
                         onChange={(e) => setDropoff(e.target.value)}
                         required
@@ -446,12 +448,23 @@ _Namaskar Vishal Travels! Please check vehicle availability for my journey and s
                     </div>
                   </div>
 
-                  {/* Dates */}
+                  {/* Row 3: Travel Date & Passengers */}
                   <div className="form-grid-2">
                     <div className="form-group">
-                      <label className="form-label" htmlFor="formStartDate">
-                        Journey Start Date <span className="req">*</span>
-                      </label>
+                      <div className="label-with-toggle">
+                        <label className="form-label" htmlFor="formStartDate">
+                          Start Date <span className="req">*</span>
+                        </label>
+                        {!showReturnDate && tripType === "outstation" && (
+                          <button
+                            type="button"
+                            className="btn-text-link"
+                            onClick={() => setShowReturnDate(true)}
+                          >
+                            + Return
+                          </button>
+                        )}
+                      </div>
                       <input
                         id="formStartDate"
                         type="date"
@@ -461,10 +474,46 @@ _Namaskar Vishal Travels! Please check vehicle availability for my journey and s
                         required
                       />
                     </div>
+
                     <div className="form-group">
-                      <label className="form-label" htmlFor="formReturnDate">
-                        Return Date <small style={{ color: "#64748B" }}>(Optional)</small>
+                      <label className="form-label" htmlFor="formPassengers">
+                        Passengers <span className="req">*</span>
                       </label>
+                      <select
+                        id="formPassengers"
+                        className="form-select"
+                        value={passengerCount}
+                        onChange={(e) => setPassengerCount(e.target.value)}
+                      >
+                        <option value="1-6">1–6 (Innova Crysta)</option>
+                        <option value="7-13">7–13 (Urbania 13S)</option>
+                        <option value="14-17">14–17 (Urbania / 17S)</option>
+                        <option value="18-20">18–20 (Tempo 20S)</option>
+                        <option value="21-26">21–26 (Tempo 26S)</option>
+                        <option value="27-32">27–32 (Mini Bus 32S)</option>
+                        <option value="33-49">33–49 (Volvo 49S)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Optional Return Date if expanded */}
+                  {showReturnDate && tripType === "outstation" && (
+                    <div className="form-group form-return-date-row">
+                      <div className="label-with-toggle">
+                        <label className="form-label" htmlFor="formReturnDate">
+                          Return Date <small style={{ color: "#64748B" }}>(Optional)</small>
+                        </label>
+                        <button
+                          type="button"
+                          className="btn-text-link"
+                          onClick={() => {
+                            setShowReturnDate(false);
+                            setReturnDate("");
+                          }}
+                        >
+                          ✕ Remove
+                        </button>
+                      </div>
                       <input
                         id="formReturnDate"
                         type="date"
@@ -473,46 +522,30 @@ _Namaskar Vishal Travels! Please check vehicle availability for my journey and s
                         onChange={(e) => setReturnDate(e.target.value)}
                       />
                     </div>
-                  </div>
+                  )}
 
-                  {/* Number of Passengers Input suggesting vehicle */}
-                  <div className="form-group">
-                    <label className="form-label" htmlFor="formPassengers">
-                      Number of Passengers <span className="req">*</span>
-                    </label>
-                    <select
-                      id="formPassengers"
-                      className="form-select"
-                      value={passengerCount}
-                      onChange={(e) => setPassengerCount(e.target.value)}
-                    >
-                      <option value="1-6">1 to 6 Passengers (Suggests: Innova Crysta SUV)</option>
-                      <option value="7-13">7 to 13 Passengers (Suggests: Force Urbania 13-Seater)</option>
-                      <option value="14-17">14 to 17 Passengers (Suggests: Force Urbania VIP / 17-Seater Tempo)</option>
-                      <option value="18-20">18 to 20 Passengers (Suggests: 20-Seater Tempo Traveller)</option>
-                      <option value="21-26">21 to 26 Passengers (Suggests: 26-Seater Tempo Traveller)</option>
-                      <option value="27-32">27 to 32 Passengers (Suggests: 32-Seater Executive Mini Bus)</option>
-                      <option value="33-49">33 to 49 Passengers (Suggests: 49-Seater Volvo Luxury Coach)</option>
-                    </select>
-                  </div>
-
-                  {/* Dynamic Suggested Vehicle Chip */}
-                  <div className="form-suggested-vehicle">
-                    <Info size={16} strokeWidth={2} style={{ flexShrink: 0 }} />
-                    <span>Suggested Fleet: <strong>{recommendedVehicle}</strong></span>
+                  {/* Micro Suggestion Tag */}
+                  <div className="suggested-fleet-micro">
+                    <Sparkles size={13} strokeWidth={2.2} style={{ flexShrink: 0 }} />
+                    <span>Suggested: <strong>{recommendedVehicle}</strong></span>
                   </div>
 
                   {/* WhatsApp Action Button */}
                   <button type="submit" className="btn btn-whatsapp booking-submit-btn">
-                    <MessageCircle size={20} strokeWidth={2} />
+                    <MessageCircle size={18} strokeWidth={2} />
                     <span>Send Enquiry on WhatsApp</span>
                   </button>
 
-                  <p className="form-helper-text">We reply within ~30 minutes</p>
-
-                  <div className="booking-fallback-row">
-                    <button type="button" onClick={() => setShowCopyFallbackModal(true)}>
-                      No WhatsApp? Copy text / Call directly
+                  {/* Helper and Fallback combined */}
+                  <div className="booking-card-footer-compact">
+                    <span>We reply within ~30 minutes</span>
+                    <span className="dot">•</span>
+                    <button
+                      type="button"
+                      onClick={() => setShowCopyFallbackModal(true)}
+                      className="fallback-link"
+                    >
+                      No WhatsApp? Copy / Call
                     </button>
                   </div>
                 </form>

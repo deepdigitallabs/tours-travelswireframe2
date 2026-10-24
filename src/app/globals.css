@@ -554,48 +554,49 @@ a {
 }
 
 .booking-card-body {
-  padding: 24px 26px;
+  padding: 18px 20px 16px;
 }
 
 .card-title-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 .card-title-row h2 {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
+  font-weight: 700;
   color: var(--blue-900);
 }
 
 .card-fast-badge {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 700;
   background: var(--orange-50);
   color: var(--orange-600);
   border: 1px solid #FFEDD5;
-  padding: 2px 8px;
+  padding: 2px 7px;
   border-radius: var(--radius-full);
 }
 
-/* Segmented Control */
+/* Segmented Control - Sleek 32px height */
 .segmented-control {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 4px;
-  background: #F3F4F6;
-  padding: 4px;
+  gap: 3px;
+  background: #F1F5F9;
+  padding: 3px;
   border-radius: var(--radius-sm);
-  margin-bottom: 18px;
+  margin-bottom: 12px;
 }
 
 .segment-btn {
   border: none;
   background: transparent;
-  padding: 8px 10px;
+  padding: 6px 8px;
   font-family: var(--font-heading);
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: var(--text-muted);
   border-radius: 6px;
@@ -606,26 +607,48 @@ a {
 .segment-btn.active {
   background: #ffffff;
   color: var(--blue-900);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .form-grid-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 8px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  margin-bottom: 12px;
+  gap: 3px;
+  margin-bottom: 8px;
+}
+
+.label-with-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.btn-text-link {
+  background: none;
+  border: none;
+  color: var(--blue-800);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.btn-text-link:hover {
+  color: var(--orange-500);
 }
 
 .form-label {
-  font-size: 0.8rem;
+  font-size: 0.74rem;
   font-weight: 700;
   color: var(--blue-900);
+  letter-spacing: 0.01em;
 }
 
 .form-label span.req {
@@ -635,11 +658,11 @@ a {
 .form-input,
 .form-select {
   width: 100%;
-  height: 46px;
+  height: 38px;
   border: 1.5px solid #D1D5DB;
-  border-radius: var(--radius-sm);
-  padding: 0 12px;
-  font-size: 0.95rem;
+  border-radius: 6px;
+  padding: 0 10px;
+  font-size: 0.85rem;
   font-family: var(--font-body);
   color: var(--text-main);
   background: #ffffff;
@@ -653,51 +676,71 @@ a {
   box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.12);
 }
 
-.form-suggested-vehicle {
-  background: var(--blue-50);
-  border: 1px solid #BFDBFE;
-  padding: 8px 12px;
-  border-radius: var(--radius-sm);
-  font-size: 0.78rem;
-  color: var(--blue-900);
-  margin-bottom: 14px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.form-return-date-row {
+  margin-bottom: 8px;
+  animation: fadeIn 150ms ease;
 }
 
-.form-suggested-vehicle strong {
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.suggested-fleet-micro {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
   color: var(--blue-800);
+  background: var(--blue-50);
+  border: 1px solid #DBEAFE;
+  padding: 4px 8px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+
+.suggested-fleet-micro strong {
+  color: var(--blue-900);
 }
 
 .booking-submit-btn {
   width: 100%;
-  min-height: 48px;
-  font-size: 0.98rem;
+  min-height: 44px;
+  font-size: 0.92rem;
+  gap: 8px;
+  margin-top: 2px;
 }
 
-.form-helper-text {
-  text-align: center;
-  font-size: 0.78rem;
-  color: var(--text-muted);
+.booking-card-footer-compact {
   margin-top: 8px;
-}
-
-.booking-fallback-row {
-  margin-top: 10px;
   display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 12px;
-  font-size: 0.76rem;
+  gap: 6px;
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+  text-align: center;
 }
 
-.booking-fallback-row button {
+.booking-card-footer-compact .dot {
+  color: #CBD5E1;
+}
+
+.booking-card-footer-compact .fallback-link {
   background: none;
   border: none;
   color: var(--blue-800);
   font-weight: 600;
   text-decoration: underline;
   cursor: pointer;
+  padding: 0;
+  font-size: 0.74rem;
+}
+
+.booking-card-footer-compact .fallback-link:hover {
+  color: var(--orange-500);
 }
 
 @media (max-width: 960px) {
