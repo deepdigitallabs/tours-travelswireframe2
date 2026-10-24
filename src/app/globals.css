@@ -704,12 +704,31 @@ a {
   color: var(--blue-900);
 }
 
-.booking-submit-btn {
+.booking-card-actions {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.booking-action-btn {
   width: 100%;
   min-height: 44px;
-  font-size: 0.92rem;
-  gap: 8px;
-  margin-top: 2px;
+  font-size: 0.88rem;
+  padding: 0 10px;
+  text-decoration: none;
+}
+
+.btn-call {
+  background: var(--blue-50);
+  color: var(--blue-800);
+  border: 1.5px solid var(--blue-800);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-call:hover {
+  background: var(--blue-800);
+  color: #ffffff;
 }
 
 .booking-card-footer-compact {
@@ -741,6 +760,84 @@ a {
 
 .booking-card-footer-compact .fallback-link:hover {
   color: var(--orange-500);
+}
+
+/* Floating Quick Action Buttons (Call & WhatsApp) for Desktop */
+.floating-quick-actions {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 998;
+}
+
+.floating-action-btn {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(11, 31, 58, 0.22);
+  transition: transform 200ms ease, box-shadow 200ms ease;
+  position: relative;
+  text-decoration: none;
+}
+
+.floating-action-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 12px 28px rgba(11, 31, 58, 0.3);
+}
+
+.floating-btn-call {
+  background: var(--blue-800);
+  color: #ffffff;
+  border: 2px solid #ffffff;
+}
+
+.floating-btn-call:hover {
+  background: var(--blue-900);
+}
+
+.floating-btn-wa {
+  background: var(--whatsapp-green);
+  color: #ffffff;
+  border: 2px solid #ffffff;
+}
+
+.floating-btn-wa:hover {
+  background: var(--whatsapp-hover);
+}
+
+.floating-action-btn .floating-badge {
+  position: absolute;
+  right: 60px;
+  background: var(--blue-900);
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(10px);
+  transition: opacity 150ms ease, transform 150ms ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.floating-action-btn:hover .floating-badge {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+@media (max-width: 768px) {
+  .floating-quick-actions {
+    display: none;
+  }
 }
 
 @media (max-width: 960px) {

@@ -530,11 +530,21 @@ _Namaskar Vishal Travels! Please check vehicle availability for my journey and s
                     <span>Suggested: <strong>{recommendedVehicle}</strong></span>
                   </div>
 
-                  {/* WhatsApp Action Button */}
-                  <button type="submit" className="btn btn-whatsapp booking-submit-btn">
-                    <MessageCircle size={18} strokeWidth={2} />
-                    <span>Send Enquiry on WhatsApp</span>
-                  </button>
+                  {/* Action Buttons: WhatsApp & Direct Call */}
+                  <div className="booking-card-actions">
+                    <button type="submit" className="btn btn-whatsapp booking-action-btn">
+                      <MessageCircle size={18} strokeWidth={2} />
+                      <span>WhatsApp Quote</span>
+                    </button>
+                    <a
+                      href={SITE_CONFIG.PHONE_TEL}
+                      className="btn btn-call booking-action-btn"
+                      title={`Call ${SITE_CONFIG.PHONE}`}
+                    >
+                      <Phone size={17} strokeWidth={2} />
+                      <span>Call Desk</span>
+                    </a>
+                  </div>
 
                   {/* Helper and Fallback combined */}
                   <div className="booking-card-footer-compact">
@@ -1469,6 +1479,30 @@ _Namaskar Vishal Travels! Please check vehicle availability for my journey and s
           </div>
         </div>
       )}
+
+      {/* Floating Quick Action Buttons (Call & WhatsApp) for Desktop */}
+      <div className="floating-quick-actions" aria-label="Quick contact buttons">
+        <a
+          href={SITE_CONFIG.PHONE_TEL}
+          className="floating-action-btn floating-btn-call"
+          title={`Call Vishal Travels at ${SITE_CONFIG.PHONE}`}
+          aria-label="Call Dispatch Desk"
+        >
+          <Phone size={22} strokeWidth={2} />
+          <span className="floating-badge">Call {SITE_CONFIG.PHONE}</span>
+        </a>
+        <a
+          href={SITE_CONFIG.WHATSAPP_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="floating-action-btn floating-btn-wa"
+          title="Chat with Vishal Travels on WhatsApp"
+          aria-label="Chat on WhatsApp"
+        >
+          <MessageCircle size={24} strokeWidth={2} />
+          <span className="floating-badge">Chat on WhatsApp</span>
+        </a>
+      </div>
 
       {/* Toast Notification */}
       {toast && (
