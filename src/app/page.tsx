@@ -1,597 +1,114 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-
-// --- Data Types ---
-
-interface Vehicle {
-  id: string;
-  name: string;
-  category: "urbania" | "tempo" | "minibus" | "luxury-bus" | "suv";
-  categoryLabel: string;
-  seatingText: string;
-  seatsNum: number;
-  submodel: string;
-  bestFor: string;
-  rating: number;
-  reviewsCount: number;
-  luggage: string;
-  ratePerKm: number;
-  minKmPerDay: number;
-  driverAllowancePerDay: number;
-  image: string;
-  amenities: string[];
-}
-
-interface PackageTour {
-  id: string;
-  anchorId: string;
-  title: string;
-  subtitle: string;
-  duration: string;
-  durationDays: number;
-  distanceKm: number;
-  image: string;
-  tag: string;
-  highlights: string[];
-  vehiclePrices: {
-    tempo17: number;
-    urbania: number;
-    innova: number;
-  };
-}
-
-interface RouteItem {
-  id: string;
-  anchorId: string;
-  route: string;
-  time: string;
-  dist: string;
-  tripType: "One-Way Drop" | "Round-Trip";
-  vehicleModel: string;
-  fare: string;
-  numericFare: number;
-}
-
-interface Review {
-  id: string;
-  name: string;
-  initials: string;
-  role: string;
-  city: string;
-  rating: number;
-  text: string;
-  date: string;
-  tripType: string;
-}
-
-// Global Single Verified Contact Info
-const PRIMARY_PHONE = "+91 98220 44555";
-const PRIMARY_PHONE_TEL = "tel:+919822044555";
-const PRIMARY_WHATSAPP_NUMBER = "919822044555";
-const GOOGLE_MAPS_LINK = "https://maps.google.com/?q=Vishal+Travels+Pune+Swargate";
-
-const FLEET_DATA: Vehicle[] = [
-  {
-    id: "f1",
-    name: "Force Urbania Luxury VIP Lounge",
-    category: "urbania",
-    categoryLabel: "Force Urbania VIP",
-    seatingText: "13 & 17 Seater Maharaja AC",
-    seatsNum: 17,
-    submodel: "High-Roof Executive Cabin • Ultra-Quiet Air Suspension",
-    bestFor: "Corporate delegations, VIP airport escorts & wedding bride/groom families",
-    rating: 4.98,
-    reviewsCount: 340,
-    luggage: "20 Large Bags + Dedicated Boot",
-    ratePerKm: 38,
-    minKmPerDay: 300,
-    driverAllowancePerDay: 500,
-    image: "/images/urbania_vip.jpg",
-    amenities: ["Maharaja Leather Captain Seats", "Independent AC Blowers", "Panoramic UV Windows", "USB at Every Seat"]
-  },
-  {
-    id: "f2",
-    name: "Force Tempo Traveller AC (17 Seater)",
-    category: "tempo",
-    categoryLabel: "Tempo Traveller AC",
-    seatingText: "17 Seater Push-back AC",
-    seatsNum: 17,
-    submodel: "Force Motors Deluxe 2x1 Reclining Configuration",
-    bestFor: "Ashtavinayak Yatra, Mahabaleshwar family trips & Shirdi pilgrimages",
-    rating: 4.94,
-    reviewsCount: 520,
-    luggage: "18 Suitcases + Rooftop Carrier",
-    ratePerKm: 28,
-    minKmPerDay: 300,
-    driverAllowancePerDay: 500,
-    image: "/images/tempo_traveller.jpg",
-    amenities: ["Push-back Velvet Seats", "Chilled Dual AC", "JBL Sound & Tour Mic", "Ghat-Tested Chauffeur"]
-  },
-  {
-    id: "f-tempo-20",
-    name: "Force Tempo Traveller AC (20 Seater)",
-    category: "tempo",
-    categoryLabel: "Tempo Traveller AC",
-    seatingText: "20 Seater Push-back AC",
-    seatsNum: 20,
-    submodel: "Extended Wheelbase 2x1 Configuration • Large Boot",
-    bestFor: "Medium family groups (18–20 pax) needing extra space without hiring a bus",
-    rating: 4.92,
-    reviewsCount: 280,
-    luggage: "20+ Suitcases + Top Carrier",
-    ratePerKm: 31,
-    minKmPerDay: 300,
-    driverAllowancePerDay: 550,
-    image: "/images/tempo_traveller.jpg",
-    amenities: ["2x1 Reclining Seats", "Dual Evaporator Chilled AC", "Overhead Reading Lights", "Speed Regulated"]
-  },
-  {
-    id: "f3",
-    name: "Force Tempo Traveller AC (26 Seater)",
-    category: "tempo",
-    categoryLabel: "Tempo Traveller AC",
-    seatingText: "26 Seater Push-back AC",
-    seatsNum: 26,
-    submodel: "Extra Long Wheelbase • 2x2 Reclining Configuration",
-    bestFor: "Large wedding barat transfers & Hinjewadi IT company team offsites",
-    rating: 4.91,
-    reviewsCount: 380,
-    luggage: "25+ Suitcases Boot",
-    ratePerKm: 34,
-    minKmPerDay: 300,
-    driverAllowancePerDay: 600,
-    image: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&auto=format&fit=crop&q=80",
-    amenities: ["Individual AC Louvers", "LED Screen System", "Rear Air Suspension", "Emergency Hammer"]
-  },
-  {
-    id: "f4",
-    name: "Executive Mini Bus (32 Seater AC)",
-    category: "minibus",
-    categoryLabel: "Mini Bus Rental",
-    seatingText: "32 Seater Reclining High-Back",
-    seatsNum: 32,
-    submodel: "Tata Starbus / Eicher Executive Luxury Coach",
-    bestFor: "College industrial tours, corporate shifts & Pune wedding guest convoys",
-    rating: 4.89,
-    reviewsCount: 290,
-    luggage: "35 Large Suitcases Boot",
-    ratePerKm: 42,
-    minKmPerDay: 300,
-    driverAllowancePerDay: 700,
-    image: "https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=800&auto=format&fit=crop&q=80",
-    amenities: ["High-Back Reclining Seats", "Ducted Central Climate AC", "PA Tour Guide Mic", "Curtained Windows"]
-  },
-  {
-    id: "f5-volvo",
-    name: "Volvo B11R Multi-Axle Luxury Coach",
-    category: "luxury-bus",
-    categoryLabel: "Volvo Multi-Axle Coach",
-    seatingText: "49 Seater Push-back Semi-Sleeper",
-    seatsNum: 49,
-    submodel: "Volvo B11R Electronically Controlled Air Suspension",
-    bestFor: "5 Jyotirlinga, Char Dham pilgrimages & Goa destination wedding groups",
-    rating: 4.97,
-    reviewsCount: 310,
-    luggage: "60+ Large Suitcases Under-floor",
-    ratePerKm: 60,
-    minKmPerDay: 350,
-    driverAllowancePerDay: 900,
-    image: "https://images.unsplash.com/photo-1557223562-6c77ef16210f?w=800&auto=format&fit=crop&q=80",
-    amenities: ["Full Air Suspension Glide", "Personal USB & Reading Lights", "Dual Highway Drivers", "Live GPS Telemetry"]
-  },
-  {
-    id: "f5-sleeper",
-    name: "BharatBenz AC Sleeper Luxury Coach",
-    category: "luxury-bus",
-    categoryLabel: "AC Sleeper Bus",
-    seatingText: "36 Berths (2x1 Luxury Sleeper)",
-    seatsNum: 36,
-    submodel: "BharatBenz Custom Sleeper Coach • Independent Mattresses",
-    bestFor: "Overnight interstate travel from Pune to Goa, Indore, or Hyderabad",
-    rating: 4.95,
-    reviewsCount: 190,
-    luggage: "Spacious Underbelly Cargo Hold",
-    ratePerKm: 58,
-    minKmPerDay: 350,
-    driverAllowancePerDay: 900,
-    image: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&auto=format&fit=crop&q=80",
-    amenities: ["Individual AC Vents Each Berth", "Privacy Curtains", "Dual Chauffeurs", "Soft Night Reading Lamps"]
-  },
-  {
-    id: "f6",
-    name: "Toyota Innova Crysta & Maruti Ertiga",
-    category: "suv",
-    categoryLabel: "Chauffeur SUV",
-    seatingText: "6 - 7 Seater Captain Seats",
-    seatsNum: 7,
-    submodel: "Innova Crysta 2.4 ZX / Ertiga ZXi+ Chauffeur Driven",
-    bestFor: "Pune-Mumbai airport drop/pick, executive client visits & small family tours",
-    rating: 4.96,
-    reviewsCount: 640,
-    luggage: "5 Suitcases",
-    ratePerKm: 18,
-    minKmPerDay: 250,
-    driverAllowancePerDay: 400,
-    image: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=800&auto=format&fit=crop&q=80",
-    amenities: ["Leather Captain Seats", "Automatic Multi-Zone AC", "Fastag Enabled", "Professional Chauffeur"]
-  }
-];
-
-// Calculated transparently from standard rate card:
-// Tempo 17-str: max(km, days*300)*28 + days*500 + 5% GST
-// Force Urbania: max(km, days*300)*38 + days*500 + 5% GST
-// Innova Crysta: max(km, days*250)*18 + days*400 + 5% GST
-const PACKAGES_DATA: PackageTour[] = [
-  {
-    id: "pkg1",
-    anchorId: "pkg-ashtavinayak",
-    title: "Ashtavinayak Darshan from Pune",
-    subtitle: "Complete 8 Ganesh Temples sacred pilgrimage in 2 Days",
-    duration: "2 Days / 1 Night",
-    durationDays: 2,
-    distanceKm: 650,
-    image: "/images/hero_fleet.jpg",
-    tag: "Most Popular Pilgrimage",
-    highlights: [
-      "Mayureshwar (Morgaon) & Siddhivinayak (Siddhatek)",
-      "Ballaleshwar (Pali) & Varadvinayak (Mahad)",
-      "Chintamani (Theur) & Girijatmaj (Lenyadri)",
-      "Vighnahar (Ozar) & Mahaganapati (Ranjangaon)"
-    ],
-    vehiclePrices: {
-      tempo17: 20160,
-      urbania: 26985,
-      innova: 13125
-    }
-  },
-  {
-    id: "pkg2",
-    anchorId: "pkg-jyotirlinga",
-    title: "5 Jyotirlinga Darshan Circuit",
-    subtitle: "Sacred 5 Maharashtra Shiva Shrines circuit tour from Pune",
-    duration: "4 Days / 3 Nights",
-    durationDays: 4,
-    distanceKm: 1450,
-    image: "/images/jyotirlinga_temple.jpg",
-    tag: "Sacred Yatra",
-    highlights: [
-      "1. Bhimashankar (Pune)",
-      "2. Trimbakeshwar (Nashik)",
-      "3. Grishneshwar (Ellora, Chhatrapati Sambhajinagar)",
-      "4. Aundha Nagnath (Hingoli)",
-      "5. Parli Vaijnath (Beed)"
-    ],
-    vehiclePrices: {
-      tempo17: 44730,
-      urbania: 59955,
-      innova: 29085
-    }
-  },
-  {
-    id: "pkg3",
-    anchorId: "pkg-mahabaleshwar",
-    title: "Pune to Mahabaleshwar & Panchgani",
-    subtitle: "Scenic Sahyadri hill station getaway (600 km minimum applied)",
-    duration: "2 Days / 1 Night",
-    durationDays: 2,
-    distanceKm: 260,
-    image: "https://images.unsplash.com/photo-1589308078059-be1415eab4c3?w=600&auto=format&fit=crop&q=80",
-    tag: "Weekend Getaway",
-    highlights: [
-      "Arthur Seat & Kate's Point Valley Views",
-      "Venna Lake Boating & Horse Riding",
-      "Mapro Garden Strawberry Farms",
-      "Table Land & Sydney Point in Panchgani",
-      "Old Mahabaleshwar Mandir"
-    ],
-    vehiclePrices: {
-      tempo17: 18690,
-      urbania: 24990,
-      innova: 10290
-    }
-  },
-  {
-    id: "pkg4",
-    anchorId: "pkg-shirdi",
-    title: "Pune to Shirdi & Shani Shingnapur",
-    subtitle: "Sai Baba Samadhi Mandir VIP Darshan with Return Drop",
-    duration: "2 Days / 1 Night",
-    durationDays: 2,
-    distanceKm: 450,
-    image: "/images/shirdi_temple.jpg",
-    tag: "Express Yatra",
-    highlights: [
-      "Sai Baba Samadhi Mandir VIP Darshan",
-      "Dwarkamai & Chavadi Visits",
-      "Shani Shingnapur Holy Shrine",
-      "Clean Highway Halts with Senior Care",
-      "Flexible Aarti & Darshan Timings"
-    ],
-    vehiclePrices: {
-      tempo17: 18690,
-      urbania: 24990,
-      innova: 10290
-    }
-  },
-  {
-    id: "pkg5",
-    anchorId: "pkg-konkan",
-    title: "Malvan, Sindhudurg & Goa Tour",
-    subtitle: "Konkan Coastal Heritage, Scuba & Beach Holiday",
-    duration: "4 Days / 3 Nights",
-    durationDays: 4,
-    distanceKm: 1200,
-    image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=600&auto=format&fit=crop&q=80",
-    tag: "Coastal Holiday",
-    highlights: [
-      "Historic Sindhudurg Island Fort",
-      "Tarkarli Watersports & Scuba Diving",
-      "North Goa Beaches & Fort Aguada",
-      "Authentic Malvani Cuisine Halts",
-      "Expert Coastal Highway Navigation"
-    ],
-    vehiclePrices: {
-      tempo17: 37380,
-      urbania: 49980,
-      innova: 24360
-    }
-  },
-  {
-    id: "pkg6",
-    anchorId: "pkg-shaktipeeth",
-    title: "Sade Teen Shakti Peeth Yatra",
-    subtitle: "All 3.5 Divine Devi Temples including Saptashrungi (Half Peeth)",
-    duration: "4 Days / 3 Nights",
-    durationDays: 4,
-    distanceKm: 1650,
-    image: "/images/shaktipeeth_temple.jpg",
-    tag: "Devi Darshan Circuit",
-    highlights: [
-      "1. Mahalakshmi Temple (Kolhapur) - Full Peeth",
-      "2. Tulja Bhavani Temple (Tuljapur) - Full Peeth",
-      "3. Renuka Devi Temple (Mahur) - Full Peeth",
-      "4. Saptashrungi Nivasini (Vani, Nashik) - Sacred 0.5 (Half) Peeth"
-    ],
-    vehiclePrices: {
-      tempo17: 50610,
-      urbania: 67935,
-      innova: 32865
-    }
-  }
-];
-
-const POPULAR_ROUTES: RouteItem[] = [
-  {
-    id: "r1",
-    anchorId: "route-mumbai",
-    route: "Pune ➔ Mumbai Airport (T1/T2)",
-    time: "3.5 hrs",
-    dist: "150 KM",
-    tripType: "One-Way Drop",
-    vehicleModel: "Innova Crysta / Sedan",
-    fare: "₹3,500",
-    numericFare: 3500
-  },
-  {
-    id: "r2",
-    anchorId: "route-mumbai-tempo",
-    route: "Pune ➔ Mumbai Group Transfer",
-    time: "3.5 hrs",
-    dist: "150 KM",
-    tripType: "One-Way Drop",
-    vehicleModel: "17-Seater AC Tempo Traveller",
-    fare: "₹7,500",
-    numericFare: 7500
-  },
-  {
-    id: "r3",
-    anchorId: "route-mahabaleshwar",
-    route: "Pune ➔ Mahabaleshwar Day Return",
-    time: "Same Day Return",
-    dist: "300 KM Min",
-    tripType: "Round-Trip",
-    vehicleModel: "17-Seater AC Tempo Traveller",
-    fare: "₹8,900",
-    numericFare: 8900
-  },
-  {
-    id: "r4",
-    anchorId: "route-shirdi",
-    route: "Pune ➔ Shirdi Darshan Round Trip",
-    time: "Same Day Return",
-    dist: "420 KM",
-    tripType: "Round-Trip",
-    vehicleModel: "17-Seater AC Tempo Traveller",
-    fare: "₹12,800",
-    numericFare: 12800
-  },
-  {
-    id: "r5",
-    anchorId: "route-lonavala",
-    route: "Pune ➔ Lonavala & Khandala Ghat",
-    time: "Day Excursion",
-    dist: "200 KM",
-    tripType: "Round-Trip",
-    vehicleModel: "Innova Crysta 7-Seater",
-    fare: "₹4,200",
-    numericFare: 4200
-  },
-  {
-    id: "r6",
-    anchorId: "route-chiplun",
-    route: "Pune ➔ Chiplun & Konkan Foothills",
-    time: "5.5 hrs",
-    dist: "240 KM",
-    tripType: "One-Way Drop",
-    vehicleModel: "17-Seater AC Tempo Traveller",
-    fare: "₹8,500",
-    numericFare: 8500
-  },
-  {
-    id: "r7",
-    anchorId: "route-nashik",
-    route: "Pune ➔ Nashik & Trimbakeshwar",
-    time: "Day Return / 1 Night",
-    dist: "440 KM",
-    tripType: "Round-Trip",
-    vehicleModel: "Force Urbania VIP (17 Seater)",
-    fare: "₹17,800",
-    numericFare: 17800
-  },
-  {
-    id: "r8",
-    anchorId: "route-goa",
-    route: "Pune ➔ Goa Coastal Drop",
-    time: "8.5 hrs",
-    dist: "440 KM",
-    tripType: "One-Way Drop",
-    vehicleModel: "17-Seater AC Tempo Traveller",
-    fare: "₹16,500",
-    numericFare: 16500
-  }
-];
-
-const REVIEWS_DATA: Review[] = [
-  {
-    id: "r1",
-    name: "Rajesh Gaikwad",
-    initials: "RG",
-    role: "Family Coordinator",
-    city: "Kothrud, Pune",
-    rating: 5,
-    text: "Booked a 17-seater Tempo Traveller for our 2-day family Ashtavinayak yatra. Driver Mr. Sachin was at our doorstep 20 minutes prior with a spotless bus and chilled AC. Handled Khandala and Pali ghat curves with immense care.",
-    date: "12 Oct 2026",
-    tripType: "Ashtavinayak Darshan"
-  },
-  {
-    id: "r2",
-    name: "Sneha Deshmukh",
-    initials: "SD",
-    role: "HR Operations Lead",
-    city: "Hinjewadi Phase 3, Pune",
-    rating: 5,
-    text: "Vishal Travels provided four Force Urbanias for our leadership summit at Mahabaleshwar. Maharaja leather captain seats, individual USB ports, and clean audio systems made the journey remarkably comfortable. GST invoice provided promptly.",
-    date: "24 Sep 2026",
-    tripType: "Corporate Transport"
-  },
-  {
-    id: "r3",
-    name: "Amitabh Kulkarni",
-    initials: "AK",
-    role: "Wedding Host",
-    city: "Baner, Pune",
-    rating: 5,
-    text: "Hired a 49-seater Volvo Multi-Axle and two 17-seater Tempo Travellers for guest transport from Pune to Goa. Spotless interiors, prompt driver dispatch, and zero mechanical issues. Made all 80 family members feel pampered.",
-    date: "18 Aug 2026",
-    tripType: "Destination Wedding"
-  },
-  {
-    id: "r4",
-    name: "Mahesh Panchal",
-    initials: "MP",
-    role: "Group Leader",
-    city: "Swargate, Pune",
-    rating: 5,
-    text: "Completed the 4-day 5 Jyotirlinga tour in an Urbania. Visited all 5 shrines: Bhimashankar, Trimbakeshwar, Grishneshwar, Aundha Nagnath, and Parli Vaijnath. Driver was deeply courteous to our senior citizen parents.",
-    date: "04 Jul 2026",
-    tripType: "5 Jyotirlinga Sacred Circuit"
-  }
-];
-
-const FAQ_DATA = [
-  {
-    q: "What vehicle types and seating capacities are available for hire in Pune?",
-    a: "Vishal Travels provides a comprehensive executive fleet including Force Urbania VIP (13 & 17 seater), Force Tempo Travellers (17, 20 & 26 seater AC), Executive Mini Buses (32 seater), Luxury Volvo B11R Multi-Axle Coaches (49 seater push-back), BharatBenz AC Sleeper Buses (36 berths), and Toyota Innova Crysta SUVs (6-7 seater). Every vehicle is equipped with dual AC, reclining seats, mobile charging, and commercial RTO passenger permits."
-  },
-  {
-    q: "How is the outstation bus rental tariff calculated (Minimum KM Rule)?",
-    a: "Outstation journeys in Pune follow a standard calendar-day minimum average: 300 km per day for Tempo Travellers, Force Urbanias, and Mini Buses (350 km/day for Volvo Multi-Axle; 250 km/day for Innova). For example, a 2-day trip has a minimum billable baseline of 600 km. If you travel 350 km in 2 days, you are billed for 600 km at the agreed per-km rate plus driver allowance and 5% GST. If you travel 720 km in 2 days, you are billed for the actual 720 km."
-  },
-  {
-    q: "What is included in the fare quotation, and what is paid extra?",
-    a: "Included in your quote: Complete vehicle rental, commercial driver charges, fuel/diesel, air conditioning, and 5% GST with tax invoice. Paid extra at actuals: Highway Fastag toll plaza charges, parking tickets, and interstate border entry taxes (if crossing into Goa, Gujarat, Karnataka, etc.). There are zero hidden agency commissions or secret fuel surcharges."
-  },
-  {
-    q: "What is your booking advance and cancellation refund policy?",
-    a: "You can confirm your trip reservation with a token advance of ₹2,000 for Tempo Travellers and Force Urbanias (₹5,000 for Luxury Volvo Coaches) payable via UPI or bank transfer. Cancellation Schedule: 1) 7+ days prior: 100% refund. 2) 48 hours to 7 days prior: 80% refund. 3) 24 to 48 hours prior: 50% refund or 100% credit towards a rescheduled trip within 6 months. 4) Less than 24 hours prior: Advance token is retained to cover driver schedule blocking and fleet yard preparation."
-  },
-  {
-    q: "Are drivers experienced with steep ghat roads like Khandala, Mahabaleshwar & Konkan?",
-    a: "Yes. All our drivers hold commercial transport badge licenses with minimum 8+ years of highway driving experience across steep Western Ghat corridors including Bhor Ghat, Pasarni Ghat, Amba Ghat, and Varandha Ghat. Every vehicle undergoes rigorous brake, tire, and fluid inspections before dispatch."
-  }
-];
+import Image from "next/image";
+import {
+  Phone,
+  MessageCircle,
+  ShieldCheck,
+  Star,
+  MapPin,
+  Clock,
+  Compass,
+  Users,
+  Briefcase,
+  Calendar,
+  CheckCircle2,
+  Copy,
+  ChevronRight,
+  ExternalLink,
+  Info,
+  Car,
+  Bus,
+  Check
+} from "lucide-react";
+import {
+  SITE_CONFIG,
+  VEHICLES,
+  PACKAGES,
+  ROUTES,
+  REVIEWS,
+  FAQS,
+  calculateFare,
+  type VehicleRate,
+  type PackageTour
+} from "@/data/travel-data";
 
 export default function HomePage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Hero Booking Card State
+  // Hero Booking Form State
   const [tripType, setTripType] = useState<"outstation" | "local" | "airport">("outstation");
-  const [pickup, setPickup] = useState("");
-  const [dropoff, setDropoff] = useState("");
+  const [custName, setCustName] = useState("");
+  const [custPhone, setCustPhone] = useState("");
+  const [pickup, setPickup] = useState("Pune (Swargate / Hinjewadi / Baner)");
+  const [dropoff, setDropoff] = useState("Mahabaleshwar");
   const [startDate, setStartDate] = useState("2026-10-25");
   const [returnDate, setReturnDate] = useState("2026-10-27");
-  const [passengers, setPassengers] = useState("14-17");
-  const [phone, setPhone] = useState("");
-  const [formVehicleRecommended, setFormVehicleRecommended] = useState("Force Urbania VIP (17 Seater) / AC Tempo");
+  const [passengerCount, setPassengerCount] = useState("14-17");
+  const [recommendedVehicle, setRecommendedVehicle] = useState("Force Urbania VIP (17 Seater) / AC Tempo");
+  const [showCopyFallbackModal, setShowCopyFallbackModal] = useState(false);
+  const [copiedText, setCopiedText] = useState(false);
 
-  // Dynamic recommendation based on passengers
+  // Update recommended vehicle based on passenger count
   useEffect(() => {
-    switch (passengers) {
+    switch (passengerCount) {
       case "1-6":
-        setFormVehicleRecommended("Toyota Innova Crysta (6-7 Seats)");
+        setRecommendedVehicle("Toyota Innova Crysta (6-7 Seats)");
         break;
       case "7-13":
-        setFormVehicleRecommended("Force Urbania VIP Maharaja (13 Seats)");
+        setRecommendedVehicle("Force Urbania VIP Maharaja (13 Seats)");
         break;
       case "14-17":
-        setFormVehicleRecommended("Force Urbania VIP / 17-Seater AC Tempo");
+        setRecommendedVehicle("Force Urbania VIP / 17-Seater AC Tempo");
         break;
       case "18-20":
-        setFormVehicleRecommended("Force Tempo Traveller AC (20 Seater)");
+        setRecommendedVehicle("Force Tempo Traveller AC (20 Seater)");
         break;
       case "21-26":
-        setFormVehicleRecommended("Force Tempo Traveller AC (26 Seater)");
+        setRecommendedVehicle("Force Tempo Traveller AC (26 Seater)");
         break;
       case "27-32":
-        setFormVehicleRecommended("Executive Mini Bus (32 Seater AC)");
+        setRecommendedVehicle("Executive Mini Bus (32 Seater AC)");
         break;
       case "33-49":
-        setFormVehicleRecommended("Volvo B11R Multi-Axle Luxury Coach (49 Seater)");
+        setRecommendedVehicle("Volvo B11R Multi-Axle Luxury Coach (49 Seater)");
         break;
       default:
-        setFormVehicleRecommended("Force Urbania VIP (17 Seater)");
+        setRecommendedVehicle("Force Urbania VIP (17 Seater)");
     }
-  }, [passengers]);
+  }, [passengerCount]);
 
-  // Packages State - Active vehicle pill per package card
+  // Packages Active Vehicle per card
   const [packageVehicles, setPackageVehicles] = useState<{ [key: string]: "tempo17" | "urbania" | "innova" }>({
-    pkg1: "tempo17",
-    pkg2: "tempo17",
-    pkg3: "tempo17",
-    pkg4: "tempo17",
-    pkg5: "tempo17",
-    pkg6: "tempo17"
+    "pkg-ashtavinayak": "tempo17",
+    "pkg-jyotirlinga": "tempo17",
+    "pkg-mahabaleshwar": "tempo17",
+    "pkg-shirdi": "tempo17",
+    "pkg-konkan": "tempo17",
+    "pkg-shaktipeeth": "tempo17"
   });
+  const [packageFilter, setPackageFilter] = useState<string>("all");
 
   // Fleet Filter State
   const [fleetFilter, setFleetFilter] = useState<string>("all");
 
   // Fare Estimator State
+  const [calcRoutePreset, setCalcRoutePreset] = useState<string>("custom");
   const [calcKm, setCalcKm] = useState<number>(350);
   const [calcDays, setCalcDays] = useState<number>(2);
-  const [calcRate, setCalcRate] = useState<number>(38);
-  const [calcMinKmPerDay, setCalcMinKmPerDay] = useState<number>(300);
-  const [calcDA, setCalcDA] = useState<number>(500);
-  const [calcVehicleName, setCalcVehicleName] = useState<string>("Force Urbania VIP 17 Seater");
+  const [calcVehicleId, setCalcVehicleId] = useState<string>("urbania-17");
   const [isReturnTrip, setIsReturnTrip] = useState<boolean>(true);
   const [isExclusionsOpen, setIsExclusionsOpen] = useState<boolean>(false);
 
   // FAQ Accordion State (first item open by default)
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
-  // Scroll listener
+  // Toast System
+  const [toast, setToast] = useState<string | null>(null);
+
+  // Scroll listener for sticky header
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 40);
@@ -600,45 +117,91 @@ export default function HomePage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Estimator Calculations
-  const effectiveDistance = isReturnTrip ? calcKm : calcKm;
-  const minBillableKm = calcDays * calcMinKmPerDay;
-  const billableKm = Math.max(effectiveDistance, minBillableKm);
-  const isMinBillingApplied = effectiveDistance < minBillableKm;
+  const triggerToast = (msg: string) => {
+    setToast(msg);
+    setTimeout(() => setToast(null), 3500);
+  };
 
-  const totalBase = billableKm * calcRate;
-  const totalDA = calcDays * calcDA;
-  const subtotal = totalBase + totalDA;
-  const totalGst = Math.round(subtotal * 0.05);
-  const totalEstimate = subtotal + totalGst;
+  // Find active vehicle for estimator
+  const activeCalcVehicle = VEHICLES.find((v) => v.id === calcVehicleId) || VEHICLES[0];
+  const estimatorResult = calculateFare(
+    calcKm,
+    calcDays,
+    activeCalcVehicle.ratePerKm,
+    activeCalcVehicle.minKmPerDay,
+    activeCalcVehicle.driverAllowancePerDay,
+    0.05
+  );
 
-  // Filtered Fleet
-  const filteredFleet =
-    fleetFilter === "all"
-      ? FLEET_DATA
-      : FLEET_DATA.filter((v) => v.category === fleetFilter);
+  // Preset route selector in estimator
+  const handleRoutePresetChange = (preset: string) => {
+    setCalcRoutePreset(preset);
+    if (preset === "pune-mumbai") {
+      setCalcKm(300);
+      setCalcDays(1);
+    } else if (preset === "pune-mahabaleshwar") {
+      setCalcKm(260);
+      setCalcDays(2);
+    } else if (preset === "pune-shirdi") {
+      setCalcKm(450);
+      setCalcDays(2);
+    } else if (preset === "pune-ashtavinayak") {
+      setCalcKm(650);
+      setCalcDays(2);
+    } else if (preset === "pune-goa") {
+      setCalcKm(950);
+      setCalcDays(4);
+    }
+  };
 
-  // Handle Hero WhatsApp Booking
+  // Build formatted WhatsApp message
+  const getBookingMessage = () => {
+    const pnr = "VT-" + Math.floor(100000 + Math.random() * 900000);
+    return `*TRIP RESERVATION REQUEST (REF: ${pnr})*
+*Vishal Travels Pune - Official Booking Desk*
+--------------------------------------------
+*Passenger Name:* ${custName || "Valued Passenger"}
+*Contact Phone:* ${custPhone || "Provided on WhatsApp"}
+*Trip Type:* ${tripType === "outstation" ? "Outstation Tour" : tripType === "local" ? "Pune Local (8 Hr)" : "Airport Transfer"}
+*Pickup Landmark:* ${pickup}
+*Destination:* ${dropoff}
+*Start Date:* ${startDate}
+*Return Date:* ${returnDate || "Same Day"}
+*Passengers:* ${passengerCount} (${recommendedVehicle})
+--------------------------------------------
+_Namaskar Vishal Travels! Please check vehicle availability for my journey and share the all-inclusive quotation._`;
+  };
+
   const handleHeroBookingSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const pnr = "VT-" + Math.floor(100000 + Math.random() * 900000);
-    const waText = `*TRIP RESERVATION REQUEST (REF: ${pnr})*
-*Vishal Travels Pune - Booking Desk*
---------------------------------------------
-*Trip Type:* ${tripType === "outstation" ? "Outstation Tour" : tripType === "local" ? "Pune Local 8Hr" : "Airport Transfer"}
-*Pickup Point:* ${pickup || "Pune City"}
-*Destination:* ${dropoff || "Outstation"}
-*Journey Dates:* ${startDate} ${returnDate ? "to " + returnDate : "(One-Way)"}
-*Passengers:* ${passengers} (${formVehicleRecommended})
-*Contact Phone:* ${phone || "Provided on WhatsApp"}
---------------------------------------------
-_Namaskar Vishal Travels! Please check vehicle availability and share the all-inclusive quotation._`;
-
-    const waUrl = `https://wa.me/${PRIMARY_WHATSAPP_NUMBER}?text=${encodeURIComponent(waText)}`;
+    const msg = getBookingMessage();
+    const waUrl = `https://wa.me/${SITE_CONFIG.WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
     if (typeof window !== "undefined") {
       window.open(waUrl, "_blank");
     }
   };
+
+  const handleCopyMessage = () => {
+    const msg = getBookingMessage();
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(msg);
+      setCopiedText(true);
+      triggerToast("Booking details copied to clipboard!");
+      setTimeout(() => setCopiedText(false), 3000);
+    }
+  };
+
+  // Filtered packages
+  const filteredPackages =
+    packageFilter === "all"
+      ? PACKAGES
+      : PACKAGES.filter((p) => p.category === packageFilter);
+
+  // Filtered fleet
+  const filteredFleet =
+    fleetFilter === "all"
+      ? VEHICLES
+      : VEHICLES.filter((v) => v.category === fleetFilter);
 
   return (
     <>
@@ -646,481 +209,507 @@ _Namaskar Vishal Travels! Please check vehicle availability and share the all-in
       <div className="site-topbar">
         <div className="container topbar-content">
           <div className="topbar-permit">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              <path d="m9 12 2 2 4-4" />
-            </svg>
-            <span>MH-12-TP-2024-8891 • All-India Commercial Tourist Permit</span>
+            <ShieldCheck size={16} strokeWidth={1.75} />
+            <span>Permit: {SITE_CONFIG.PERMIT} • All-India Commercial Tourist Fleet</span>
           </div>
 
           <div className="topbar-contact-group">
-            <a href={PRIMARY_PHONE_TEL} className="topbar-phone-link">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-              </svg>
-              <span>{PRIMARY_PHONE}</span>
+            <a href={SITE_CONFIG.PHONE_TEL} className="topbar-phone-link">
+              <Phone size={16} strokeWidth={1.75} />
+              <span>{SITE_CONFIG.PHONE}</span>
             </a>
             <a
-              href={`https://wa.me/${PRIMARY_WHATSAPP_NUMBER}`}
+              href={SITE_CONFIG.WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="topbar-wa-link"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2Z" />
-              </svg>
+              <MessageCircle size={16} strokeWidth={1.75} />
               <span>Chat on WhatsApp</span>
             </a>
           </div>
         </div>
       </div>
 
-      {/* 2. MAIN HEADER - Logo Left, 5 Plain Links, Call & Get Quote CTAs */}
+      {/* 2. MAIN HEADER - Logo Left, 5 Simple Links, Call & Orange Get Quote */}
       <header className={`site-header ${isScrolled ? "scrolled" : ""}`}>
         <div className="container header-content">
           <a href="#home" className="header-logo">
-            <div className="logo-icon-box">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                <rect x="3" y="6" width="18" height="12" rx="3" />
-                <circle cx="7" cy="18" r="2" />
-                <circle cx="17" cy="18" r="2" />
-                <line x1="3" y1="11" x2="21" y2="11" />
-              </svg>
+            <div className="logo-badge">
+              <Bus size={22} strokeWidth={1.75} />
             </div>
             <div>
-              <div className="logo-text-title">
+              <div className="logo-name">
                 Vishal <span>Travels</span>
               </div>
               <span className="logo-tagline">EXECUTIVE FLEET • PUNE</span>
             </div>
           </a>
 
-          {/* 5 Plain Links - Zero Dropdowns */}
+          {/* 5 Simple Links - Zero Dropdowns */}
           <nav className="header-nav">
-            <a href="#packages" className="nav-link">Packages</a>
-            <a href="#routes" className="nav-link">Routes</a>
-            <a href="#fleet" className="nav-link">Fleet</a>
-            <a href="#fare" className="nav-link">Fare</a>
-            <a href="#faq" className="nav-link">FAQ</a>
+            <a href="#tour-packages" className="header-nav-link">Packages</a>
+            <a href="#routes-trips" className="header-nav-link">Routes</a>
+            <a href="#our-fleet" className="header-nav-link">Fleet</a>
+            <a href="#fare-calculator" className="header-nav-link">Fare</a>
+            <a href="#faq" className="header-nav-link">FAQ</a>
           </nav>
 
-          <div className="header-actions">
-            <a href={PRIMARY_PHONE_TEL} className="btn btn-secondary">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-              </svg>
-              <span>Call Desk</span>
+          <div className="header-cta-group">
+            <a href={SITE_CONFIG.PHONE_TEL} className="btn btn-secondary">
+              <Phone size={18} strokeWidth={1.75} />
+              <span>Call</span>
             </a>
-            <a href="#booking-card" className="btn btn-primary">
+            <a href="#booking-form-section" className="btn btn-primary">
               <span>Get Quote</span>
             </a>
             <button
               className="header-mobile-toggle"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle menu"
+              aria-label="Toggle Navigation Menu"
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <line x1="3" y1="12" x2="21" y2="12" />
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <line x1="3" y1="18" x2="21" y2="18" />
-              </svg>
+              <Compass size={24} strokeWidth={1.75} />
             </button>
           </div>
         </div>
 
         {/* Mobile Simple Drawer */}
         {mobileMenuOpen && (
-          <div style={{ background: "#ffffff", borderTop: "1px solid #e2e8f0", padding: "16px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
-            <a href="#packages" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Packages</a>
-            <a href="#routes" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Routes</a>
-            <a href="#fleet" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Fleet</a>
-            <a href="#fare" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Fare Estimator</a>
-            <a href="#faq" className="nav-link" onClick={() => setMobileMenuOpen(false)}>FAQ</a>
+          <div style={{ background: "#ffffff", borderTop: "1px solid #E5E7EB", padding: "16px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
+            <a href="#tour-packages" className="header-nav-link" onClick={() => setMobileMenuOpen(false)}>Packages</a>
+            <a href="#routes-trips" className="header-nav-link" onClick={() => setMobileMenuOpen(false)}>Routes</a>
+            <a href="#our-fleet" className="header-nav-link" onClick={() => setMobileMenuOpen(false)}>Our Fleet</a>
+            <a href="#fare-calculator" className="header-nav-link" onClick={() => setMobileMenuOpen(false)}>Fare Estimator</a>
+            <a href="#faq" className="header-nav-link" onClick={() => setMobileMenuOpen(false)}>FAQ</a>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginTop: "8px" }}>
-              <a href={PRIMARY_PHONE_TEL} className="btn btn-secondary" style={{ minHeight: "44px" }}>Call</a>
-              <a href="#booking-card" className="btn btn-primary" style={{ minHeight: "44px" }} onClick={() => setMobileMenuOpen(false)}>Get Quote</a>
+              <a href={SITE_CONFIG.PHONE_TEL} className="btn btn-secondary" style={{ minHeight: "44px" }}>Call Desk</a>
+              <a href="#booking-form-section" className="btn btn-primary" style={{ minHeight: "44px" }} onClick={() => setMobileMenuOpen(false)}>Get Quote</a>
             </div>
           </div>
         )}
       </header>
 
-      {/* 3. HERO SECTION - 2 Columns (Content Left, Floating Booking Card Right) */}
+      {/* 3. HERO SECTION - 2 Columns Desktop (#home & #booking-form-section) */}
       <section className="hero-section" id="home">
         <div className="container">
           <div className="hero-grid">
-            {/* Left Column */}
+            {/* Left Column: Headline, 3 Benefits, Trust Row */}
             <div className="hero-content">
-              <h1>
+              <h1 className="hero-title">
                 Executive Bus &amp; Tempo Traveller{" "}
-                <span className="saffron-text">Rental in Pune</span>
+                <span className="gradient-text">Rental in Pune</span>
               </h1>
               <p className="hero-lead">
-                Reliable outstation group travel across Maharashtra with Vishal Travels. Force Urbania VIP,
-                luxury AC Tempo Travellers (13–26 seater), and Volvo coaches with verified commercial chauffeurs.
+                Premium group mobility for pilgrimages, corporate offsites, and weddings across Maharashtra.
+                Force Urbania VIP, luxury AC Tempo Travellers (13–26 seater), and Volvo coaches with verified chauffeurs.
               </p>
 
               {/* 3 Short Benefit Bullets */}
-              <ul className="hero-bullets">
-                <li className="hero-bullet-item">
-                  <span className="hero-bullet-icon">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
+              <ul className="hero-benefit-list">
+                <li className="hero-benefit-item">
+                  <span className="hero-benefit-icon">
+                    <CheckCircle2 size={16} strokeWidth={2.2} />
                   </span>
-                  <span>Doorstep pickup across Pune &amp; PCMC with sanitized AC fleet</span>
+                  <span>Doorstep pickup anywhere in Pune &amp; PCMC with clean AC fleet</span>
                 </li>
-                <li className="hero-bullet-item">
-                  <span className="hero-bullet-icon">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
+                <li className="hero-benefit-item">
+                  <span className="hero-benefit-icon">
+                    <CheckCircle2 size={16} strokeWidth={2.2} />
                   </span>
                   <span>Commercial RTO licensed drivers with 8+ years ghat experience</span>
                 </li>
-                <li className="hero-bullet-item">
-                  <span className="hero-bullet-icon">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
+                <li className="hero-benefit-item">
+                  <span className="hero-benefit-icon">
+                    <CheckCircle2 size={16} strokeWidth={2.2} />
                   </span>
-                  <span>Transparent per-km rate card with zero hidden surcharges</span>
+                  <span>Transparent per-km rate card with minimum billing clarity</span>
                 </li>
               </ul>
 
               {/* Compact Trust Row */}
               <div className="hero-trust-compact">
-                <div className="trust-item">
-                  <span className="star">★</span>
-                  <strong>4.9/5 on Google</strong>
-                  <span style={{ color: "#94a3b8" }}>(1,420+ Reviews)</span>
+                <div className="hero-trust-item">
+                  <Star size={16} className="star" fill="#FBBF24" />
+                  <strong>{SITE_CONFIG.RATING}/5 on Google</strong>
+                  <span style={{ color: "#CBD5E1" }}>({SITE_CONFIG.REVIEWS_COUNT} Reviews)</span>
                 </div>
-                <div className="trust-divider"></div>
-                <div className="trust-item">
-                  <strong>15+ Years</strong>
-                  <span style={{ color: "#94a3b8" }}>in Pune</span>
+                <div className="hero-trust-divider"></div>
+                <div className="hero-trust-item">
+                  <strong>{SITE_CONFIG.YEARS} in Pune</strong>
+                  <span style={{ color: "#CBD5E1" }}>(Since 2011)</span>
                 </div>
               </div>
             </div>
 
             {/* Right Column: Floating White Booking Card */}
-            <div className="hero-booking-card" id="booking-card">
-              <div className="card-header-tag">
-                <h2>Quick Fare Quote</h2>
-                <span className="card-badge">Instant Dispatch</span>
-              </div>
-
-              {/* Segmented Control */}
-              <div className="segmented-control">
-                <button
-                  type="button"
-                  className={`segment-btn ${tripType === "outstation" ? "active" : ""}`}
-                  onClick={() => setTripType("outstation")}
-                >
-                  Outstation
-                </button>
-                <button
-                  type="button"
-                  className={`segment-btn ${tripType === "local" ? "active" : ""}`}
-                  onClick={() => setTripType("local")}
-                >
-                  Local 8hr
-                </button>
-                <button
-                  type="button"
-                  className={`segment-btn ${tripType === "airport" ? "active" : ""}`}
-                  onClick={() => setTripType("airport")}
-                >
-                  Airport
-                </button>
-              </div>
-
-              <form onSubmit={handleHeroBookingSubmit}>
-                <div className="form-grid-2">
-                  <div className="form-group">
-                    <label className="form-label" htmlFor="heroPickup">
-                      Pickup in Pune <span className="req">*</span>
-                    </label>
-                    <input
-                      id="heroPickup"
-                      type="text"
-                      className="form-input"
-                      placeholder="e.g. Swargate / Baner"
-                      value={pickup}
-                      onChange={(e) => setPickup(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label" htmlFor="heroDrop">
-                      Destination <span className="req">*</span>
-                    </label>
-                    <input
-                      id="heroDrop"
-                      type="text"
-                      className="form-input"
-                      placeholder="e.g. Mahabaleshwar / Shirdi"
-                      value={dropoff}
-                      onChange={(e) => setDropoff(e.target.value)}
-                      required
-                    />
-                  </div>
+            <div className="hero-booking-card" id="booking-form-section">
+              <div className="booking-card-top-strip"></div>
+              <div className="booking-card-body">
+                <div className="card-title-row">
+                  <h2>Instant Quote &amp; Reserve</h2>
+                  <span className="card-fast-badge">Fast Dispatch</span>
                 </div>
 
-                <div className="form-grid-2">
-                  <div className="form-group">
-                    <label className="form-label" htmlFor="heroStart">
-                      Start Date <span className="req">*</span>
-                    </label>
-                    <input
-                      id="heroStart"
-                      type="date"
-                      className="form-input"
-                      value={startDate}
-                      onChange={(e) => setStartDate(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label" htmlFor="heroReturn">
-                      Return Date <small style={{ color: "#64748b" }}>(Optional)</small>
-                    </label>
-                    <input
-                      id="heroReturn"
-                      type="date"
-                      className="form-input"
-                      value={returnDate}
-                      onChange={(e) => setReturnDate(e.target.value)}
-                    />
-                  </div>
+                {/* Segmented Control */}
+                <div className="segmented-control">
+                  <button
+                    type="button"
+                    className={`segment-btn ${tripType === "outstation" ? "active" : ""}`}
+                    onClick={() => setTripType("outstation")}
+                  >
+                    Outstation
+                  </button>
+                  <button
+                    type="button"
+                    className={`segment-btn ${tripType === "local" ? "active" : ""}`}
+                    onClick={() => {
+                      setTripType("local");
+                      setDropoff("Pune Local (8 Hr / 80 KM)");
+                    }}
+                  >
+                    Local 8hr
+                  </button>
+                  <button
+                    type="button"
+                    className={`segment-btn ${tripType === "airport" ? "active" : ""}`}
+                    onClick={() => {
+                      setTripType("airport");
+                      setDropoff("Mumbai International Airport (T2)");
+                    }}
+                  >
+                    Airport
+                  </button>
                 </div>
 
-                <div className="form-grid-2">
+                <form onSubmit={handleHeroBookingSubmit}>
+                  {/* Name & Phone */}
+                  <div className="form-grid-2">
+                    <div className="form-group">
+                      <label className="form-label" htmlFor="formCustName">
+                        Your Full Name <span className="req">*</span>
+                      </label>
+                      <input
+                        id="formCustName"
+                        type="text"
+                        className="form-input"
+                        placeholder="e.g. Rahul Patil"
+                        value={custName}
+                        onChange={(e) => setCustName(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label" htmlFor="formCustPhone">
+                        Mobile Phone <span className="req">*</span>
+                      </label>
+                      <input
+                        id="formCustPhone"
+                        type="tel"
+                        className="form-input"
+                        placeholder="e.g. 98220 12345"
+                        value={custPhone}
+                        onChange={(e) => setCustPhone(e.target.value)}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  {/* Pickup & Destination */}
+                  <div className="form-grid-2">
+                    <div className="form-group">
+                      <label className="form-label" htmlFor="formPickup">
+                        Pickup Landmark in Pune <span className="req">*</span>
+                      </label>
+                      <input
+                        id="formPickup"
+                        type="text"
+                        className="form-input"
+                        placeholder="e.g. Swargate / Baner / Wakad"
+                        value={pickup}
+                        onChange={(e) => setPickup(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label" htmlFor="formDropoff">
+                        Destination <span className="req">*</span>
+                      </label>
+                      <input
+                        id="formDropoff"
+                        type="text"
+                        className="form-input"
+                        placeholder="e.g. Mahabaleshwar / Shirdi"
+                        value={dropoff}
+                        onChange={(e) => setDropoff(e.target.value)}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  {/* Dates */}
+                  <div className="form-grid-2">
+                    <div className="form-group">
+                      <label className="form-label" htmlFor="formStartDate">
+                        Journey Start Date <span className="req">*</span>
+                      </label>
+                      <input
+                        id="formStartDate"
+                        type="date"
+                        className="form-input"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label" htmlFor="formReturnDate">
+                        Return Date <small style={{ color: "#64748B" }}>(Optional)</small>
+                      </label>
+                      <input
+                        id="formReturnDate"
+                        type="date"
+                        className="form-input"
+                        value={returnDate}
+                        onChange={(e) => setReturnDate(e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Number of Passengers Input suggesting vehicle */}
                   <div className="form-group">
-                    <label className="form-label" htmlFor="heroPassengers">
-                      Passengers <span className="req">*</span>
+                    <label className="form-label" htmlFor="formPassengers">
+                      Number of Passengers <span className="req">*</span>
                     </label>
                     <select
-                      id="heroPassengers"
+                      id="formPassengers"
                       className="form-select"
-                      value={passengers}
-                      onChange={(e) => setPassengers(e.target.value)}
+                      value={passengerCount}
+                      onChange={(e) => setPassengerCount(e.target.value)}
                     >
-                      <option value="1-6">1–6 Pax (Innova SUV)</option>
-                      <option value="7-13">7–13 Pax (Urbania VIP)</option>
-                      <option value="14-17">14–17 Pax (Tempo / Urbania)</option>
-                      <option value="18-20">18–20 Pax (20-Str Tempo)</option>
-                      <option value="21-26">21–26 Pax (26-Str Tempo)</option>
-                      <option value="27-32">27–32 Pax (Mini Bus)</option>
-                      <option value="33-49">33–49 Pax (Volvo Coach)</option>
+                      <option value="1-6">1 to 6 Passengers (Suggests: Innova Crysta SUV)</option>
+                      <option value="7-13">7 to 13 Passengers (Suggests: Force Urbania 13-Seater)</option>
+                      <option value="14-17">14 to 17 Passengers (Suggests: Force Urbania VIP / 17-Seater Tempo)</option>
+                      <option value="18-20">18 to 20 Passengers (Suggests: 20-Seater Tempo Traveller)</option>
+                      <option value="21-26">21 to 26 Passengers (Suggests: 26-Seater Tempo Traveller)</option>
+                      <option value="27-32">27 to 32 Passengers (Suggests: 32-Seater Executive Mini Bus)</option>
+                      <option value="33-49">33 to 49 Passengers (Suggests: 49-Seater Volvo Luxury Coach)</option>
                     </select>
                   </div>
-                  <div className="form-group">
-                    <label className="form-label" htmlFor="heroPhone">
-                      Mobile Phone <span className="req">*</span>
-                    </label>
-                    <input
-                      id="heroPhone"
-                      type="tel"
-                      className="form-input"
-                      placeholder="98220 12345"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      required
-                    />
+
+                  {/* Dynamic Suggested Vehicle Chip */}
+                  <div className="form-suggested-vehicle">
+                    <Info size={16} strokeWidth={2} style={{ flexShrink: 0 }} />
+                    <span>Suggested Fleet: <strong>{recommendedVehicle}</strong></span>
                   </div>
-                </div>
 
-                {/* Recommended Vehicle Tag */}
-                <div className="form-vehicle-rec">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <line x1="12" y1="16" x2="12" y2="12" />
-                    <line x1="12" y1="8" x2="12.01" y2="8" />
-                  </svg>
-                  <span>Recommended: <strong>{formVehicleRecommended}</strong></span>
-                </div>
+                  {/* WhatsApp Action Button */}
+                  <button type="submit" className="btn btn-whatsapp booking-submit-btn">
+                    <MessageCircle size={20} strokeWidth={2} />
+                    <span>Send Enquiry on WhatsApp</span>
+                  </button>
 
-                {/* Green WhatsApp Submit Button */}
-                <button type="submit" className="btn btn-whatsapp card-submit-btn">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2Z" />
-                  </svg>
-                  <span>Send Quote Request on WhatsApp</span>
-                </button>
+                  <p className="form-helper-text">We reply within ~30 minutes</p>
 
-                <p className="form-subtext">Reply within ~30 min</p>
-              </form>
+                  <div className="booking-fallback-row">
+                    <button type="button" onClick={() => setShowCopyFallbackModal(true)}>
+                      No WhatsApp? Copy text / Call directly
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 4. TRUST STRIP - 1 Row of 4 Stats Under Hero */}
-      <section className="trust-strip">
+      {/* 4. TRUST STRIP - 4 Stats with Tinted Icon Circles (Overlapping Hero by ~40px) */}
+      <section className="trust-strip-section">
         <div className="container">
-          <div className="trust-strip-grid">
-            <div className="trust-strip-item">
-              <div className="trust-strip-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                </svg>
+          <div className="trust-strip-card">
+            <div className="trust-strip-grid">
+              <div className="trust-strip-item">
+                <div className="trust-strip-icon-circle">
+                  <Star size={22} strokeWidth={2} />
+                </div>
+                <div className="trust-strip-text">
+                  <strong>{SITE_CONFIG.RATING} / 5 Rating</strong>
+                  <span>{SITE_CONFIG.REVIEWS_COUNT} Google Reviews</span>
+                </div>
               </div>
-              <div className="trust-strip-text">
-                <strong>4.9/5 Rating</strong>
-                <span>1,420+ Google Reviews</span>
-              </div>
-            </div>
 
-            <div className="trust-strip-item">
-              <div className="trust-strip-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                  <line x1="16" y1="2" x2="16" y2="6" />
-                  <line x1="8" y1="2" x2="8" y2="6" />
-                  <line x1="3" y1="10" x2="21" y2="10" />
-                </svg>
+              <div className="trust-strip-item">
+                <div className="trust-strip-icon-circle">
+                  <Clock size={22} strokeWidth={2} />
+                </div>
+                <div className="trust-strip-text">
+                  <strong>{SITE_CONFIG.YEARS} in Pune</strong>
+                  <span>Serving Since 2011</span>
+                </div>
               </div>
-              <div className="trust-strip-text">
-                <strong>15+ Years in Pune</strong>
-                <span>Serving Since 2011</span>
-              </div>
-            </div>
 
-            <div className="trust-strip-item">
-              <div className="trust-strip-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                  <circle cx="9" cy="7" r="4" />
-                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                </svg>
+              <div className="trust-strip-item">
+                <div className="trust-strip-icon-circle">
+                  <Users size={22} strokeWidth={2} />
+                </div>
+                <div className="trust-strip-text">
+                  <strong>{SITE_CONFIG.CUSTOMERS}</strong>
+                  <span>{SITE_CONFIG.TRIPS} Completed</span>
+                </div>
               </div>
-              <div className="trust-strip-text">
-                <strong>15,000+ Passengers</strong>
-                <span>4,800+ Completed Trips</span>
-              </div>
-            </div>
 
-            <div className="trust-strip-item">
-              <div className="trust-strip-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                  <path d="m9 12 2 2 4-4" />
-                </svg>
-              </div>
-              <div className="trust-strip-text">
-                <strong>100% RTO &amp; GST</strong>
-                <span>Permit: MH-12-TP-2024-8891</span>
+              <div className="trust-strip-item">
+                <div className="trust-strip-icon-circle">
+                  <ShieldCheck size={22} strokeWidth={2} />
+                </div>
+                <div className="trust-strip-text">
+                  <strong>{SITE_CONFIG.FLEET_SIZE} Vehicles</strong>
+                  <span>RTO Commercial Permit</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 5. PACKAGES - 3-Column Card Grid with Horizontal Scroll on Mobile */}
-      <section className="section-pad" id="packages">
+      {/* 5. PACKAGES - Card Grid with Category Colour Coding & Top Border (#tour-packages) */}
+      <section className="section-pad" id="tour-packages">
         <div className="container">
           <div className="section-header">
-            <span className="section-tag">POPULAR OUTSTATION CIRCUITS</span>
-            <h2 className="section-title">Curated Pilgrimage &amp; Tour Packages</h2>
+            <span className="section-tag">POPULAR OUTSTATION PACKAGES</span>
+            <h2 className="section-title">Handcrafted Pilgrimage &amp; Holiday Tours</h2>
             <p className="section-desc">
-              Formula-based tariffs per vehicle model with seasoned highway chauffeurs and zero hidden markups.
+              All package fares are generated strictly from the rate card formula with seasoned ghat drivers.
             </p>
           </div>
 
+          {/* Category Filter Chips */}
+          <div className="packages-filter-bar">
+            <button
+              type="button"
+              className={`filter-chip ${packageFilter === "all" ? "active" : ""}`}
+              onClick={() => setPackageFilter("all")}
+            >
+              All Packages ({PACKAGES.length})
+            </button>
+            <button
+              type="button"
+              className={`filter-chip ${packageFilter === "pilgrimage" ? "active" : ""}`}
+              onClick={() => setPackageFilter("pilgrimage")}
+              style={packageFilter === "pilgrimage" ? { background: "#C2410C", borderColor: "#C2410C" } : {}}
+            >
+              Pilgrimage Circuits
+            </button>
+            <button
+              type="button"
+              className={`filter-chip ${packageFilter === "hill-station" ? "active" : ""}`}
+              onClick={() => setPackageFilter("hill-station")}
+              style={packageFilter === "hill-station" ? { background: "#047857", borderColor: "#047857" } : {}}
+            >
+              Hill Stations
+            </button>
+            <button
+              type="button"
+              className={`filter-chip ${packageFilter === "beach" ? "active" : ""}`}
+              onClick={() => setPackageFilter("beach")}
+              style={packageFilter === "beach" ? { background: "#0E7490", borderColor: "#0E7490" } : {}}
+            >
+              Coastal &amp; Beach
+            </button>
+          </div>
+
           <div className="packages-grid">
-            {PACKAGES_DATA.map((pkg) => {
-              const selectedV = packageVehicles[pkg.id] || "tempo17";
-              const currentPrice = pkg.vehiclePrices[selectedV];
-              const vehicleLabel = selectedV === "tempo17" ? "17-Seater Tempo" : selectedV === "urbania" ? "Force Urbania VIP" : "Innova Crysta";
+            {filteredPackages.map((pkg) => {
+              const activeV = packageVehicles[pkg.id] || "tempo17";
+              const currentPrice = pkg.prices[activeV];
+              const vehicleLabel = activeV === "tempo17" ? "17-Str Tempo" : activeV === "urbania" ? "Force Urbania VIP" : "Innova Crysta";
 
               return (
-                <div key={pkg.id} id={pkg.anchorId} className="package-card">
+                <div
+                  key={pkg.id}
+                  className="package-card"
+                  style={{ borderTop: `5px solid ${pkg.categoryColor}` }}
+                >
                   <div className="package-img-wrap">
                     <img src={pkg.image} alt={pkg.title} className="package-img" loading="lazy" />
-                    <span className="package-category-chip">{pkg.tag}</span>
+                    <span
+                      className="package-chip"
+                      style={{ background: pkg.categoryColor, color: "#ffffff" }}
+                    >
+                      {pkg.categoryLabel}
+                    </span>
                   </div>
 
                   <div className="package-body">
                     <div className="package-meta-row">
                       <span className="package-meta-item">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                          <circle cx="12" cy="12" r="10" />
-                          <polyline points="12 6 12 12 16 14" />
-                        </svg>
+                        <Clock size={15} strokeWidth={2} />
                         {pkg.duration}
                       </span>
                       <span className="package-meta-item">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                          <polygon points="3 11 22 2 13 21 11 13 3 11" />
-                        </svg>
-                        {pkg.distanceKm} KM
+                        <Compass size={15} strokeWidth={2} />
+                        {pkg.distanceKm} KM Route
                       </span>
                     </div>
 
                     <h3 className="package-title">{pkg.title}</h3>
                     <p className="package-subtitle">{pkg.subtitle}</p>
 
-                    <ul className="package-highlights-list">
+                    <ul className="package-highlights">
                       {pkg.highlights.map((h, i) => (
                         <li key={i}>
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                            <polyline points="20 6 9 17 4 12" />
-                          </svg>
+                          <Check size={14} color={pkg.categoryColor} strokeWidth={2.5} style={{ flexShrink: 0, marginTop: "2px" }} />
                           <span>{h}</span>
                         </li>
                       ))}
                     </ul>
 
-                    {/* Vehicle Selector Chips */}
-                    <div className="package-vehicle-row">
-                      <div className="vehicle-selector-chips">
+                    {/* Tinted Bottom Price Panel in Category Colour */}
+                    <div
+                      className="package-bottom-panel"
+                      style={{ background: pkg.categoryBg, border: `1px solid ${pkg.categoryBorder}` }}
+                    >
+                      {/* Vehicle Selector Pills */}
+                      <div className="package-v-chips">
                         <button
                           type="button"
-                          className={`v-chip ${selectedV === "innova" ? "active" : ""}`}
+                          className={`package-v-chip ${activeV === "innova" ? "active" : ""}`}
                           onClick={() => setPackageVehicles({ ...packageVehicles, [pkg.id]: "innova" })}
                         >
-                          <small>Innova</small>
-                          <strong>₹{pkg.vehiclePrices.innova.toLocaleString()}</strong>
+                          Innova (7s)
                         </button>
                         <button
                           type="button"
-                          className={`v-chip ${selectedV === "tempo17" ? "active" : ""}`}
+                          className={`package-v-chip ${activeV === "tempo17" ? "active" : ""}`}
                           onClick={() => setPackageVehicles({ ...packageVehicles, [pkg.id]: "tempo17" })}
                         >
-                          <small>17-Str</small>
-                          <strong>₹{pkg.vehiclePrices.tempo17.toLocaleString()}</strong>
+                          17-Str Tempo
                         </button>
                         <button
                           type="button"
-                          className={`v-chip ${selectedV === "urbania" ? "active" : ""}`}
+                          className={`package-v-chip ${activeV === "urbania" ? "active" : ""}`}
                           onClick={() => setPackageVehicles({ ...packageVehicles, [pkg.id]: "urbania" })}
                         >
-                          <small>Urbania</small>
-                          <strong>₹{pkg.vehiclePrices.urbania.toLocaleString()}</strong>
+                          Urbania VIP
                         </button>
                       </div>
 
-                      <div className="package-pricing-row">
-                        <div>
-                          <span className="package-price-line">From ₹{currentPrice.toLocaleString()} · {vehicleLabel}</span>
-                          <span className="package-price-amount">₹{currentPrice.toLocaleString()}</span>
+                      <div className="package-price-actions-row">
+                        <div className="package-price-col">
+                          <span>From ₹{currentPrice.toLocaleString()} · {vehicleLabel}</span>
+                          <strong>₹{currentPrice.toLocaleString()}</strong>
                         </div>
 
-                        <div className="package-actions">
+                        <div className="package-action-btns">
                           <a
-                            href={`https://wa.me/${PRIMARY_WHATSAPP_NUMBER}?text=Namaskar%20Vishal%20Travels!%20I%20want%20to%20book%20the%20${encodeURIComponent(pkg.title)}%20package%20(${vehicleLabel}%20at%20₹${currentPrice.toLocaleString()}).`}
+                            href={`https://wa.me/${SITE_CONFIG.WHATSAPP_NUMBER}?text=Namaskar%20Vishal%20Travels!%20I%20want%20to%20reserve%20the%20${encodeURIComponent(pkg.title)}%20package%20(${vehicleLabel}%20at%20₹${currentPrice.toLocaleString()}).`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="btn-whatsapp-icon"
-                            aria-label={`WhatsApp Quote for ${pkg.title}`}
-                            title="Chat on WhatsApp"
+                            className="package-wa-icon-btn"
+                            aria-label={`WhatsApp Enquiry for ${pkg.title}`}
                           >
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                              <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2Z" />
-                            </svg>
+                            <MessageCircle size={20} strokeWidth={2} />
                           </a>
-                          <a href="#booking-card" className="btn btn-secondary" style={{ padding: "0 14px", fontSize: "0.86rem" }}>
+                          <a href="#booking-form-section" className="btn btn-secondary" style={{ minHeight: "44px", padding: "0 14px", fontSize: "0.86rem" }}>
                             View details
                           </a>
                         </div>
@@ -1134,50 +723,51 @@ _Namaskar Vishal Travels! Please check vehicle availability and share the all-in
         </div>
       </section>
 
-      {/* 6. ROUTES - Scan List / Rows (Cards on Mobile) */}
-      <section className="section-pad" id="routes" style={{ background: "#ffffff" }}>
+      {/* 6. ROUTES - Scannable List / Rows (#routes-trips) */}
+      <section className="section-pad" id="routes-trips" style={{ background: "#ffffff" }}>
         <div className="container">
           <div className="section-header">
-            <span className="section-tag">PUNCTUAL DOOR-TO-DOOR TRANSFERS</span>
+            <span className="section-tag">HIGHWAY CORRIDORS</span>
             <h2 className="section-title">Popular Outstation Routes from Pune</h2>
             <p className="section-desc">
-              Fast-scanning tariff list for frequent intercity highway corridors across Maharashtra and Goa.
+              Fast-scanning fixed tariff schedule. Each route clearly defines one-way drop vs round-trip and vehicle category.
             </p>
           </div>
 
-          <div className="routes-list-wrap">
-            {POPULAR_ROUTES.map((r) => (
-              <div key={r.id} id={r.anchorId} className="route-row">
-                <div className="route-name-col">
-                  <span className={`route-type-badge ${r.tripType === "One-Way Drop" ? "oneway" : "round"}`}>
+          <div className="routes-table-wrap">
+            {ROUTES.map((r) => (
+              <div key={r.id} className="route-table-row">
+                <div className="route-name-cell">
+                  <span className={`route-badge ${r.tripType === "One-Way Drop" ? "oneway" : "round"}`}>
                     {r.tripType}
                   </span>
                   <span>{r.route}</span>
                 </div>
 
-                <div className="route-detail-col">
+                <div className="route-meta-cell">
                   <span>Distance</span>
-                  <strong>{r.dist}</strong>
+                  <strong>{r.distanceKm} KM</strong>
                 </div>
 
-                <div className="route-detail-col">
-                  <span>Travel Time</span>
-                  <strong>{r.time}</strong>
+                <div className="route-meta-cell">
+                  <span>Duration</span>
+                  <strong>{r.duration}</strong>
                 </div>
 
-                <div className="route-price-col">
-                  {r.fare}
+                <div className="route-price-cell">
+                  ₹{r.estimatedFare.toLocaleString()}
                   <span>{r.vehicleModel}</span>
                 </div>
 
-                <div className="route-action-col">
+                <div className="route-action-cell">
                   <a
-                    href={`https://wa.me/${PRIMARY_WHATSAPP_NUMBER}?text=Namaskar%20Vishal%20Travels!%20I%20want%20to%20book%20the%20${encodeURIComponent(r.route)}%20route%20(${r.tripType}%20in%20${encodeURIComponent(r.vehicleModel)}%20at%20${r.fare}).`}
+                    href={`https://wa.me/${SITE_CONFIG.WHATSAPP_NUMBER}?text=Namaskar%20Vishal%20Travels!%20I%20want%20to%20book%20the%20${encodeURIComponent(r.route)}%20route%20(${r.tripType}%20in%20${encodeURIComponent(r.vehicleModel)}%20at%20₹${r.estimatedFare.toLocaleString()}).`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn btn-whatsapp"
                     style={{ minHeight: "44px", padding: "0 16px" }}
                   >
+                    <MessageCircle size={16} strokeWidth={2} />
                     <span>Book Route</span>
                   </a>
                 </div>
@@ -1187,113 +777,114 @@ _Namaskar Vishal Travels! Please check vehicle availability and share the all-in
         </div>
       </section>
 
-      {/* 7. FLEET - Filter Chips, 2x2 Specs Grid, Best-For Tag, Bold Rate */}
-      <section className="section-pad" id="fleet">
+      {/* 7. FLEET - Color-Coded Cards & 2x2 Specs (#our-fleet) */}
+      <section className="section-pad" id="our-fleet">
         <div className="container">
           <div className="section-header">
-            <span className="section-tag">COMMERCIAL RTO VERIFIED FLEET</span>
-            <h2 className="section-title">Executive Chauffeur Fleet in Pune</h2>
+            <span className="section-tag">VERIFIED PUNE FLEET</span>
+            <h2 className="section-title">Our Executive Fleet in Pune</h2>
             <p className="section-desc">
-              13 to 49-seater vehicles equipped with dual climate AC, pushback seats, and speed-governed safety.
+              From Force Urbania VIPs to 49-seater Volvo coaches, colour-coded by category with honest per-km tariffs.
             </p>
           </div>
 
           {/* Filter Chips */}
-          <div className="fleet-filter-bar">
+          <div className="packages-filter-bar">
             <button
               type="button"
-              className={`fleet-chip ${fleetFilter === "all" ? "active" : ""}`}
+              className={`filter-chip ${fleetFilter === "all" ? "active" : ""}`}
               onClick={() => setFleetFilter("all")}
             >
-              All Vehicles ({FLEET_DATA.length})
+              All Vehicles ({VEHICLES.length})
             </button>
             <button
               type="button"
-              className={`fleet-chip ${fleetFilter === "urbania" ? "active" : ""}`}
+              className={`filter-chip ${fleetFilter === "urbania" ? "active" : ""}`}
               onClick={() => setFleetFilter("urbania")}
+              style={fleetFilter === "urbania" ? { background: "#6D28D9", borderColor: "#6D28D9" } : {}}
             >
-              Force Urbania VIP
+              Force Urbania
             </button>
             <button
               type="button"
-              className={`fleet-chip ${fleetFilter === "tempo" ? "active" : ""}`}
+              className={`filter-chip ${fleetFilter === "tempo" ? "active" : ""}`}
               onClick={() => setFleetFilter("tempo")}
+              style={fleetFilter === "tempo" ? { background: "#1E3A8A", borderColor: "#1E3A8A" } : {}}
             >
-              Tempo Travellers (17, 20 &amp; 26)
+              Tempo Travellers
             </button>
             <button
               type="button"
-              className={`fleet-chip ${fleetFilter === "minibus" ? "active" : ""}`}
+              className={`filter-chip ${fleetFilter === "minibus" ? "active" : ""}`}
               onClick={() => setFleetFilter("minibus")}
+              style={fleetFilter === "minibus" ? { background: "#0E7490", borderColor: "#0E7490" } : {}}
             >
-              Mini Bus (32 Seats)
+              Mini Bus
             </button>
             <button
               type="button"
-              className={`fleet-chip ${fleetFilter === "luxury-bus" ? "active" : ""}`}
+              className={`filter-chip ${fleetFilter === "luxury-bus" ? "active" : ""}`}
               onClick={() => setFleetFilter("luxury-bus")}
+              style={fleetFilter === "luxury-bus" ? { background: "#BE185D", borderColor: "#BE185D" } : {}}
             >
-              Luxury Coaches &amp; Sleepers
+              Volvo &amp; Sleeper Coaches
             </button>
           </div>
 
           <div className="fleet-grid">
             {filteredFleet.map((vehicle) => (
-              <div key={vehicle.id} className="fleet-card">
+              <div
+                key={vehicle.id}
+                className="fleet-card"
+                style={{ borderTop: `4px solid ${vehicle.badgeColor}` }}
+              >
                 <div className="fleet-img-wrap">
                   <img src={vehicle.image} alt={vehicle.name} className="fleet-img" loading="lazy" />
-                  <span className="fleet-category-tag">{vehicle.categoryLabel}</span>
+                  <span
+                    className="fleet-badge"
+                    style={{ background: vehicle.badgeColor }}
+                  >
+                    {vehicle.categoryLabel}
+                  </span>
                 </div>
 
                 <div className="fleet-body">
                   <h3 className="fleet-name">{vehicle.name}</h3>
                   <p className="fleet-submodel">{vehicle.submodel}</p>
 
-                  {/* 2x2 Spec Grid */}
-                  <div className="fleet-specs-2x2">
-                    <div className="spec-cell">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                        <circle cx="9" cy="7" r="4" />
-                      </svg>
+                  {/* 2x2 Specs Grid */}
+                  <div className="fleet-specs-grid">
+                    <div className="spec-item">
+                      <Users size={16} strokeWidth={2} />
                       <span>{vehicle.seatingText}</span>
                     </div>
-                    <div className="spec-cell">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-                      </svg>
+                    <div className="spec-item">
+                      <Briefcase size={16} strokeWidth={2} />
                       <span>{vehicle.luggage}</span>
                     </div>
-                    <div className="spec-cell">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                        <circle cx="12" cy="12" r="10" />
-                        <polyline points="12 6 12 12 16 14" />
-                      </svg>
+                    <div className="spec-item">
+                      <Compass size={16} strokeWidth={2} />
                       <span>Min {vehicle.minKmPerDay} km/day</span>
                     </div>
-                    <div className="spec-cell">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                        <circle cx="12" cy="8" r="5" />
-                        <path d="M3 21v-2a7 7 0 0 1 14 0v2" />
-                      </svg>
+                    <div className="spec-item">
+                      <Clock size={16} strokeWidth={2} />
                       <span>DA ₹{vehicle.driverAllowancePerDay}/day</span>
                     </div>
                   </div>
 
                   {/* Best For Tag */}
-                  <div className="fleet-best-for">
+                  <div className="fleet-bestfor-tag">
                     <strong>Best for:</strong> {vehicle.bestFor}
                   </div>
 
-                  <div className="fleet-footer">
-                    <div className="fleet-rate-box">
-                      <span>Outstation Rate</span>
+                  <div className="fleet-footer-row">
+                    <div className="fleet-rate-display">
+                      <span>Rate Per KM</span>
                       <strong>₹{vehicle.ratePerKm} <small style={{ fontSize: "0.82rem", fontWeight: 600 }}>/ KM</small></strong>
                     </div>
 
                     <a
-                      href={`https://wa.me/${PRIMARY_WHATSAPP_NUMBER}?text=Namaskar%20Vishal%20Travels!%20I%20want%20to%20check%20availability%20for%20the%20${encodeURIComponent(vehicle.name)}.`}
+                      href={`https://wa.me/${SITE_CONFIG.WHATSAPP_NUMBER}?text=Namaskar%20Vishal%20Travels!%20I%20want%20to%20reserve%20the%20${encodeURIComponent(vehicle.name)}.`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="btn btn-secondary"
@@ -1309,222 +900,232 @@ _Namaskar Vishal Travels! Please check vehicle availability and share the all-in
         </div>
       </section>
 
-      {/* 8. FARE ESTIMATOR - 2 Panels (Inputs Left, Sticky Receipt Right) */}
-      <section className="section-pad" id="fare" style={{ background: "#ffffff" }}>
+      {/* 8. FARE ESTIMATOR - Dark Gradient Section with White Card (#fare-calculator) */}
+      <section className="estimator-dark-section" id="fare-calculator">
         <div className="container">
           <div className="section-header">
-            <span className="section-tag">PUNE RATE CARD CALCULATOR</span>
-            <h2 className="section-title">Instant Bus Fare Estimator</h2>
+            <span className="section-tag" style={{ background: "rgba(255,255,255,0.15)", color: "#ffffff", borderColor: "rgba(255,255,255,0.3)" }}>
+              RATE CARD CALCULATOR
+            </span>
+            <h2 className="section-title">Bus &amp; Tempo Traveller Fare Estimator</h2>
             <p className="section-desc">
-              Calculate your exact travel budget according to official Pune minimum km rules.
+              Calculate your road travel estimate based on official Pune minimum billing rules (300 km/day baseline).
             </p>
           </div>
 
-          <div className="estimator-grid">
-            {/* Left Inputs Panel */}
-            <div className="estimator-inputs-panel">
-              <h3>Trip Parameters</h3>
-              <p>Configure your route distance, vehicle type, and travel duration.</p>
+          <div className="estimator-white-card">
+            <div className="estimator-layout-grid">
+              {/* Left Inputs */}
+              <div>
+                <h3 style={{ fontSize: "1.25rem", color: "var(--blue-900)", marginBottom: "4px" }}>
+                  Configure Your Journey
+                </h3>
+                <p style={{ color: "var(--text-muted)", fontSize: "0.88rem", marginBottom: "18px" }}>
+                  Select a popular route preset or adjust distance and days manually.
+                </p>
 
-              <div className="form-group">
-                <label className="form-label" htmlFor="calcVehicle">Select Vehicle Model</label>
-                <select
-                  id="calcVehicle"
-                  className="form-select"
-                  onChange={(e) => {
-                    const opt = e.target.options[e.target.selectedIndex];
-                    setCalcRate(Number(e.target.value));
-                    setCalcDA(Number(opt.getAttribute("data-da") || 500));
-                    setCalcMinKmPerDay(Number(opt.getAttribute("data-min-km") || 300));
-                    setCalcVehicleName(opt.getAttribute("data-name") || "");
-                  }}
-                >
-                  <option value="38" data-da="500" data-min-km="300" data-name="Force Urbania VIP 17 Seater">
-                    Force Urbania VIP 17 Seater (₹38/KM • Min 300 km/day)
-                  </option>
-                  <option value="28" data-da="500" data-min-km="300" data-name="Tempo Traveller AC 17 Seater">
-                    Tempo Traveller AC 17 Seater (₹28/KM • Min 300 km/day)
-                  </option>
-                  <option value="31" data-da="550" data-min-km="300" data-name="Tempo Traveller AC 20 Seater">
-                    Tempo Traveller AC 20 Seater (₹31/KM • Min 300 km/day)
-                  </option>
-                  <option value="34" data-da="600" data-min-km="300" data-name="Tempo Traveller AC 26 Seater">
-                    Tempo Traveller AC 26 Seater (₹34/KM • Min 300 km/day)
-                  </option>
-                  <option value="42" data-da="700" data-min-km="300" data-name="Executive Mini Bus 32 Seater">
-                    Executive Mini Bus 32 Seater (₹42/KM • Min 300 km/day)
-                  </option>
-                  <option value="60" data-da="900" data-min-km="350" data-name="Volvo B11R Multi-Axle 49 Seater">
-                    Volvo Multi-Axle Luxury Coach 49 Seater (₹60/KM • Min 350 km/day)
-                  </option>
-                  <option value="58" data-da="900" data-min-km="350" data-name="BharatBenz AC Sleeper 36 Berths">
-                    BharatBenz AC Sleeper Coach (₹58/KM • Min 350 km/day)
-                  </option>
-                  <option value="18" data-da="400" data-min-km="250" data-name="Toyota Innova Crysta 7 Seater">
-                    Toyota Innova Crysta 7 Seater (₹18/KM • Min 250 km/day)
-                  </option>
-                </select>
-              </div>
-
-              {/* Distance Slider */}
-              <div className="slider-group">
-                <div className="slider-header">
-                  <span>Total Distance</span>
-                  <strong style={{ color: "var(--navy-900)" }}>{calcKm} KM</strong>
-                </div>
-                <input
-                  type="range"
-                  min="150"
-                  max="2000"
-                  step="25"
-                  value={calcKm}
-                  onChange={(e) => setCalcKm(Number(e.target.value))}
-                  className="range-slider"
-                  aria-label="Estimated Distance"
-                />
-              </div>
-
-              {/* Days Slider */}
-              <div className="slider-group">
-                <div className="slider-header">
-                  <span>Trip Duration</span>
-                  <strong style={{ color: "var(--navy-900)" }}>{calcDays} Days</strong>
-                </div>
-                <input
-                  type="range"
-                  min="1"
-                  max="10"
-                  step="1"
-                  value={calcDays}
-                  onChange={(e) => setCalcDays(Number(e.target.value))}
-                  className="range-slider"
-                  aria-label="Trip Duration"
-                />
-              </div>
-
-              {/* Return Trip Toggle */}
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "18px", padding: "12px", background: "var(--bg-subtle)", borderRadius: "8px" }}>
-                <span style={{ fontSize: "0.88rem", fontWeight: 600, color: "var(--navy-900)" }}>
-                  Round-Trip (Return to Pune)
-                </span>
-                <input
-                  type="checkbox"
-                  checked={isReturnTrip}
-                  onChange={(e) => setIsReturnTrip(e.target.checked)}
-                  style={{ width: "20px", height: "20px", accentColor: "var(--navy-900)" }}
-                  aria-label="Toggle Round-Trip"
-                />
-              </div>
-
-              {/* Minimum Billing Explanatory Alert */}
-              {isMinBillingApplied && (
-                <div style={{ marginTop: "16px", background: "var(--saffron-bg)", border: "1px solid var(--saffron-border)", borderRadius: "8px", padding: "12px", fontSize: "0.82rem", color: "var(--navy-900)", lineHeight: 1.5 }}>
-                  <strong>Minimum KM Rule Applied:</strong> Pune outstation guidelines require a minimum of {calcMinKmPerDay} km/day ({calcDays} days = {minBillableKm} KM). Your entered distance of {effectiveDistance} KM is billed at the {minBillableKm} KM standard baseline.
-                </div>
-              )}
-            </div>
-
-            {/* Right Sticky Receipt Panel */}
-            <div className="estimator-receipt-panel">
-              <h3 className="receipt-title">Itemized Fare Summary</h3>
-              <span className="receipt-vehicle-label">{calcVehicleName}</span>
-
-              <div className="receipt-rows-list">
-                <div className="receipt-line">
-                  <span>Base Distance ({billableKm} KM @ ₹{calcRate}/km)</span>
-                  <strong>₹{totalBase.toLocaleString()}</strong>
+                {/* Popular Route Selector to Auto-fill distance */}
+                <div className="form-group">
+                  <label className="form-label" htmlFor="calcRoutePreset">Route Auto-Fill Preset</label>
+                  <select
+                    id="calcRoutePreset"
+                    className="form-select"
+                    value={calcRoutePreset}
+                    onChange={(e) => handleRoutePresetChange(e.target.value)}
+                  >
+                    <option value="custom">Custom Distance (Enter via slider below)</option>
+                    <option value="pune-mumbai">Pune ➔ Mumbai / Airport (300 KM Round-Trip / 1 Day)</option>
+                    <option value="pune-mahabaleshwar">Pune ➔ Mahabaleshwar Weekend (260 KM / 2 Days)</option>
+                    <option value="pune-shirdi">Pune ➔ Shirdi Sai Darshan (450 KM / 2 Days)</option>
+                    <option value="pune-ashtavinayak">Pune ➔ Ashtavinayak Yatra (650 KM / 2 Days)</option>
+                    <option value="pune-goa">Pune ➔ Goa Coastal Vacation (950 KM / 4 Days)</option>
+                  </select>
                 </div>
 
-                <div className="receipt-line">
-                  <span>Driver Allowance ({calcDays} Days @ ₹{calcDA}/day)</span>
-                  <strong>₹{totalDA.toLocaleString()}</strong>
+                {/* Vehicle Model Selector */}
+                <div className="form-group">
+                  <label className="form-label" htmlFor="calcVehicleSelect">Select Vehicle</label>
+                  <select
+                    id="calcVehicleSelect"
+                    className="form-select"
+                    value={calcVehicleId}
+                    onChange={(e) => setCalcVehicleId(e.target.value)}
+                  >
+                    {VEHICLES.map((v) => (
+                      <option key={v.id} value={v.id}>
+                        {v.name} (₹{v.ratePerKm}/KM • Min {v.minKmPerDay} km/day)
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
-                <div className="receipt-line">
-                  <span>GPS Tracking &amp; Sanitization</span>
-                  <strong style={{ color: "#34d399" }}>Included Free</strong>
+                {/* Distance Slider */}
+                <div className="estimator-slider-group">
+                  <div className="estimator-slider-header">
+                    <span>Estimated Distance</span>
+                    <strong style={{ color: "var(--blue-900)" }}>{calcKm} KM</strong>
+                  </div>
+                  <input
+                    type="range"
+                    min="150"
+                    max="2000"
+                    step="25"
+                    value={calcKm}
+                    onChange={(e) => {
+                      setCalcKm(Number(e.target.value));
+                      setCalcRoutePreset("custom");
+                    }}
+                    className="range-input"
+                    aria-label="Distance Slider"
+                  />
                 </div>
 
-                <div className="receipt-line">
-                  <span>GST (5% Road Transport)</span>
-                  <strong>₹{totalGst.toLocaleString()}</strong>
+                {/* Trip Duration Days Slider */}
+                <div className="estimator-slider-group">
+                  <div className="estimator-slider-header">
+                    <span>Trip Duration</span>
+                    <strong style={{ color: "var(--blue-900)" }}>{calcDays} Days</strong>
+                  </div>
+                  <input
+                    type="range"
+                    min="1"
+                    max="10"
+                    step="1"
+                    value={calcDays}
+                    onChange={(e) => setCalcDays(Number(e.target.value))}
+                    className="range-input"
+                    aria-label="Trip Duration Slider"
+                  />
                 </div>
 
-                <div className="receipt-divider-line"></div>
-
-                <div className="receipt-total-line">
-                  <span>Total Estimate:</span>
-                  <strong>₹{totalEstimate.toLocaleString()}</strong>
+                {/* Round Trip Return Toggle */}
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "16px", padding: "12px", background: "#F3F4F6", borderRadius: "8px" }}>
+                  <span style={{ fontSize: "0.88rem", fontWeight: 600, color: "var(--blue-900)" }}>
+                    Round-Trip Return to Pune
+                  </span>
+                  <input
+                    type="checkbox"
+                    checked={isReturnTrip}
+                    onChange={(e) => setIsReturnTrip(e.target.checked)}
+                    style={{ width: "20px", height: "20px", accentColor: "var(--blue-800)" }}
+                    aria-label="Round Trip Toggle"
+                  />
                 </div>
-              </div>
 
-              <a
-                href={`https://wa.me/${PRIMARY_WHATSAPP_NUMBER}?text=Namaskar%20Vishal%20Travels!%20I%20quoted%20an%20estimate%20of%20₹${totalEstimate.toLocaleString()}%20for%20${encodeURIComponent(calcVehicleName)}%20(${billableKm}%20KM,%20${calcDays}%20Days).%20Please%20confirm%20availability.`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-primary"
-                style={{ width: "100%", minHeight: "48px", marginTop: "10px" }}
-              >
-                <span>Lock Fare on WhatsApp</span>
-              </a>
-
-              {/* Collapsed "What's Not Included" Note */}
-              <div className="receipt-exclusions-accordion">
-                <button
-                  type="button"
-                  className="exclusions-toggle-btn"
-                  onClick={() => setIsExclusionsOpen(!isExclusionsOpen)}
-                  aria-expanded={isExclusionsOpen}
-                >
-                  <span>What is NOT included? (Paid at actuals)</span>
-                  <span>{isExclusionsOpen ? "−" : "+"}</span>
-                </button>
-                {isExclusionsOpen && (
-                  <ul className="exclusions-content">
-                    <li>• Highway Fastag toll receipts (paid as actuals)</li>
-                    <li>• Parking fees at monuments, airports &amp; hotels</li>
-                    <li>• State border permits (only if crossing outside Maharashtra)</li>
-                    <li>• Night travel allowance (₹300 strictly if driving 11 PM – 5 AM)</li>
-                  </ul>
+                {/* Explanatory Rule Banner */}
+                {estimatorResult.isMinKmApplied && (
+                  <div style={{ marginTop: "16px", background: "#FFF7ED", border: "1px solid #FFEDD5", borderRadius: "8px", padding: "12px", fontSize: "0.82rem", color: "#C2410C", lineHeight: 1.5 }}>
+                    <strong>Minimum Billing Rule Applied:</strong> Pune outstation guidelines require a minimum of {activeCalcVehicle.minKmPerDay} km/day ({calcDays} days = {estimatorResult.minBillableKm} KM). Your entered distance of {calcKm} KM is billed at the {estimatorResult.minBillableKm} KM baseline.
+                  </div>
                 )}
+              </div>
+
+              {/* Right Sticky Receipt Summary */}
+              <div className="estimator-receipt-box">
+                <div className="receipt-header-row">
+                  <h3 className="receipt-title">Fare Quotation Summary</h3>
+                  <span className="receipt-vehicle-sub">{activeCalcVehicle.name}</span>
+                </div>
+
+                <div className="receipt-item-list">
+                  <div className="receipt-item-row">
+                    <span>Billable Distance ({estimatorResult.billableKm} KM @ ₹{activeCalcVehicle.ratePerKm}/km)</span>
+                    <strong>₹{estimatorResult.baseFare.toLocaleString()}</strong>
+                  </div>
+
+                  <div className="receipt-item-row">
+                    <span>Driver Allowance ({calcDays} Days @ ₹{activeCalcVehicle.driverAllowancePerDay}/day)</span>
+                    <strong>₹{estimatorResult.driverAllowance.toLocaleString()}</strong>
+                  </div>
+
+                  <div className="receipt-item-row">
+                    <span>Sanitization &amp; GPS Telemetry</span>
+                    <strong style={{ color: "#047857" }}>Included Free</strong>
+                  </div>
+
+                  <div className="receipt-item-row">
+                    <span>GST (5% Road Transport SAC 9964)</span>
+                    <strong>₹{estimatorResult.gst.toLocaleString()}</strong>
+                  </div>
+
+                  <div className="receipt-divider"></div>
+
+                  <div className="receipt-total-row">
+                    <span>Estimated Total:</span>
+                    <strong className="gradient-total-num">₹{estimatorResult.total.toLocaleString()}</strong>
+                  </div>
+                </div>
+
+                <a
+                  href={`https://wa.me/${SITE_CONFIG.WHATSAPP_NUMBER}?text=Namaskar%20Vishal%20Travels!%20I%20got%20an%20Estimate%20of%20₹${estimatorResult.total.toLocaleString()}%20for%20${encodeURIComponent(activeCalcVehicle.name)}%20(${estimatorResult.billableKm}%20KM,%20${calcDays}%20Days).%20Please%20verify%20availability.`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-primary"
+                  style={{ width: "100%", minHeight: "48px" }}
+                >
+                  <span>Lock Estimate on WhatsApp</span>
+                </a>
+
+                {/* Collapsed "What is NOT included" Note */}
+                <div style={{ marginTop: "16px", borderTop: "1px solid #E5E7EB", paddingTop: "12px" }}>
+                  <button
+                    type="button"
+                    onClick={() => setIsExclusionsOpen(!isExclusionsOpen)}
+                    style={{ background: "none", border: "none", color: "var(--blue-800)", fontSize: "0.82rem", fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}
+                  >
+                    <span>What is NOT included? (Paid at actuals)</span>
+                    <span>{isExclusionsOpen ? "−" : "+"}</span>
+                  </button>
+
+                  {isExclusionsOpen && (
+                    <div className="receipt-not-included-box">
+                      <strong>Not Included (paid at actuals by client):</strong>
+                      <ul style={{ paddingLeft: "16px", marginTop: "4px" }}>
+                        <li>Highway Fastag toll plaza charges (settled against receipts)</li>
+                        <li>Parking tickets at monuments, hotels, and airports</li>
+                        <li>Interstate border entry taxes (if crossing outside Maharashtra)</li>
+                      </ul>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 9. PROCESS - 3 Steps with Numbered Circles Joined by a Line */}
+      {/* 9. HOW IT WORKS - 3 Numbered Circles Joined by Dotted Line */}
       <section className="section-pad">
         <div className="container">
           <div className="section-header">
-            <span className="section-tag">SEAMLESS DISPATCH</span>
+            <span className="section-tag">EFFORTLESS JOURNEY</span>
             <h2 className="section-title">How Vishal Travels Works</h2>
             <p className="section-desc">
-              Three simple steps from vehicle selection to doorstep pickup in Pune.
+              Three simple steps from vehicle recommendation to doorstep pickup.
             </p>
           </div>
 
-          <div className="process-grid">
-            <div className="process-step-card">
-              <div className="process-num-circle">1</div>
-              <h3 className="process-step-title">Select Fleet &amp; Route</h3>
-              <p className="process-step-desc">
-                Choose from Force Urbania VIP, Tempo Travellers, or luxury coaches tailored to your passenger count.
+          <div className="steps-timeline-grid">
+            <div className="step-item-card">
+              <div className="step-circle num-1">1</div>
+              <h3 className="step-title">Select Fleet &amp; Route</h3>
+              <p className="step-desc">
+                Choose your ideal passenger count. Our console recommends the best Force Urbania, Tempo, or Coach.
               </p>
             </div>
 
-            <div className="process-step-card">
-              <div className="process-num-circle">2</div>
-              <h3 className="process-step-title">Transparent Fare Lock</h3>
-              <p className="process-step-desc">
+            <div className="step-item-card">
+              <div className="step-circle num-2">2</div>
+              <h3 className="step-title">Transparent Fare Lock</h3>
+              <p className="step-desc">
                 Receive an itemized quote with standard minimum km guidelines, driver allowance, and GST invoice.
               </p>
             </div>
 
-            <div className="process-step-card">
-              <div className="process-num-circle">3</div>
-              <h3 className="process-step-title">Chauffeur &amp; GPS Dispatch</h3>
-              <p className="process-step-desc">
+            <div className="step-item-card">
+              <div className="step-circle num-3">3</div>
+              <h3 className="step-title">Chauffeur &amp; GPS Dispatch</h3>
+              <p className="step-desc">
                 Get driver details and live GPS tracking 2 hours before trip. Chilled AC doorstep pickup guaranteed.
               </p>
             </div>
@@ -1532,58 +1133,57 @@ _Namaskar Vishal Travels! Please check vehicle availability and share the all-in
         </div>
       </section>
 
-      {/* 10. REVIEWS - Left Score Summary Badge & Right Review Cards */}
-      <section className="section-pad" style={{ background: "#ffffff" }}>
+      {/* 10. REVIEWS - Pastel Background, Coloured Initial Avatars (#reviews) */}
+      <section className="section-pad reviews-section-pastel" id="reviews">
         <div className="container">
           <div className="section-header">
-            <span className="section-tag">VERIFIED GOOGLE REVIEWS</span>
-            <h2 className="section-title">What Our Passengers Say</h2>
+            <span className="section-tag">PASSENGER TESTIMONIALS</span>
+            <h2 className="section-title">Verified Customer Experiences</h2>
             <p className="section-desc">
-              Over 15,000+ happy travelers across Maharashtra family pilgrimages, weddings, and corporate offsites.
+              Over {SITE_CONFIG.CUSTOMERS} satisfied travelers across Maharashtra family pilgrimages, weddings, and corporate trips.
             </p>
           </div>
 
-          <div className="reviews-layout">
-            {/* Left Score Summary Card */}
-            <div className="reviews-summary-card">
-              <div className="reviews-score-big">4.9</div>
-              <div className="reviews-stars-row">★★★★★</div>
-              <p className="reviews-count-text">Based on 1,420+ Verified Pune Reviews</p>
+          <div className="reviews-two-col">
+            {/* Left Rating Summary Badge Card */}
+            <div className="reviews-summary-badge-card">
+              <div className="reviews-big-score">{SITE_CONFIG.RATING}</div>
+              <div className="reviews-stars-wrap">★★★★★</div>
+              <p className="reviews-meta-count">Based on {SITE_CONFIG.REVIEWS_COUNT} Verified Google Reviews</p>
               <a
-                href={GOOGLE_MAPS_LINK}
+                href={SITE_CONFIG.MAPS_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-secondary"
                 style={{ width: "100%", minHeight: "44px", fontSize: "0.85rem" }}
               >
                 <span>View on Google Maps</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                  <polyline points="15 3 21 3 21 9" />
-                  <line x1="10" y1="14" x2="21" y2="3" />
-                </svg>
+                <ExternalLink size={15} strokeWidth={2} />
               </a>
             </div>
 
-            {/* Right Reviews Grid */}
-            <div className="reviews-grid-cards">
-              {REVIEWS_DATA.map((rev) => (
-                <div key={rev.id} className="review-card">
-                  <div className="review-top-meta">
-                    <span className="review-stars">★★★★★</span>
-                    <span className="review-google-badge">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z" />
-                      </svg>
+            {/* Right Testimonials Grid */}
+            <div className="reviews-cards-grid">
+              {REVIEWS.map((rev) => (
+                <div key={rev.id} className="review-testimonial-card">
+                  <div className="review-meta-top">
+                    <span className="review-stars-row">★★★★★</span>
+                    <span className="google-source-badge">
+                      <Star size={11} fill="#1E3A8A" />
                       Google Verified
                     </span>
                   </div>
 
-                  <p className="review-quote">&ldquo;{rev.text}&rdquo;</p>
+                  <p className="review-text-quote">&ldquo;{rev.text}&rdquo;</p>
 
-                  <div className="review-author-wrap">
-                    <div className="author-initials-avatar">{rev.initials}</div>
-                    <div className="author-details">
+                  <div className="review-author-row">
+                    <div
+                      className="review-initials-circle"
+                      style={{ background: rev.avatarBg }}
+                    >
+                      {rev.initials}
+                    </div>
+                    <div className="review-author-info">
                       <strong>{rev.name}</strong>
                       <span>{rev.role} • {rev.city} ({rev.date})</span>
                     </div>
@@ -1595,33 +1195,37 @@ _Namaskar Vishal Travels! Please check vehicle availability and share the all-in
         </div>
       </section>
 
-      {/* 11. FAQ ACCORDION - With + / - Icons (First Item Open by Default) */}
+      {/* 11. FAQ - Accordion with Orange Left Border on Active (#faq) */}
       <section className="section-pad" id="faq">
         <div className="container">
           <div className="section-header">
-            <span className="section-tag">CLEAR &amp; TRANSPARENT</span>
+            <span className="section-tag">HELP &amp; POLICIES</span>
             <h2 className="section-title">Frequently Asked Questions</h2>
             <p className="section-desc">
               Everything you need to know about outstation billing, advance tokens, and cancellation policies.
             </p>
           </div>
 
-          <div className="faq-accordion-list">
-            {FAQ_DATA.map((faq, idx) => {
+          <div className="faq-list-wrap">
+            {FAQS.map((faq, idx) => {
               const isOpen = openFaqIndex === idx;
               return (
-                <div key={idx} className={`faq-item ${isOpen ? "open" : ""}`}>
+                <div
+                  key={idx}
+                  className={`faq-accordion-item ${isOpen ? "active" : ""}`}
+                >
                   <button
                     type="button"
-                    className="faq-btn"
+                    className="faq-header-btn"
                     onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
                     aria-expanded={isOpen}
                   >
                     <span>{faq.q}</span>
-                    <span className="faq-toggle-icon">{isOpen ? "−" : "+"}</span>
+                    <span className="faq-symbol">{isOpen ? "−" : "+"}</span>
                   </button>
+
                   {isOpen && (
-                    <div className="faq-answer-body">
+                    <div className="faq-content-body">
                       <p>{faq.a}</p>
                     </div>
                   )}
@@ -1632,74 +1236,76 @@ _Namaskar Vishal Travels! Please check vehicle availability and share the all-in
         </div>
       </section>
 
-      {/* 12. FOOTER - 4 Columns, Map Preview & Social Icons */}
+      {/* 12. FOOTER - Navy with Gradient Top Bar */}
       <footer className="site-footer">
-        <div className="container">
-          <div className="footer-grid-4">
-            {/* Col 1: Brand & Permit */}
-            <div className="footer-col">
-              <div className="footer-brand-title">
+        <div className="footer-top-gradient-bar"></div>
+        <div className="container footer-inner-content">
+          <div className="footer-4-columns">
+            {/* Col 1: Brand & Permit Details */}
+            <div className="footer-brand">
+              <h3>
                 Vishal <span>Travels</span>
-              </div>
-              <p style={{ fontSize: "0.88rem", lineHeight: 1.6, color: "#94a3b8" }}>
-                Licensed commercial passenger transport fleet operator in Pune, Maharashtra. Force Urbanias, AC tempo travellers, mini buses, and Volvo coaches for family pilgrimages, weddings, and corporate logistics.
+              </h3>
+              <p style={{ fontSize: "0.88rem", lineHeight: 1.6, color: "#94A3B8" }}>
+                Licensed commercial passenger transport fleet operator in Pune, Maharashtra. Force Urbanias, AC tempo travellers, mini buses, and luxury coaches for pilgrimages, weddings, and corporate logistics.
               </p>
-              <div className="footer-permit-box">
-                <div><strong>GSTIN:</strong> 27AABCV1234F1Z8</div>
-                <div><strong>RTO Permit:</strong> MH-12-TP-2024-8891</div>
+
+              <div className="footer-permit-card">
+                <div><strong>GSTIN:</strong> {SITE_CONFIG.GSTIN}</div>
+                <div><strong>RTO Permit:</strong> {SITE_CONFIG.PERMIT}</div>
                 <div><strong>Type:</strong> All-India Tourist Contract Carriage</div>
               </div>
             </div>
 
             {/* Col 2: Quick Links */}
-            <div className="footer-col">
-              <h4>Quick Links</h4>
-              <ul className="footer-links-col">
-                <li><a href="#packages">Tour Packages</a></li>
-                <li><a href="#routes">Popular Routes</a></li>
-                <li><a href="#fleet">Our Fleet (13–49 Seater)</a></li>
-                <li><a href="#fare">Bus Fare Calculator</a></li>
+            <div>
+              <h4 className="footer-heading">Quick Links</h4>
+              <ul className="footer-nav-list">
+                <li><a href="#tour-packages">Tour Packages</a></li>
+                <li><a href="#routes-trips">Popular Routes</a></li>
+                <li><a href="#our-fleet">Our Fleet (13–49 Seater)</a></li>
+                <li><a href="#fare-calculator">Fare Estimator</a></li>
                 <li><a href="#faq">FAQ &amp; Cancellation Policy</a></li>
               </ul>
             </div>
 
-            {/* Col 3: Contact Details (All 3 Phone Numbers Located Here) */}
-            <div className="footer-col">
-              <h4>Contact &amp; Helplines</h4>
-              <div className="footer-contact-details">
+            {/* Col 3: Contact & Helplines (All 3 Phone Numbers Located Here) */}
+            <div>
+              <h4 className="footer-heading">Contact &amp; Helplines</h4>
+              <div className="footer-contact-info">
                 <div>
                   <strong>Head Office (Swargate):</strong>
-                  Shop No. 14, Ground Floor, Pune-Satara Road, Near Swargate Bus Stand, Swargate, Pune 411042
+                  {SITE_CONFIG.ADDRESS}
                 </div>
                 <div>
                   <strong>Hinjewadi Yard:</strong>
-                  Plot 42, Rajiv Gandhi Infotech Park, Phase 1, Hinjewadi, Pune 411057
+                  {SITE_CONFIG.HINJEWADI_ADDRESS}
                 </div>
                 <div>
                   <strong>Dispatch Phone Numbers:</strong>
                   <div style={{ marginTop: "4px" }}>
-                    <a href={PRIMARY_PHONE_TEL} style={{ color: "#ffffff", fontWeight: 700 }}>
-                      {PRIMARY_PHONE} (Primary 24/7)
+                    <a href={SITE_CONFIG.PHONE_TEL} style={{ color: "#ffffff", fontWeight: 700 }}>
+                      {SITE_CONFIG.PHONE} (Primary 24/7)
                     </a>
                   </div>
                   <div>
-                    <a href="tel:+919822044556" style={{ color: "#cbd5e1" }}>
-                      +91 98220 44556 (Hinjewadi Desk)
+                    <a href="tel:+919822044556" style={{ color: "#CBD5E1" }}>
+                      {SITE_CONFIG.PHONE_HINJEWADI} (Hinjewadi Desk)
                     </a>
                   </div>
                   <div>
-                    <a href="tel:+919822044557" style={{ color: "#cbd5e1" }}>
-                      +91 98220 44557 (Corporate Bookings)
+                    <a href="tel:+919822044557" style={{ color: "#CBD5E1" }}>
+                      {SITE_CONFIG.PHONE_CORPORATE} (Corporate Bookings)
                     </a>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Col 4: Embedded Map & Social Icons */}
-            <div className="footer-col">
-              <h4>Office Location</h4>
-              <div className="footer-map-box">
+            {/* Col 4: Map Embed & Social Icon Buttons */}
+            <div>
+              <h4 className="footer-heading">Swargate Office Map</h4>
+              <div className="footer-map-embed">
                 <iframe
                   title="Vishal Travels Swargate Pune Location"
                   src="https://maps.google.com/maps?q=Swargate%20Pune&t=&z=13&ie=UTF8&iwloc=&output=embed"
@@ -1707,13 +1313,12 @@ _Namaskar Vishal Travels! Please check vehicle availability and share the all-in
                 ></iframe>
               </div>
 
-              {/* Social Icons in Footer */}
-              <div className="footer-social-row">
+              <div className="footer-social-btns">
                 <a
                   href="https://www.facebook.com/share/14X2F187jBq/"
                   target="_blank"
                   rel="noreferrer"
-                  className="footer-social-btn"
+                  className="social-icon-btn"
                   aria-label="Facebook"
                   title="Facebook"
                 >
@@ -1725,7 +1330,7 @@ _Namaskar Vishal Travels! Please check vehicle availability and share the all-in
                   href="https://www.instagram.com/vishaltravelspune?utm_source=qr"
                   target="_blank"
                   rel="noreferrer"
-                  className="footer-social-btn"
+                  className="social-icon-btn"
                   aria-label="Instagram"
                   title="Instagram"
                 >
@@ -1734,56 +1339,111 @@ _Namaskar Vishal Travels! Please check vehicle availability and share the all-in
                   </svg>
                 </a>
                 <a
-                  href={GOOGLE_MAPS_LINK}
+                  href={SITE_CONFIG.MAPS_URL}
                   target="_blank"
                   rel="noreferrer"
-                  className="footer-social-btn"
+                  className="social-icon-btn"
                   aria-label="Google Maps"
                   title="Google Maps"
                 >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                    <circle cx="12" cy="10" r="3" />
-                  </svg>
+                  <MapPin size={18} strokeWidth={2} />
                 </a>
               </div>
             </div>
           </div>
 
-          <div className="footer-bottom">
-            <span>© 2026 Vishal Travels. All Rights Reserved. Pune, Maharashtra. (GSTIN: 27AABCV1234F1Z8)</span>
-            <span>RTO Tourist Permit: MH-12-TP-2024-8891 • 100% Fastag Verified Fleet</span>
+          <div className="footer-bottom-strip">
+            <span>© 2026 Vishal Travels. All Rights Reserved. Pune, Maharashtra. (GSTIN: {SITE_CONFIG.GSTIN})</span>
+            <span>RTO Tourist Permit: {SITE_CONFIG.PERMIT} • 100% Fastag Verified Commercial Fleet</span>
           </div>
         </div>
       </footer>
 
-      {/* 13. FIXED MOBILE BOTTOM DOCK - Call, WhatsApp, Get Quote (No bubble overlap!) */}
-      <div className="mobile-bottom-dock">
-        <div className="mobile-dock-grid">
-          <a href={PRIMARY_PHONE_TEL} className="btn btn-secondary mobile-dock-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-            </svg>
+      {/* 13. MOBILE FIXED BOTTOM BAR - Call (blue), WhatsApp (green), Get Quote (orange) */}
+      <div className="mobile-fixed-bottom-bar">
+        <div className="mobile-bar-grid">
+          <a
+            href={SITE_CONFIG.PHONE_TEL}
+            className="btn btn-secondary mobile-dock-btn"
+            style={{ color: "var(--blue-800)", borderColor: "var(--blue-800)" }}
+          >
+            <Phone size={16} strokeWidth={2} />
             <span>Call</span>
           </a>
 
           <a
-            href={`https://wa.me/${PRIMARY_WHATSAPP_NUMBER}?text=Namaskar%20Vishal%20Travels!%20I%20want%20to%20enquire%20about%20bus%20and%20tempo%20traveller%20rental%20in%20Pune.`}
+            href={SITE_CONFIG.WHATSAPP_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn-whatsapp mobile-dock-btn"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2Z" />
-            </svg>
+            <MessageCircle size={16} strokeWidth={2} />
             <span>WhatsApp</span>
           </a>
 
-          <a href="#booking-card" className="btn btn-primary mobile-dock-btn">
+          <a
+            href="#booking-form-section"
+            className="btn btn-primary mobile-dock-btn"
+          >
             <span>Get Quote</span>
           </a>
         </div>
       </div>
+
+      {/* Fallback Copy/Call Modal for Users Without WhatsApp */}
+      {showCopyFallbackModal && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(11,31,58,0.7)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: "16px" }}>
+          <div style={{ background: "#ffffff", borderRadius: "16px", padding: "24px", maxWidth: "480px", width: "100%", boxShadow: "0 20px 40px rgba(0,0,0,0.3)" }}>
+            <h3 style={{ fontSize: "1.2rem", color: "var(--blue-900)", marginBottom: "8px" }}>
+              Alternative Booking Options
+            </h3>
+            <p style={{ fontSize: "0.86rem", color: "var(--text-muted)", marginBottom: "16px" }}>
+              If you don&apos;t have WhatsApp or are on desktop, you can copy your booking details or call our Swargate desk directly:
+            </p>
+
+            <div style={{ background: "#F3F4F6", padding: "12px", borderRadius: "8px", fontSize: "0.8rem", whiteSpace: "pre-line", maxHeight: "160px", overflowY: "auto", border: "1px solid #E5E7EB", marginBottom: "16px" }}>
+              {getBookingMessage()}
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "12px" }}>
+              <button
+                type="button"
+                onClick={handleCopyMessage}
+                className="btn btn-secondary"
+                style={{ minHeight: "44px", fontSize: "0.85rem" }}
+              >
+                {copiedText ? <Check size={16} /> : <Copy size={16} />}
+                <span>{copiedText ? "Copied!" : "Copy Details"}</span>
+              </button>
+
+              <a
+                href={SITE_CONFIG.PHONE_TEL}
+                className="btn btn-primary"
+                style={{ minHeight: "44px", fontSize: "0.85rem" }}
+              >
+                <Phone size={16} />
+                <span>Call Dispatch</span>
+              </a>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setShowCopyFallbackModal(false)}
+              style={{ width: "100%", background: "none", border: "none", color: "var(--text-muted)", fontSize: "0.82rem", cursor: "pointer", padding: "6px" }}
+            >
+              Close Window
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Toast Notification */}
+      {toast && (
+        <div style={{ position: "fixed", bottom: "85px", right: "20px", background: "var(--blue-900)", color: "#ffffff", padding: "12px 18px", borderRadius: "8px", boxShadow: "0 6px 20px rgba(0,0,0,0.25)", fontSize: "0.88rem", display: "flex", alignItems: "center", gap: "8px", zIndex: 1001 }}>
+          <Check size={16} color="#86EFAC" />
+          <span>{toast}</span>
+        </div>
+      )}
     </>
   );
 }
