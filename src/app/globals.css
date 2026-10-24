@@ -269,12 +269,224 @@ a {
 }
 
 /* ==========================================================================
+   2. REUSABLE BACKGROUND PATTERN LIBRARY & UTILITIES
+   Subtle 4-10% opacity on light backgrounds, 8-15% on dark.
+   Pointer-events: none on decorative pattern layers.
+   ========================================================================== */
+
+/* 1. Dot Pattern (22px grid) */
+.pattern-dots {
+  background-image: radial-gradient(circle, rgba(30, 58, 138, 0.10) 1.5px, transparent 1.5px);
+  background-size: 22px 22px;
+}
+
+.pattern-dots-subtle {
+  background-image: radial-gradient(circle, rgba(30, 58, 138, 0.05) 1.2px, transparent 1.2px);
+  background-size: 24px 24px;
+}
+
+/* 2. Grid Pattern (32px blue lines at 6% opacity) */
+.pattern-grid {
+  background-image: 
+    linear-gradient(to right, rgba(30, 58, 138, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(30, 58, 138, 0.06) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* 3. Diagonal Pattern */
+.pattern-diagonal {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(109, 40, 217, 0.06) 0,
+    rgba(109, 40, 217, 0.06) 2px,
+    transparent 2px,
+    transparent 14px
+  );
+}
+
+.pattern-diagonal-dark {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.06) 0,
+    rgba(255, 255, 255, 0.06) 2px,
+    transparent 2px,
+    transparent 16px
+  );
+}
+
+/* 4. Topographic Contour-Line Pattern */
+.pattern-topo {
+  background-image: url("data:image/svg+xml,%3Csvg width='160' height='160' viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 25c25-18 50-8 75 5s50 12 65-5M-5 65c35-22 70 2 95 18s40 10 55 5M-10 110c30-12 60 18 90 12s50-25 70-8M25 155c20-30 55-18 80-12s45 6 55-12' fill='none' stroke='rgba(30,58,138,0.08)' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+.pattern-topo-dark {
+  background-image: url("data:image/svg+xml,%3Csvg width='160' height='160' viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 25c25-18 50-8 75 5s50 12 65-5M-5 65c35-22 70 2 95 18s40 10 55 5M-10 110c30-12 60 18 90 12s50-25 70-8M25 155c20-30 55-18 80-12s45 6 55-12' fill='none' stroke='rgba(255,255,255,0.07)' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* 5. Road Divider (Dashed Center-Line Road Marking) */
+.pattern-road {
+  position: relative;
+  width: 100%;
+  height: 28px;
+  background-color: #0F172A;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+.pattern-road::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    #FBBF24 0,
+    #FBBF24 28px,
+    transparent 28px,
+    transparent 52px
+  );
+}
+
+/* 6. Mandala/Rangoli Pattern for Pilgrimage */
+.pattern-mandala {
+  background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23C2410C' stroke-width='1.2' stroke-opacity='0.14'%3E%3Ccircle cx='40' cy='40' r='36'/%3E%3Ccircle cx='40' cy='40' r='24'/%3E%3Ccircle cx='40' cy='40' r='12'/%3E%3Cpath d='M40 4v72M4 40h72M14.5 14.5l51 51M14.5 65.5l51-51'/%3E%3Cpolygon points='40,16 64,40 40,64 16,40'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 80px 80px;
+}
+
+/* 7. Waves Pattern for Beach */
+.pattern-waves {
+  background-image: url("data:image/svg+xml,%3Csvg width='90' height='26' viewBox='0 0 90 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 13c11.25-9 22.5-9 33.75 0s22.5 9 33.75 0 22.5-9 33.75 0' fill='none' stroke='%230E7490' stroke-width='1.8' stroke-opacity='0.16' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-size: 90px 26px;
+}
+
+/* 8. Mountain Silhouette for Hill Station */
+.pattern-mountains {
+  background-image: url("data:image/svg+xml,%3Csvg width='120' height='40' viewBox='0 0 120 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 40 L25 15 L45 32 L75 8 L105 35 L120 22 L120 40 Z' fill='%23047857' fill-opacity='0.10'/%3E%3Cpath d='M15 40 L35 22 L55 35 L85 14 L115 38 Z' fill='%23047857' fill-opacity='0.06'/%3E%3C/svg%3E");
+  background-size: 120px 40px;
+  background-repeat: repeat-x;
+  background-position: bottom;
+}
+
+/* 9. Large Blurred Gradient Blobs (15-25% opacity) */
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(64px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.blob-orange {
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.24) 0%, rgba(249, 115, 22, 0) 70%);
+}
+
+.blob-violet {
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(circle, rgba(109, 40, 217, 0.22) 0%, rgba(109, 40, 217, 0) 70%);
+}
+
+.blob-teal {
+  width: 380px;
+  height: 380px;
+  background: radial-gradient(circle, rgba(14, 116, 144, 0.20) 0%, rgba(14, 116, 144, 0) 70%);
+}
+
+/* 10. Subtle Noise Grain Overlay (3-4% opacity) */
+.grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  z-index: 1;
+}
+
+/* 11. Section SVG Shape Dividers */
+.shape-divider {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.shape-divider svg {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 42px;
+}
+
+.divider-to-white svg {
+  fill: #ffffff;
+}
+
+.divider-to-cream svg {
+  fill: var(--cream-bg);
+}
+
+.divider-to-blue svg {
+  fill: #EFF6FF;
+}
+
+.divider-to-pink svg {
+  fill: #FDF2F8;
+}
+
+.divider-to-dark svg {
+  fill: #0B1F3A;
+}
+
+/* Watermark Quotes for Reviews */
+.watermark-quote-bg {
+  position: absolute;
+  top: 15px;
+  right: 25px;
+  font-family: Georgia, serif;
+  font-size: 8rem;
+  line-height: 0.8;
+  color: #BE185D;
+  opacity: 0.06;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Micro-Drift Animation for Patterns (Respects Reduced Motion) */
+@keyframes patternDriftSlow {
+  0% { background-position: 0 0; }
+  100% { background-position: 64px 64px; }
+}
+
+.pattern-drift {
+  animation: patternDriftSlow 75s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pattern-drift {
+    animation: none !important;
+  }
+}
+
+/* ==========================================================================
    1. TOP BAR & HEADER
    ========================================================================== */
 .site-topbar {
   background: var(--blue-900);
   color: #ffffff;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 2px solid var(--orange-500); /* Tiny orange accent line */
   font-size: 0.82rem;
   padding: 7px 0;
 }
@@ -946,6 +1158,41 @@ a {
 /* ==========================================================================
    4. PACKAGES - 3-Column Card Grid with Category Color Coding
    ========================================================================== */
+.packages-section {
+  background: var(--cream-bg);
+  position: relative;
+}
+
+.package-card-header-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 44px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.routes-section {
+  background: #ffffff;
+  position: relative;
+}
+
+.fleet-section {
+  background: #EFF6FF;
+  position: relative;
+}
+
+.how-it-works-section {
+  background: var(--cream-bg);
+  position: relative;
+}
+
+.faq-section {
+  background: #ffffff;
+  position: relative;
+}
+
 .packages-filter-bar {
   display: flex;
   align-items: center;
@@ -1844,7 +2091,71 @@ a {
 }
 
 /* ==========================================================================
-   11. FOOTER - Navy with Gradient Top Bar
+   11. FINAL CTA BAND - Orange-to-Violet Gradient + Blob + Bus Silhouette
+   ========================================================================== */
+.final-cta-section {
+  position: relative;
+  background: linear-gradient(135deg, #F97316 0%, #EA580C 35%, #7C3AED 80%, #6D28D9 100%);
+  color: #ffffff;
+  padding: 80px 0;
+  overflow: hidden;
+}
+
+.final-cta-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 36px;
+  flex-wrap: wrap;
+}
+
+.final-cta-text h2 {
+  color: #ffffff;
+  font-size: clamp(1.85rem, 3.5vw, 2.5rem);
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.final-cta-text p {
+  color: #FFF7ED;
+  font-size: 1.05rem;
+  max-width: 580px;
+  line-height: 1.6;
+}
+
+.final-cta-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.final-cta-actions .btn-white {
+  background: #ffffff;
+  color: #0B1F3A;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.final-cta-actions .btn-white:hover {
+  background: #F8FAFC;
+  transform: translateY(-2px);
+}
+
+.bus-silhouette-bg {
+  position: absolute;
+  right: -20px;
+  bottom: -15px;
+  width: 380px;
+  height: 190px;
+  opacity: 0.14;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ==========================================================================
+   12. FOOTER - Navy with 4px Gradient Top Bar & Pattern Topo
    ========================================================================== */
 .site-footer {
   background: var(--blue-900);
@@ -1853,7 +2164,7 @@ a {
 }
 
 .footer-top-gradient-bar {
-  height: 6px;
+  height: 4px; /* 4px per prompt */
   background: var(--grad-footer-bar);
 }
 
